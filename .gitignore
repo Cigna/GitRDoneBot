@@ -1,0 +1,11 @@
+node_modules
+dist
+public
+coverage
+.DS_Store
+.env
+.build
+.serverless
+.vscode/settings.json
+.fcc.ignores.json
+test-report.xml

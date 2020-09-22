@@ -1,0 +1,163 @@
+import { Context, Handler } from "aws-lambda";
+import { GenericResponse, LambdaResponse } from "./src/interfaces";
+import { MergeRequestApi } from "./src/gitlab";
+import {
+  BotActionsResponse,
+  getMrId,
+  getObjectKind,
+  getProjectId,
+  getState,
+} from "./src/merge_request";
+import { Status, winlog, getToken, getBaseURI } from "./src/util";
+import * as HttpStatus from "http-status-codes";
+import { CustomConfig } from "./src/custom_config/custom_config";
+
+let containerId: string;
+
+/**
+ * Processes incoming GitLab webhook events that have come through API Gateway.
+ *
+ * @param event GitLab webhook event wrapped with AWS metadata. The `body` property of this param is the
+ * original GitLab webhook event, which is a stringified JSON object.
+ *
+ * @returns
+ * 1. BotActionsResponse when incoming event is a Merge Request event in a supported state.
+ * 1. GenericResponse with "not supported" message when incoming event is not a Merge Request event.
+ * 1. GenericResponse with "no action needed" message when incoming event is a Merge Request event in an unsupported state.
+ * 1. GenericResponse with standard HTTP 500 internal server error message if any error occurs while processing event.
+ */
+const handleGitLabWebhook = async (
+  event: any,
+): Promise<GenericResponse | BotActionsResponse> => {
+  let gitLabEvent: any;
+  let objectKind: string | undefined;
+  let response: GenericResponse | BotActionsResponse;
+
+  try {
+    gitLabEvent = JSON.parse(event.body);
+    objectKind = getObjectKind(gitLabEvent);
+    winlog.info(gitLabEvent);
+  } catch (err) {
+    objectKind = undefined;
+    winlog.error(`Error parsing event.body: ${err.message}`);
+    response = {
+      status: Status.from(HttpStatus.INTERNAL_SERVER_ERROR),
+    };
+  }
+
+  switch (objectKind) {
+    case "merge_request":
+      const state = getState(gitLabEvent);
+
+      /**
+       * We only perform analysis on Merge Request events in the following states
+       * in order to minimize the chattiness of the service.
+       */
+      if (state === "open" || state === "merge" || state === "update") {
+        try {
+          const token = getToken(process.env.GITLAB_BOT_ACCOUNT_API_TOKEN);
+          const projectId = getProjectId(gitLabEvent);
+          const mrId = getMrId(gitLabEvent);
+          const baseURI = getBaseURI(process.env.GITLAB_BASE_URI);
+
+          const api = new MergeRequestApi(
+            token,
+            projectId,
+            mrId,
+            baseURI,
+            winlog,
+          );
+
+          const customConfig: CustomConfig = await CustomConfig.from(api);
+
+          /** No action required for update state if custom config
+           * toggle for updateMergeRequestComment is set to false */
+          if (
+            state === "update" &&
+            customConfig.updateMergeRequestComment === false
+          ) {
+            response = {
+              status: Status.forNoAction(),
+            };
+          } else {
+            response = await BotActionsResponse.from(
+              api,
+              customConfig,
+              gitLabEvent,
+              state,
+              winlog,
+            );
+          }
+        } catch (err) {
+          /** getToken will throw an error if no token exists in environment */
+          winlog.error(`handleGitLabWebhook Error: ${err.message}`);
+          response = {
+            status: Status.from(HttpStatus.INTERNAL_SERVER_ERROR),
+          };
+        }
+      } else {
+        /** No action required for any MR states besides open, merge, and update */
+        response = {
+          status: Status.forNoAction(),
+        };
+      }
+      break;
+    default:
+      /** No action required for any incoming GitLab event that is not a merge request */
+      response = {
+        status: Status.forNotSupported(),
+      };
+  }
+  return response;
+};
+
+/**
+ * Processes events sent by CloudWatch Rule to reduce cold start.
+ *
+ * @returns GenericResponse declaring this is a health check event.
+ *
+ * @remarks Rule set in CloudWatch that pings the Lambda every 15 minutes in order to reduce timeouts from cold start.
+ * https://read.acloud.guru/how-to-keep-your-lambda-functions-warm-9d7e1aa6e2f0
+ */
+const handleHealthCheck = (): GenericResponse => {
+  winlog.info(`CloudWatch timer healthcheck. Container ID: ${containerId}`);
+
+  const response: GenericResponse = {
+    status: Status.forHealthCheck(),
+  };
+  return response;
+};
+
+/**
+ * Lambda function that processes incoming events.
+ * @param event GitLab webhook or CloudWatch Rule that triggers lambda. The `body` property
+ * only exists on GitLab webhook events, and will not exist on CloudWatch health check event.
+ * @param context Lambda context passed in by AWS API Gateway
+ * @returns LambdaResponse standard interface determined by AWS
+ * 1. If event is GitLab webhook, returns wrapped BotActions response
+ * 1. If event is CloudWatch Rule, returns wrapped GenericResponse response
+ * */
+const webhook: Handler = async (event: any, context: Context) => {
+  if (!containerId && context.hasOwnProperty("awsRequestId")) {
+    containerId = context.awsRequestId;
+  }
+
+  const response: GenericResponse | BotActionsResponse = event.hasOwnProperty(
+    "body",
+  )
+    ? await handleGitLabWebhook(event)
+    : handleHealthCheck();
+
+  winlog.info(response);
+
+  const lambdafiedResponse: LambdaResponse = {
+    body: JSON.stringify({
+      response,
+    }),
+    statusCode: response.status.code,
+  };
+
+  return lambdafiedResponse;
+};
+
+export { webhook, handleGitLabWebhook, handleHealthCheck };

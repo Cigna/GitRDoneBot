@@ -1,0 +1,4 @@
+*.json
+dist/*
+.build/*
+serverless.yml

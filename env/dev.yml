@@ -1,0 +1,22 @@
+#################################################################
+# ENVIRONMENT CONFIG                                            #
+#################################################################
+# This section defines the environment config for API Gateway.  #
+# Modify each key with the values for your deploy environment   #
+# DO NOT TOUCH THIS UNLESS YOU KNOW WHAT YOU ARE DOING.         #
+#################################################################
+
+# this is the AWS_ENV variable that is set in the CICD job, controlling which environment to deploy to
+# you can set as many environments as you'd like using this format
+envName: dev
+
+region: your-aws-region
+accountID: your-aws-account-id
+
+vpc:
+  securityGroupIds:
+    - your-security-group-id
+  subnetIds:
+    - your-subnet-id
+# note: this is only required for private API Gateways inside VPC
+vpce: your-vpc-endpoint-id

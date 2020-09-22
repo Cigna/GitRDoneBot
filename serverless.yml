@@ -1,0 +1,77 @@
+# AWS_ENV is the CI variable (assigned in gitlab-ci.yml) for the current environment
+custom: ${file(./env/${env:AWS_ENV}.yml)}
+# this is the name of the API Gateway
+service: gitrdonebot
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  # provider.deploymentBucket is an S3 bucket that must be created manually BEFORE running serverless deploy
+  # This bucket contains the zip file the lambda uses to run, as well as the cloudformation template
+  deploymentBucket:
+    name: ${self:custom.envName}-grdbot-serverless-bucket
+  # CloudFormation stack name
+  stackName: ${self:custom.envName}-${self:service}
+  environment:
+    GITLAB_BASE_URI: ${env:GITLAB_BASE_URI}
+    GITLAB_BOT_ACCOUNT_NAME: ${env:GITLAB_BOT_ACCOUNT_NAME}
+    GITLAB_BOT_ACCOUNT_API_TOKEN: ${env:GITLAB_BOT_ACCOUNT_API_TOKEN}
+  # API Gateway type
+  endpointType: PRIVATE
+  # This is the name of the stage created in the API gateway
+  stage: ${env:AWS_ENV}
+  # this policy gives API Gateway permission to invoke Lambda
+  resourcePolicy:
+    - Effect: Allow
+      Principal: "*"
+      Action: execute-api:Invoke
+      Resource:
+        - execute-api:/*/*/*
+      Condition:
+        StringNotEquals:
+          aws:SourceVpc:
+            - vpce-${self:custom.vpce}
+
+functions:
+  webhook:
+    handler: handler.webhook
+    # function.name describes the name of the API Gateway, Lambda, and associated lambda execution log group
+    name: ${env:AWS_ENV}-${self:service}
+    timeout: 30
+    events:
+      - http:
+          path: webhook
+          method: post
+    vpc: ${self:custom.vpc}
+
+resources:
+  Resources:
+    AccessLogs:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        # this will create an empty log group, but will still need to manually associate it
+        # with the correct API Gateway by changing the settings in API Gateway -> Stages -> Logs/Tracing
+        LogGroupName: /aws/apigateway/${env:AWS_ENV}-${self:service}-AccessLogs
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-jest-plugin
+  - serverless-dotenv-plugin
+
+package:
+  exclude:
+    - node_modules/@types/**/*
+    - __tests__/
+    - .vscode/
+    - .gitlab/
+    - media/
+    - .eslintIgnore
+    - .eslintrc.js
+    - .gitignore
+    - .gitlab-ci.yml
+    - .prettierignore
+    - .prettierrc
+    - jest.config.js
+    - tsconfig.json
+  include: handler.ts

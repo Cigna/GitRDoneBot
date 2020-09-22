@@ -1,0 +1,6 @@
+**/*/index.ts
+**/*/index.d.ts
+jest.config.js
+/node_modules/
+/__tests__/
+/test_fixtures/
