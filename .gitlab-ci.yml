@@ -6,9 +6,8 @@ stages:
   - publish
   - unit-test
   - mock-api-test
-  - live-api-test
   - full-test-suite
-  - deploy-lambdas
+  # - deploy-lambdas
 
 # Cache modules in between jobs
 cache:
@@ -25,7 +24,6 @@ before_script:
 build:
   stage: compile
   except:
-    - develop
     - master
   script:
     - npm run build
@@ -37,7 +35,6 @@ build:
 style:
   stage: style
   except:
-    - develop
     - master
   script:
     - npm run lint
@@ -55,7 +52,7 @@ pages: # the job must be named pages
     paths:
       - public # artifact path must be /public for GitLab Pages to pick it up
   only:
-    - develop
+    - master
   tags:
     - kubernetes
     - openshift
@@ -63,7 +60,6 @@ pages: # the job must be named pages
 unit-test:
   stage: unit-test
   except:
-    - develop
     - master
   script:
     - npm run test:unit
@@ -76,22 +72,9 @@ unit-test:
 mock-api-test:
   stage: mock-api-test
   except:
-    - develop
     - master
   script:
     - npm run test:mock
-  coverage: /^All files\s+\|\s+\d+\.*\d*\s+\|\s*(\d+\.*\d*)/
-  retry: 2
-  tags:
-    - openshift
-    - kubernetes
-
-live-api-test:
-  stage: live-api-test
-  only:
-    - develop
-  script:
-    - npm run test:live
   coverage: /^All files\s+\|\s+\d+\.*\d*\s+\|\s*(\d+\.*\d*)/
   retry: 2
   tags:
@@ -110,6 +93,7 @@ full-test-suite:
     - openshift
     - kubernetes
 
+# UNCOMMENT TO DEPLOY TO AWS ENVIRONMENT
 # deploy-lambdas-dev:
 #   stage: deploy-lambdas
 #   only:
