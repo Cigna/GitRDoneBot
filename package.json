@@ -45,7 +45,7 @@
     "@types/node": "^13.9.5",
     "@types/serverless": "^1.18.6",
     "http-status-codes": "^1.4.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "parse-diff": "^0.7.0",
     "serverless": "^1.73.1",
     "winston": "^3.2.1"
