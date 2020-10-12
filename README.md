@@ -188,7 +188,7 @@ The bot creators would love to encourage anyone interested to contribute to this
 
 ## Code Overview
 
-**Please see our [code documentation](Link to GitHub git pages) for all the details.**
+**Code documentation coming soon!**
 
 The main components of the Bot are called **Bot Actions**. A Bot Action is a logical unit of service that analyzes one specific Merge Request behavior. Unique Bot Action functions are grouped together as modules in `src/bot_actions`. Each Bot Action returns a self-contained response that includes:
 
