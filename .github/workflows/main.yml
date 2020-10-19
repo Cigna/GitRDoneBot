@@ -1,0 +1,75 @@
+name: Build & Lint
+
+on: [push]
+#   push:
+#     branches: [ master, actions ]
+#   pull_request:
+#     branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Cache node modules
+      id: cache-npm
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    - name: Install Dependencies
+#       if: steps.cache-npm.outputs.cache-hit != 'true'
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+    - name: Lint
+      run: |
+        npm run lint
+        npm run prettier:fix
+       
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Cache node modules
+      id: cache-npm
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+          
+    - name: Install Dependencies
+      run: npm ci
+        
+    - name: Generate Docs
+      run: npm run publish
+      
+    - name: Publish to GitHub Pages
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v2
+      with:
+        target_branch: gh-pages
+        build_dir: public
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
