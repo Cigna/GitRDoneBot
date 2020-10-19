@@ -146,4 +146,6 @@ jobs:
       run: npm run test:unit
     
     - name: Integration Tests with Mocks
+      env:
+        GITLAB_BOT_ACCOUNT_NAME: GitRDoneBot
       run: npm run test:mock
