@@ -145,7 +145,9 @@ jobs:
     - name: Unit Test
       run: npm run test:unit
     
-#     - name: Integration Tests with Mocks
-#       env:
-#         GITLAB_BOT_ACCOUNT_NAME: GitRDoneBot
-#       run: npm run test:mock
+    - name: Integration Tests with Mocks
+      env:
+        GITLAB_BOT_ACCOUNT_NAME: GitRDoneBot
+        GITLAB_BOT_ACCOUNT_API_TOKEN: faketoken
+        GITLAB_BASE_URI: fakeURI
+      run: npm run test:mock
