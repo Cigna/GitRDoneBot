@@ -1,4 +1,4 @@
-name: npm audit
+name: Npm Audit
 
 on: push
 #  schedule:
@@ -30,9 +30,10 @@ jobs:
     - name: Install Dependencies
       run: npm ci
       
-     - uses: oke-py/npm-audit-action@v1.5.2
-       with:
-         github_token: ${{ secrets.GITHUB_TOKEN }}
-         issue_assignees: lanaebk
-         issue_labels: vulnerability
-         dedupe_issues: true
+    - name: Npm audit
+      uses: oke-py/npm-audit-action@v1.5.2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        issue_assignees: lanaebk
+        issue_labels: vulnerability
+        dedupe_issues: true
