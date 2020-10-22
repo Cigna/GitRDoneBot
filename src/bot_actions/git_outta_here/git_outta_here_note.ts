@@ -8,7 +8,7 @@ import { BotActionNote } from "../bot_action_note";
 export class GitOuttaHereNote extends BotActionNote {
   static readonly bad =
     ":loudspeaker: It looks like you've got log files in your repo. You should remove them from the repo and store them somewhere else. Make sure you update your [`.gitignore` file](https://help.github.com/en/github/using-git/ignoring-files)! ";
-  static readonly hashtag = `#GitOuttaHere`;
+  static readonly hashtag = `[#GitOuttaHere](https://github.com/Cigna/GitRDoneBot#git-outta-here)`;
 
   private constructor(message: string) {
     super(message);

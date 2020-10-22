@@ -24,7 +24,7 @@ export class SelfMergeNote extends BotActionNote {
     `:loudspeaker: I noticed that your project doesn't require any approvals to merge in your code. ` +
     `It is a good practice to require at least 1 approval to prevent accidentally merging code that hasn't been reviewed by others.` +
     `Project settings can be updated to require approvals in Settings -> General -> Merge Request`;
-  static readonly hashtag = `#SelfMergeAnalysis`;
+  static readonly hashtag = `[#SelfMergeAnalysis](https://github.com/Cigna/GitRDoneBot#self-merge-analysis)`;
 
   private constructor(message: string) {
     super(message);

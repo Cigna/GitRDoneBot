@@ -13,7 +13,7 @@ export class BranchAgeNote extends BotActionNote {
   static readonly bad =
     `:loudspeaker: This merge request has a pretty old commit. ` +
     `You should try and merge more frequently to keep your commits on branches fresh.`;
-  static readonly hashtag = `#BranchAgeAnalysis`;
+  static readonly hashtag = `[#BranchAgeAnalysis](https://github.com/Cigna/GitRDoneBot#branch-age-analysis)`;
 
   private constructor(message: string) {
     super(message);

@@ -7,7 +7,7 @@ import { BotActionNote } from "..";
  */
 export class CommitMessagesNote extends BotActionNote {
   static readonly good = `:star: Nice work following your team's commit message style conventions!`;
-  static readonly hashtag = `#CommitMessage`;
+  static readonly hashtag = `[#CommitMessage](https://github.com/Cigna/GitRDoneBot#commit-message)`;
   static readonly bad = `:loudspeaker: Keep commits descriptive and concise - more than one word and between 3 and 50 characters`;
 
   private constructor(message: string) {

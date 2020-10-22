@@ -12,7 +12,7 @@ export class DiffSizeNote extends BotActionNote {
   static readonly bad =
     `:loudspeaker: This merge request is larger than one person can handle. ` +
     `Why not call in a partner and keep your branches smaller?`;
-  static readonly hashtag = `#DiffAnalysis`;
+  static readonly hashtag = `[#DiffAnalysis](https://github.com/Cigna/GitRDoneBot#diff-analysis)`;
 
   private constructor(message: string) {
     super(message);
