@@ -101,7 +101,7 @@ describe("Mock API Test: DiffSize Class", () => {
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(changes_more_than_500);
+      api.getSingleMRChanges.mockResolvedValue(changes_between_zero_and_500);
       diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
       done();
     });
@@ -124,8 +124,7 @@ describe("Mock API Test: DiffSize Class", () => {
       );
     });
 
-    test.only("totalDiffs value is between 0 and threshold", async () => {
-      console.log(diffSizeResponse.totalDiffs)
+    test("totalDiffs value is between 0 and threshold", async () => {
       expect(diffSizeResponse.totalDiffs).toBeLessThan(customConfig.threshold);
       expect(diffSizeResponse.totalDiffs).toBeGreaterThan(0);
     });
