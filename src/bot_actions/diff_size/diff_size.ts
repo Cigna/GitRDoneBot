@@ -83,7 +83,6 @@ export class DiffSize extends BotAction {
    * @returns total lines of diff across all of the `changes`
    * */
   private static calculateDiffs(changes: Array<Change>): number {
-    // let parsedTotalDiffs = 0;
     let customTotalDiffs = 0;
 
     if (changes.length !== 0) {
@@ -94,63 +93,21 @@ export class DiffSize extends BotAction {
           customDiffs.push(customCalculatedDiff);
         }
       });
-      // const parsedDiffs: number[] = changes.map((change: Change) => {
-      //   if (change.hasOwnProperty("diff")) {
-      //     // console.log(`filename: ${change.old_path}`);
-      //     const customCalculatedDiff = this.customParser(change.diff);
-      //     // console.log(`customCalculatedDiff: ${customCalculatedDiff}`);
-      //     customDiffs.push(customCalculatedDiff);
-      //     const gitDiff = change.diff;
-      //     // workaround for GitLab API 11.2.3 change that broke the schema expected by parse-diff module
-      //     const hackedDiff = "--- a/file\n+++ b/file\n" + gitDiff;
-      //     const files = parse(hackedDiff);
-      //     const total = files.map((file) => {
-      //       const parsedCalculatedDiff =
-      //         Math.abs(file.deletions) + Math.abs(file.additions);
-      //       if (parsedCalculatedDiff !== customCalculatedDiff) {
-      //         console.log({
-      //           old_path: change.old_path,
-      //           new_path: change.new_path,
-      //           new_file: change.new_file,
-      //           renamed_file: change.renamed_file,
-      //           deleted_file: change.deleted_file,
-      //           parsedCalculatedDiff: parsedCalculatedDiff,
-      //           customCalculatedDiff: customCalculatedDiff,
-      //           deletions: file.deletions,
-      //           additions: file.additions,
-      //           diff: gitDiff,
-      //         });
-      //       }
-      //       console.log(`parsedCalculatedDiff: ${parsedCalculatedDiff}`);
-      //       return parsedCalculatedDiff;
-      //     });
 
-      //     return total.reduce(
-      //       (accumulator, currentVal) => accumulator + currentVal,
-      //     );
-      //   } else {
-      //     return 0;
-      //   }
-      // });
-
-      // parsedTotalDiffs = parsedDiffs.reduce(
-      //   (accumulator, currentVal) => accumulator + currentVal,
-      // );
       customTotalDiffs = customDiffs.reduce(
         (accumulator, currentVal) => accumulator + currentVal,
       );
     }
 
-    // console.log(`parsedTotalDiffs: ${parsedTotalDiffs}`);
-    // console.log(`customTotalDiffs: ${customTotalDiffs}`);
     return customTotalDiffs;
   }
 
   private static customParser(diff: string): number {
     const diffNewlines: Array<string> = diff.split("\n");
+    // only keep lines that start with exactly 1 '+' and/or '-'
+    const diffFinder = new RegExp("^[-+]{1}", "m");
     const noContextLines: Array<string> = diffNewlines.filter((line) => {
-      // only keep lines that start with '+' and/or '-'
-      return line.match(new RegExp(/^[\-\+]+/m));
+      return line.match(diffFinder);
     });
     return noContextLines.length;
   }
