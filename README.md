@@ -26,36 +26,49 @@ Increased **coverage, participation, and expertise** shared during a review are 
 
 ![GitRDoneBot Comment](media/new_grdbot_comment.png "GitRDoneBot Automated Comment Example")
 
-# What meaningful code review habits does GitRDoneBot reinforce?
+# Which code review habits does GitRDoneBot include in its analysis?
 
-### 1. Merge Requests Contain a Manageable Number of Changes: _1 - 500 Lines of Diff_
+## 1. Diff Size
+
+### Merge Requests contain a manageable number of changes: _1 - 500 lines of diff_
 
 This not only aids in keeping coverage high, but also the human brain can only process [500 lines of code (LOC) at one time](https://static1.smartbear.co/smartbear/media/pdfs/best-kept-secrets-of-peer-code-review_redirected.pdf) and most MRs for open source projects are [less than 20 lines long](www.gousios.gr/pub/exploration-pullreqs.pdf).
 
-### 2. Merge Requests Contain Short-Lived Branches: _1 - 14 days_
+## 2. Branch Age
+
+### Merge Requests contain short-lived branches: _1 - 14 days_
 
 The combination of trunk-based development with short-lived feature branches [accelerates code development, especially for asynchronous and large teams](trunkbaseddevelopment.com/short-lived-feature-branches).
 
-### 3. Merge Requests are Reviewed by Another Person: _Not self-assigned or self-merged_
+## 3. Self Merge
+
+### Merge Requests are reviewed by another person: _Not self-assigned or self-merged_
 
 Not only would this negate code review in general, but the open-source community benefits from many eyes on code. Code should not be introduced to the main working branch without being [vetted by at least one other person](https://www.pitt.edu/~ckemerer/PSP_Data.pdf).
 
-### 4. Merge Requests are Distributed Across the Team: _1 - 10 Requests assigned to a single person_
+## 4. Too Many Assigned
+
+### Merge Requests are distributed across the team: _1 - 10 requests assigned to a single person_
 
 To remove bottlenecks, low quality reviews, increased context switching, and single-person dependencies, check to make sure that MR assignees don’t have too many other MRs on their plate.
 
-### 5. Commit messages are more than one word and adequate length: _4 - 50 characters in length_
+## 5. Commit Messages
+
+### Commit messages are more than one word and adequate length: _4 - 50 characters in length_
 
 Too many one word commits degrades the quality of your git history because they are not informative.
 
-### 6. Merge Request author has a human readable name.
+## 6. New Git Who Dis
+
+### Merge Request author has a human readable name.
 
 It’s really hard to reach out to someone who pushed commits if you don’t know who that person is!
 
-### 7. No log files are included in the changes of the Merge Request
+## 7. Git Outta Here
+
+### No log files are included in the changes of the Merge Request
 
 Adding logs to a repo adds unnecessary content to the GitLab ecosystem and bloats commit changes.
-
 
 # Hosting Your Own Bot: How do I use GitRDoneBot for my team/organization?
 
