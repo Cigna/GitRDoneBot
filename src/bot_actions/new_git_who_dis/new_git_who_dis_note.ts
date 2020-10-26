@@ -8,7 +8,7 @@ import { BotActionNote } from "../bot_action_note";
 export class NewGitWhoDisNote extends BotActionNote {
   static readonly bad = `it's really hard to see who you are! Would you please make your Git account names human readable?`;
   static readonly badIcon = `:loudspeaker:`;
-  static readonly hashtag = `#NewGitWhoDis`;
+  static readonly hashtag = `[#NewGitWhoDis](https://github.com/Cigna/GitRDoneBot#6-new-git-who-dis)`;
 
   private constructor(message: string) {
     super(message);
