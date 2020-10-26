@@ -8,7 +8,7 @@ import * as winston from "winston";
 export class TooManyAssignedNote extends BotActionNote {
   static readonly bad = `:loudspeaker: You've assigned this merge request to someone who already has a lot on their plate.
        Reassigning the merge request to someone else will help it get approved more quickly`;
-  static readonly hashtag = `#TooManyAssignedAnalysis`;
+  static readonly hashtag = `[#TooManyAssignedAnalysis](https://github.com/Cigna/GitRDoneBot#4-too-many-assigned)`;
 
   private constructor(message: string) {
     super(message);
