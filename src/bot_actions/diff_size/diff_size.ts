@@ -8,7 +8,7 @@ import * as winston from "winston";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { DiffSizeNote } from "./diff_size_note";
 import { Change } from "../../interfaces";
-import * as parse from "parse-diff";
+// import * as parse from "parse-diff";
 
 /**
  * This class extends the `BotAction` class by analyzing how many lines of diff are contained in the GitLab Merge Request.
@@ -83,31 +83,32 @@ export class DiffSize extends BotAction {
    * @returns total lines of diff across all of the `changes`
    * */
   private static calculateDiffs(changes: Array<Change>): number {
-    let totalDiffs = 0;
+    let customTotalDiffs = 0;
 
     if (changes.length !== 0) {
-      const diffs: number[] = changes.map((change: Change) => {
+      const customDiffs: number[] = [];
+      changes.map((change: Change) => {
         if (change.hasOwnProperty("diff")) {
-          const gitDiff = change.diff;
-          // workaround for GitLab API 11.2.3 change that broke the schema expected by parse-diff module
-          const hackedDiff = "--- a/README.md\n+++ b/README.md\n" + gitDiff;
-          const files = parse(hackedDiff);
-          const total = files.map((file) => {
-            return Math.abs(file.deletions) + Math.abs(file.additions);
-          });
-          return total.reduce(
-            (accumulator, currentVal) => accumulator + currentVal,
-          );
-        } else {
-          return 0;
+          const customCalculatedDiff = this.customParser(change.diff);
+          customDiffs.push(customCalculatedDiff);
         }
       });
 
-      totalDiffs = diffs.reduce(
+      customTotalDiffs = customDiffs.reduce(
         (accumulator, currentVal) => accumulator + currentVal,
       );
     }
 
-    return totalDiffs;
+    return customTotalDiffs;
+  }
+
+  private static customParser(diff: string): number {
+    const diffNewlines: Array<string> = diff.split("\n");
+    // only keep lines that start with exactly 1 '+' and/or '-'
+    const diffFinder = new RegExp("^[-+]{1}", "m");
+    const noContextLines: Array<string> = diffNewlines.filter((line) => {
+      return line.match(diffFinder);
+    });
+    return noContextLines.length;
   }
 }
