@@ -83,23 +83,23 @@ export class DiffSize extends BotAction {
    * @returns total lines of diff across all of the `changes`
    * */
   private static calculateDiffs(changes: Array<Change>): number {
-    let customTotalDiffs = 0;
+    let totalDiffs = 0;
 
     if (changes.length !== 0) {
-      const customDiffs: number[] = [];
+      const parsedDiffsArray: number[] = [];
       changes.map((change: Change) => {
         if (change.hasOwnProperty("diff")) {
-          const customCalculatedDiff = this.customParser(change.diff);
-          customDiffs.push(customCalculatedDiff);
+          const parsedDiff = this.customParser(change.diff);
+          parsedDiffsArray.push(parsedDiff);
         }
       });
 
-      customTotalDiffs = customDiffs.reduce(
+      totalDiffs = parsedDiffsArray.reduce(
         (accumulator, currentVal) => accumulator + currentVal,
       );
     }
 
-    return customTotalDiffs;
+    return totalDiffs;
   }
 
   private static customParser(diff: string): number {

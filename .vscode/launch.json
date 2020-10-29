@@ -15,7 +15,7 @@
                 "${workspaceRoot}/node_modules/.bin/jest", 
                 "--runInBand",
                 "--verbose",
-                "__tests__/unit_tests/diff_size/diff_size.test.ts"
+                "${current relative file path of test you want to run}"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
