@@ -12,6 +12,10 @@ const old_commits: Array<GitLabCommit> = [
   mockGitLabCommit("3rd Oldest commit", new Date().toString()),
 ];
 
+const thresholdDate = new Date()
+thresholdDate.setDate(thresholdDate.getDate() - 7)
+thresholdDate.setHours(thresholdDate.getHours() + 1)
+
 describe("getOldestCommit function", () => {
   test("should return the oldest commit", () => {
     const oldestCommit: GitLabCommit = BranchAge["getOldestCommit"](
@@ -41,5 +45,17 @@ describe("isBranchYoungerThanThreshold function", () => {
         defaultConfig.threshold,
       ),
     ).toBe(false);
+  });
+
+  test("should return true if commit age is equal to the threshold", () => {
+    expect(
+      BranchAge["isBranchYoungerThanThreshold"](
+        {
+          title: "Oldest commit",
+          created_at: thresholdDate.toString(),
+        },
+        defaultConfig.threshold,
+      ),
+    ).toBe(true);
   });
 });
