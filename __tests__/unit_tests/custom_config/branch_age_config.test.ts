@@ -38,6 +38,13 @@ const validConfigAllProperties = {
   },
 };
 
+const validConfigAllPropertiesThresholdEqualsLimit = {
+  branchAgeAnalysis: {
+    thresholdInDays: 1,
+    constructiveFeedbackOnlyToggle: true,
+  },
+};
+
 const validConfigThresholdExtraProperties = {
   branchAgeAnalysis: {
     thresholdInDays: 10,
@@ -45,9 +52,15 @@ const validConfigThresholdExtraProperties = {
   },
 };
 
-const validConfigThresholdOutsideLimits = {
+const validConfigThresholdExceedsLimits = {
   branchAgeAnalysis: {
     thresholdInDays: 100,
+  },
+};
+
+const validConfigThresholdBelowLimits = {
+  branchAgeAnalysis: {
+    thresholdInDays: 0,
   },
 };
 
@@ -161,6 +174,21 @@ describe("Unit Test: BranchAgeAnalysisConfig.getCustomConfig", () => {
       );
     });
 
+    test("returns custom threshold value & custom toggle value when threshold value is equal to minimum & toggle property is provided", () => {
+      const config = BotActionConfig.from(
+        BranchAgeDefaults,
+        validConfigAllProperties,
+      );
+      expect(config.threshold).toBe(
+        validConfigAllProperties.branchAgeAnalysis.thresholdInDays,
+      );
+
+      expect(config.constructiveFeedbackOnlyToggle).toBe(
+        validConfigAllProperties.branchAgeAnalysis
+          .constructiveFeedbackOnlyToggle,
+      );
+    });
+
     test("ignores properties that don't exist on ICustomConfig", () => {
       const config = BotActionConfig.from(
         BranchAgeDefaults,
@@ -179,10 +207,22 @@ describe("Unit Test: BranchAgeAnalysisConfig.getCustomConfig", () => {
       );
     });
 
-    test("returns DEFAULT threshold value & default toggle value when threshold value is OUTSIDE limits & no toggle property provided", () => {
+    test("returns DEFAULT threshold value & default toggle value when threshold value EXCEEDS limits & no toggle property provided", () => {
       const config = BotActionConfig.from(
         BranchAgeDefaults,
-        validConfigThresholdOutsideLimits,
+        validConfigThresholdExceedsLimits,
+      );
+      expect(config.threshold).toBe(BranchAgeDefaults.thresholdDefault);
+
+      expect(config.constructiveFeedbackOnlyToggle).toBe(
+        BranchAgeDefaults.constructiveFeedbackOnlyToggleDefault,
+      );
+    });
+
+    test("returns DEFAULT threshold value & default toggle value when threshold value BELOW limits & no toggle property provided", () => {
+      const config = BotActionConfig.from(
+        BranchAgeDefaults,
+        validConfigThresholdBelowLimits,
       );
       expect(config.threshold).toBe(BranchAgeDefaults.thresholdDefault);
 

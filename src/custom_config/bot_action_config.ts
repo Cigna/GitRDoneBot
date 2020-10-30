@@ -111,7 +111,7 @@ export class BotActionConfig {
   ): boolean => {
     let valid = false;
     if (typeof threshold === "number") {
-      valid = threshold > min && threshold <= max;
+      valid = threshold >= min && threshold <= max;
     }
     return valid;
   };
