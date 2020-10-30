@@ -76,8 +76,8 @@ export class BotActionConfig {
    * @param actionName name of bot action
    * @param thresholdName name of threshold for bot action
    * @param defaultThreshold action config default value for threshold
-   * @param thresholdMin minimum value for valid threshold
-   * @param thresholdMax maximum value for valid threshold
+   * @param thresholdMin inclusive minimum value for valid threshold
+   * @param thresholdMax inclusive maximum value for valid threshold
    * @returns number for threshold value in BotActionConfig
    * */
   static setThreshold = (
@@ -111,7 +111,7 @@ export class BotActionConfig {
   ): boolean => {
     let valid = false;
     if (typeof threshold === "number") {
-      valid = threshold > min && threshold <= max;
+      valid = threshold >= min && threshold <= max;
     }
     return valid;
   };

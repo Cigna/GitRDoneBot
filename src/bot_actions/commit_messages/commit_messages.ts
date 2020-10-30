@@ -107,7 +107,7 @@ export class CommitMessages extends BotAction {
     grammarParam: Array<boolean>,
     threshold: number,
   ): boolean {
-    return grammarParam.filter((bool) => bool === false).length < threshold;
+    return grammarParam.filter((bool) => bool === false).length <= threshold;
   }
 
   /**

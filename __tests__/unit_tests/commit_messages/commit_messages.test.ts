@@ -37,8 +37,8 @@ describe("CommitMessages.testThreshold function", () => {
   test("should return true if number of false values in array is less than threshold", () => {
     expect(CommitMessages["testThreshold"]([true, true, false], 2)).toBe(true);
   });
-  test("should return false if number of false values in array equals threshold", () => {
-    expect(CommitMessages["testThreshold"]([true, true, false], 1)).toBe(false);
+  test("should return true if number of false values in array equals threshold", () => {
+    expect(CommitMessages["testThreshold"]([true, true, false], 1)).toBe(true);
   });
   test("should return false if number of false values in array exceeds threshold", () => {
     expect(CommitMessages["testThreshold"]([true, false, false], 1)).toBe(

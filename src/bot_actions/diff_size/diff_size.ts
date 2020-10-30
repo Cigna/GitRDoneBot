@@ -57,7 +57,7 @@ export class DiffSize extends BotAction {
       apiResponse.result.hasOwnProperty("changes")
     ) {
       totalDiffs = this.calculateDiffs(apiResponse.result.changes);
-      goodGitPractice = totalDiffs < customConfig.threshold;
+      goodGitPractice = totalDiffs <= customConfig.threshold;
     } else {
       totalDiffs = -1;
     }

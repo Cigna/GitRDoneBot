@@ -38,6 +38,13 @@ const validConfigAllProperties = {
   },
 };
 
+const validConfigAllPropertiesThresholdEqualsLimit = {
+  tooManyMergeRequestsAnalysis: {
+    thresholdNumberOfMergeRequests: 2,
+    constructiveFeedbackOnlyToggle: true,
+  },
+};
+
 const validConfigThresholdExtraProperties = {
   tooManyMergeRequestsAnalysis: {
     thresholdNumberOfMergeRequests: 5,
@@ -45,9 +52,15 @@ const validConfigThresholdExtraProperties = {
   },
 };
 
-const validConfigThresholdOutsideLimits = {
+const validConfigThresholdExceedsLimits = {
   tooManyMergeRequestsAnalysis: {
     thresholdNumberOfMergeRequests: 50,
+  },
+};
+
+const validConfigThresholdBelowLimits = {
+  tooManyMergeRequestsAnalysis: {
+    thresholdNumberOfMergeRequests: 1,
   },
 };
 
@@ -168,6 +181,23 @@ describe("Unit Test: TooManyAssignedAnalysisConfig.getCustomConfig", () => {
       );
     });
 
+    test("returns custom threshold value & custom toggle value when threshold value equals minimum & toggle property is provided", () => {
+      const config = BotActionConfig.from(
+        TooManyAssignedDefaults,
+        validConfigAllPropertiesThresholdEqualsLimit,
+      );
+
+      expect(config.threshold).toBe(
+        validConfigAllPropertiesThresholdEqualsLimit.tooManyMergeRequestsAnalysis
+          .thresholdNumberOfMergeRequests,
+      );
+
+      expect(config.constructiveFeedbackOnlyToggle).toBe(
+        validConfigAllPropertiesThresholdEqualsLimit.tooManyMergeRequestsAnalysis
+          .constructiveFeedbackOnlyToggle,
+      );
+    });
+
     test("ignores properties that don't exist on ICustomConfig", () => {
       const config = BotActionConfig.from(
         TooManyAssignedDefaults,
@@ -188,10 +218,23 @@ describe("Unit Test: TooManyAssignedAnalysisConfig.getCustomConfig", () => {
       );
     });
 
-    test("returns DEFAULT threshold value & default toggle value when threshold value is OUTSIDE limits & no toggle property provided", () => {
+    test("returns DEFAULT threshold value & default toggle value when threshold value EXCEEDS limits & no toggle property provided", () => {
       const config = BotActionConfig.from(
         TooManyAssignedDefaults,
-        validConfigThresholdOutsideLimits,
+        validConfigThresholdExceedsLimits,
+      );
+
+      expect(config.threshold).toBe(TooManyAssignedDefaults.thresholdDefault);
+
+      expect(config.constructiveFeedbackOnlyToggle).toBe(
+        TooManyAssignedDefaults.constructiveFeedbackOnlyToggleDefault,
+      );
+    });
+
+    test("returns DEFAULT threshold value & default toggle value when threshold value is BELOW limits & no toggle property provided", () => {
+      const config = BotActionConfig.from(
+        TooManyAssignedDefaults,
+        validConfigThresholdBelowLimits,
       );
 
       expect(config.threshold).toBe(TooManyAssignedDefaults.thresholdDefault);
