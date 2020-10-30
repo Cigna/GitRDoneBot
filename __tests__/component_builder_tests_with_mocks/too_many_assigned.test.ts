@@ -15,13 +15,17 @@ import { TooManyAssignedNote } from "../../src/bot_actions/too_many_assigned/too
 const customConfig = BotActionConfig.from(TooManyAssignedDefaults, {});
 const noRequestNeededResponse = GitLabGetResponse.noRequestNeeded();
 const defaultAssignedMRThreshold: number = 3;
-const getResponseWhereAssignedMRSInThreshold: GitLabGetResponse = GitLabGetResponse.from(
+const getResponseWhereAssignedMRSBelowThreshold: GitLabGetResponse = GitLabGetResponse.from(
   HttpStatus.OK,
   createNMergeRequestObjects(defaultAssignedMRThreshold - 1),
 );
-const getResponseWhereAssignedMRSNotInThreshold: GitLabGetResponse = GitLabGetResponse.from(
+const getResponseWhereAssignedMRSEqualsThreshold: GitLabGetResponse = GitLabGetResponse.from(
   HttpStatus.OK,
   createNMergeRequestObjects(defaultAssignedMRThreshold),
+);
+const getResponseWhereAssignedMRSNotInThreshold: GitLabGetResponse = GitLabGetResponse.from(
+  HttpStatus.OK,
+  createNMergeRequestObjects(defaultAssignedMRThreshold+1),
 );
 
 // TESTS
@@ -43,7 +47,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(
-          getResponseWhereAssignedMRSInThreshold,
+          getResponseWhereAssignedMRSBelowThreshold,
         );
         tooManyAssignedResponse = await TooManyAssigned.from(
           state,
@@ -57,7 +61,42 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
 
       test("should return correct apiRequest values for successful API call", () => {
         expect(tooManyAssignedResponse.apiRequest).toEqual(
-          getResponseWhereAssignedMRSInThreshold.apiRequest,
+          getResponseWhereAssignedMRSBelowThreshold.apiRequest,
+        );
+      });
+
+      test("should return goodGitPractice === true", () => {
+        expect(tooManyAssignedResponse.goodGitPractice).toBe(true);
+      });
+
+      test("should return mrNote === noAction", async () => {
+        expect(tooManyAssignedResponse.mrNote).toBe(
+          BotActionNote.noActionMessage,
+        );
+      });
+    });
+
+    describe("When too many assigned === false and assigned MRs equals threshold", (assigneeId = 1) => {
+      let tooManyAssignedResponse: TooManyAssigned;
+      beforeAll(async (done) => {
+        jest.clearAllMocks();
+        // @ts-ignore
+        api.getMergeRequestsByAssigneeId.mockResolvedValue(
+          getResponseWhereAssignedMRSEqualsThreshold,
+        );
+        tooManyAssignedResponse = await TooManyAssigned.from(
+          state,
+          api,
+          customConfig,
+          winlog,
+          assigneeId,
+        );
+        done();
+      });
+
+      test("should return correct apiRequest values for successful API call", () => {
+        expect(tooManyAssignedResponse.apiRequest).toEqual(
+          getResponseWhereAssignedMRSEqualsThreshold.apiRequest,
         );
       });
 
@@ -202,7 +241,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(
-          getResponseWhereAssignedMRSInThreshold,
+          getResponseWhereAssignedMRSBelowThreshold,
         );
         tooManyAssignedResponse = await TooManyAssigned.from(
           state,
@@ -215,7 +254,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       });
       test("should return correct apiRequest values for successful API call", () => {
         expect(tooManyAssignedResponse.apiRequest).toEqual(
-          getResponseWhereAssignedMRSInThreshold.apiRequest,
+          getResponseWhereAssignedMRSBelowThreshold.apiRequest,
         );
       });
       test("should return goodGitPractice === true", () => {
