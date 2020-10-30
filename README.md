@@ -48,7 +48,7 @@ Not only would this negate code review in general, but the open-source community
 
 ## 4. Too Many Assigned
 
-### Merge Requests are distributed across the team: _1 - 10 requests assigned to a single person_
+### Merge Requests are distributed across the team: _2 - 10 requests assigned to a single person_
 
 To remove bottlenecks, low quality reviews, increased context switching, and single-person dependencies, check to make sure that MR assignees don’t have too many other MRs on their plate.
 
@@ -177,10 +177,10 @@ Simply follow these steps:
 }
 ```
 
-3. Edit the thresholds that you want GitRDoneBot to compare against. Minimums are exclusive and maximums are inclusive.
+3. Edit the thresholds that you want GitRDoneBot to compare against. Minimums and maximums are inclusive.
    - Diff Analysis threshold value must be between 1 and 500. **Default**: `500`
    - Branch Age Analysis value must be between 1 and 14. **Default**: `7`
-   - Too Many Merge Requests Analysis value must be between 1 and 10. **Default**: `3`
+   - Too Many Merge Requests Analysis value must be between 2 and 10. **Default**: `3`
 4. `updateMergeRequestComment` **Default**: `true`
    - `true` allows GitRDoneBot to update comments while a Merge Request is actively being worked on
    - `false` means GitRDoneBot will only leave immutable comments when Merge Requests are first opened and finally merged.

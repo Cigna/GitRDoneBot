@@ -14,6 +14,15 @@ import { DiffSizeNote } from "../../src/bot_actions/diff_size/diff_size_note";
 
 const customConfig = BotActionConfig.from(DiffSizeDefaults, {});
 
+const customConfigThresholdOne = BotActionConfig.from({
+  actionName: "diffAnalysis",
+  thresholdName: "thresholdInLinesOfDiff",
+  thresholdDefault: 1,
+  thresholdMin: 0,
+  thresholdMax: 500,
+  constructiveFeedbackOnlyToggleDefault: false,
+}, {});
+
 const changes_between_zero_and_500 = GitLabGetResponse.from(200, {
   changes: [
     {
@@ -127,6 +136,40 @@ describe("Mock API Test: DiffSize Class", () => {
     test("totalDiffs value is between 0 and threshold", async () => {
       expect(diffSizeResponse.totalDiffs).toBeLessThan(customConfig.threshold);
       expect(diffSizeResponse.totalDiffs).toBeGreaterThan(0);
+    });
+  });
+
+  describe("(Open state) totalDiffs equal to the threshold", (state = "open") => {
+    let diffSizeResponse;
+
+    beforeAll(async (done) => {
+      jest.clearAllMocks();
+      // @ts-ignore
+      api.getSingleMRChanges.mockResolvedValue(changes_between_zero_and_500);
+      diffSizeResponse = await DiffSize.from(state, api, customConfigThresholdOne, winlog);
+      done();
+    });
+
+    test("apiRequest values reflect successful API call", async () => {
+      expect(diffSizeResponse.apiRequest.success).toBe(true);
+      expect(diffSizeResponse.apiRequest.status).toEqual({
+        code: HttpStatus.OK,
+        message: HttpStatus.getStatusText(HttpStatus.OK),
+      });
+    });
+
+    test("goodGitPractice is true", async () => {
+      expect(diffSizeResponse.goodGitPractice).toBe(true);
+    });
+
+    test("mrNote is good with hashtag", async () => {
+      expect(diffSizeResponse.mrNote).toBe(
+        `${DiffSizeNote.good} ${DiffSizeNote.hashtag}`,
+      );
+    });
+
+    test("totalDiffs value is equal to the threshold", async () => {
+      expect(diffSizeResponse.totalDiffs).toEqual(customConfigThresholdOne.threshold);
     });
   });
 

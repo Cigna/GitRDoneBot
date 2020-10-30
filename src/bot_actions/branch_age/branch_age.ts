@@ -95,6 +95,6 @@ export class BranchAge extends BotAction {
     const oldestCommitAge =
       Date.now() - new Date(oldestCommit.created_at).getTime();
     // multiply threshold by milliseconds/day because of how Date class calculates
-    return oldestCommitAge < threshold * 8.64e7;
+    return oldestCommitAge <= threshold * 8.64e7;
   }
 }

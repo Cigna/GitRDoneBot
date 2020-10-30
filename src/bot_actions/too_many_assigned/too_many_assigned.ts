@@ -50,7 +50,7 @@ export class TooManyAssigned extends BotAction {
       );
 
       if (apiResponse.apiRequest.success === true) {
-        goodGitPractice = apiResponse.result.length < customConfig.threshold;
+        goodGitPractice = apiResponse.result.length <= customConfig.threshold;
       }
     } else {
       apiResponse = GitLabGetResponse.noRequestNeeded();

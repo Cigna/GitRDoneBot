@@ -15,6 +15,10 @@ import { BranchAgeNote } from "../../src/bot_actions/branch_age/branch_age_note"
 // TEST FIXTURES
 const customConfig = BotActionConfig.from(BranchAgeDefaults, {});
 
+const thresholdDate = new Date()
+thresholdDate.setDate(thresholdDate.getDate() - 7)
+thresholdDate.setHours(thresholdDate.getHours() + 1)
+
 const old_commits_gitlab_response = GitLabGetResponse.from(HttpStatus.OK, [
   mockGitLabCommit("2nd Oldest commit", "2012-09-20T11:50:22+03:00"),
   mockGitLabCommit("Oldest commit", "2011-09-20T11:50:22+03:00"),
@@ -23,6 +27,10 @@ const old_commits_gitlab_response = GitLabGetResponse.from(HttpStatus.OK, [
 
 const new_commits_gitlab_response = GitLabGetResponse.from(HttpStatus.OK, [
   mockGitLabCommit("Oldest commit", new Date().toString()),
+]);
+
+const threshold_commits_gitlab_response = GitLabGetResponse.from(HttpStatus.OK, [
+  mockGitLabCommit("Oldest commit", thresholdDate.toString()),
 ]);
 
 // TESTS
@@ -78,6 +86,45 @@ describe("Mock API Test: BranchAge Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(new_commits_gitlab_response);
+        branchAgeResponse = await BranchAge.from(
+          state,
+          api,
+          customConfig,
+          winlog,
+        );
+        done();
+      });
+
+      test("apiRequest values reflect successful API call", () => {
+        expect(branchAgeResponse.apiRequest.success).toBe(true);
+        expect(branchAgeResponse.apiRequest.status).toEqual({
+          code: HttpStatus.OK,
+          message: HttpStatus.getStatusText(HttpStatus.OK),
+        });
+      });
+
+      test("oldestCommit title is 'Oldest Commit'", () => {
+        expect(branchAgeResponse.oldestCommit.title).toBe("Oldest commit");
+      });
+
+      test("goodGitPractice is true", () => {
+        expect(branchAgeResponse.goodGitPractice).toBe(true);
+      });
+
+      test("mrNote is good with hashtag", () => {
+        expect(branchAgeResponse.mrNote).toBe(
+          `${BranchAgeNote.good} ${BranchAgeNote.hashtag}`,
+        );
+      });
+    });
+
+    describe("when oldest commit is equal to threshold", () => {
+      let branchAgeResponse: BranchAge;
+
+      beforeAll(async (done) => {
+        jest.clearAllMocks();
+        // @ts-ignore
+        api.getSingleMRCommits.mockResolvedValue(threshold_commits_gitlab_response);
         branchAgeResponse = await BranchAge.from(
           state,
           api,
