@@ -10,14 +10,12 @@ import { GitOuttaHereNote } from "./git_outta_here_note";
 /**
  * This class extends the `BotAction` class by checking for log files in the changes contained in the GitLab Merge Request.
  */
-export class GitOuttaHere extends BotAction {
+export class GitOuttaHere implements BotAction {
   private constructor(
-    apiRequest: GitLabAPIRequest,
-    goodGitPractice: boolean,
-    mrNote: string,
-  ) {
-    super(apiRequest, goodGitPractice, mrNote);
-  }
+    readonly apiRequest: GitLabAPIRequest,
+    readonly goodGitPractice: boolean,
+    readonly mrNote: string,
+  ) {}
 
   /**
    * Constructs a complete Bot Action object by making an HTTP call and analyzing response.
@@ -45,7 +43,7 @@ export class GitOuttaHere extends BotAction {
       goodGitPractice = this.noLogFiles(apiResponse.result.changes);
     }
 
-    return new BotAction(
+    return new GitOuttaHere(
       apiResponse.apiRequest,
       goodGitPractice,
       GitOuttaHereNote.buildMessage(

@@ -16,15 +16,13 @@ import { Change } from "../../interfaces";
  * of this class also contains the property:
  * 1. `totalDiffs`: `number` lines of diff contained in the Merge Request
  */
-export class DiffSize extends BotAction {
+export class DiffSize implements BotAction {
   private constructor(
-    apiRequest: GitLabAPIRequest,
-    goodGitPractice: boolean,
-    mrNote: string,
+    readonly apiRequest: GitLabAPIRequest,
+    readonly goodGitPractice: boolean,
+    readonly mrNote: string,
     readonly totalDiffs: number,
-  ) {
-    super(apiRequest, goodGitPractice, mrNote);
-  }
+  ) {}
 
   /**
    * Constructs a complete DiffSize object by making an HTTP call and analyzing response.
