@@ -38,6 +38,13 @@ const validConfigAllProperties = {
   },
 };
 
+const validConfigAllPropertiesThresholdEqualsLimit = {
+  diffAnalysis: {
+    thresholdInLinesOfDiff: 1,
+    constructiveFeedbackOnlyToggle: true,
+  },
+};
+
 const validConfigThresholdExtraProperties = {
   diffAnalysis: {
     thresholdInLinesOfDiff: 100,
@@ -45,9 +52,15 @@ const validConfigThresholdExtraProperties = {
   },
 };
 
-const validConfigThresholdOutsideLimits = {
+const validConfigThresholdExceedsLimits = {
   diffAnalysis: {
     thresholdInLinesOfDiff: 10000,
+  },
+};
+
+const validConfigThresholdBelowLimits = {
+  diffAnalysis: {
+    thresholdInLinesOfDiff: 0,
   },
 };
 
@@ -160,6 +173,20 @@ describe("Unit Test: DiffAnalysisConfig.getCustomConfig", () => {
       );
     });
 
+    test("returns custom threshold value & custom toggle value when threshold value is equal to minimum & toggle property is provided", () => {
+      const config = BotActionConfig.from(
+        DiffSizeDefaults,
+        validConfigAllProperties,
+      );
+      expect(config.threshold).toBe(
+        validConfigAllProperties.diffAnalysis.thresholdInLinesOfDiff,
+      );
+
+      expect(config.constructiveFeedbackOnlyToggle).toBe(
+        validConfigAllProperties.diffAnalysis.constructiveFeedbackOnlyToggle,
+      );
+    });
+
     test("ignores properties that don't exist on ICustomConfig", () => {
       const config = BotActionConfig.from(
         DiffSizeDefaults,
@@ -178,10 +205,22 @@ describe("Unit Test: DiffAnalysisConfig.getCustomConfig", () => {
       );
     });
 
-    test("returns DEFAULT threshold value & default toggle value when threshold value is OUTSIDE limits & no toggle property provided", () => {
+    test("returns DEFAULT threshold value & default toggle value when threshold value EXCEEDS limits & no toggle property provided", () => {
       const config = BotActionConfig.from(
         DiffSizeDefaults,
-        validConfigThresholdOutsideLimits,
+        validConfigThresholdExceedsLimits,
+      );
+      expect(config.threshold).toBe(DiffSizeDefaults.thresholdDefault);
+
+      expect(config.constructiveFeedbackOnlyToggle).toBe(
+        DiffSizeDefaults.constructiveFeedbackOnlyToggleDefault,
+      );
+    });
+
+    test("returns DEFAULT threshold value & default toggle value when threshold value is BELOW limits & no toggle property provided", () => {
+      const config = BotActionConfig.from(
+        DiffSizeDefaults,
+        validConfigThresholdBelowLimits,
       );
       expect(config.threshold).toBe(DiffSizeDefaults.thresholdDefault);
 

@@ -177,14 +177,14 @@ describe("Unit Test: BranchAgeAnalysisConfig.getCustomConfig", () => {
     test("returns custom threshold value & custom toggle value when threshold value is equal to minimum & toggle property is provided", () => {
       const config = BotActionConfig.from(
         BranchAgeDefaults,
-        validConfigAllProperties,
+        validConfigAllPropertiesThresholdEqualsLimit,
       );
       expect(config.threshold).toBe(
-        validConfigAllProperties.branchAgeAnalysis.thresholdInDays,
+        validConfigAllPropertiesThresholdEqualsLimit.branchAgeAnalysis.thresholdInDays,
       );
 
       expect(config.constructiveFeedbackOnlyToggle).toBe(
-        validConfigAllProperties.branchAgeAnalysis
+        validConfigAllPropertiesThresholdEqualsLimit.branchAgeAnalysis
           .constructiveFeedbackOnlyToggle,
       );
     });
