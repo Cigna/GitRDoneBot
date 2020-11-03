@@ -1,6 +1,6 @@
 import * as winston from "winston";
 import { BotAction } from "../bot_action";
-import { GitLabGetResponse, GitLabAPIRequest } from "../../gitlab";
+import { GitLabAPIRequest, NoGetResponseNeeded } from "../../gitlab";
 import { NewGitWhoDisNote } from "./new_git_who_dis_note";
 
 /**
@@ -25,7 +25,7 @@ export class NewGitWhoDis implements BotAction {
     authorName: string,
   ): Promise<BotAction> {
     const goodGitPractice: boolean = this.authorNameIsNotLanId(authorName);
-    const apiResponse: GitLabGetResponse = GitLabGetResponse.noRequestNeeded();
+    const apiResponse: NoGetResponseNeeded = new NoGetResponseNeeded();
 
     return new NewGitWhoDis(
       apiResponse.apiRequest,

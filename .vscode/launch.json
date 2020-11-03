@@ -15,7 +15,7 @@
                 "${workspaceRoot}/node_modules/.bin/jest", 
                 "--runInBand",
                 "--verbose",
-                "${current relative file path of test you want to run}"
+                "__tests__/unit_tests/api.test.ts"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

@@ -2,7 +2,8 @@ import { BotAction } from "..";
 import {
   MergeRequestApi,
   GitLabAPIRequest,
-  GitLabGetResponse,
+  SuccessfulGetResponse,
+  FailedGetResponse,
 } from "../../gitlab";
 import { GitLabCommit } from "../../interfaces";
 import * as winston from "winston";
@@ -15,6 +16,8 @@ import { CommitMessagesNote } from "./commit_message_note";
  * 1. `calculatedThreshold`: `number` the number of failing commit titles that will result in bad practice for an individual commit message criteria
  */
 export class CommitMessages implements BotAction {
+  private static minimumThreshold = 2;
+
   private constructor(
     readonly apiRequest: GitLabAPIRequest,
     readonly goodGitPractice: boolean,
@@ -42,30 +45,37 @@ export class CommitMessages implements BotAction {
     logger: winston.Logger,
   ): Promise<CommitMessages> {
     let goodGitPractice!: boolean;
+    let totalCommits: number;
+    let threshold: number;
 
-    const apiResponse: GitLabGetResponse = await api.getSingleMRCommits();
+    const response:
+      | SuccessfulGetResponse
+      | FailedGetResponse = await api.getSingleMRCommits();
 
-    const threshold: number = this.calculateThreshold(
-      apiResponse.result.length,
-    );
-
-    if (apiResponse.apiRequest.success && apiResponse.result.length > 0) {
-      const validityOfCommits: Array<boolean> = apiResponse.result.map(
-        (commit: GitLabCommit) =>
-          this.lengthValid(commit.title) && !this.isOneWord(commit.title),
-      );
-      goodGitPractice = this.testThreshold(validityOfCommits, threshold);
+    if (response instanceof SuccessfulGetResponse) {
+      threshold = this.calculateThreshold(response.result.length);
+      totalCommits = response.result.length;
+      if (response.result.length > 0) {
+        const validityOfCommits: Array<boolean> = response.result.map(
+          (commit: GitLabCommit) =>
+            this.lengthValid(commit.title) && !this.isOneWord(commit.title),
+        );
+        goodGitPractice = this.testThreshold(validityOfCommits, threshold);
+      }
+    } else {
+      threshold = CommitMessages.minimumThreshold;
+      totalCommits = 0;
     }
 
     return new CommitMessages(
-      apiResponse.apiRequest,
+      response.apiRequest,
       goodGitPractice,
       CommitMessagesNote.buildMessage(
-        apiResponse.apiRequest.success,
+        response.apiRequest.success,
         state,
         goodGitPractice,
         constructiveFeedbackOnlyToggle,
-        apiResponse.result.length,
+        totalCommits,
         logger,
       ),
       threshold,
@@ -87,13 +97,12 @@ export class CommitMessages implements BotAction {
    * @param totalCommits Number of commits used in this merge request
    */
   private static calculateThreshold(totalCommits: number): number {
-    const MIN_NUM = 2;
     const PERCENT = 0.2;
-    const THRESHOLD_FOR_PERCENT = MIN_NUM / PERCENT;
+    const THRESHOLD_FOR_PERCENT = CommitMessages.minimumThreshold / PERCENT;
 
     return totalCommits >= THRESHOLD_FOR_PERCENT
       ? Math.floor(totalCommits * PERCENT)
-      : MIN_NUM;
+      : CommitMessages.minimumThreshold;
   }
 
   /**

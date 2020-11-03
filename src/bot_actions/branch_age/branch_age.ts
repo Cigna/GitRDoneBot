@@ -1,9 +1,10 @@
 import { BotAction } from "../bot_action";
 import * as winston from "winston";
 import {
+  FailedGetResponse,
   GitLabAPIRequest,
   MergeRequestApi,
-  GitLabGetResponse,
+  SuccessfulGetResponse,
 } from "../../gitlab";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { BranchAgeNote } from "./branch_age_note";
@@ -44,14 +45,16 @@ export class BranchAge implements BotAction {
     let goodGitPractice!: boolean;
     let oldestCommit!: GitLabCommit;
 
-    const apiResponse: GitLabGetResponse = await api.getSingleMRCommits();
+    const response:
+      | SuccessfulGetResponse
+      | FailedGetResponse = await api.getSingleMRCommits();
 
-    if (apiResponse.apiRequest.success) {
-      if (apiResponse.result.length === 0) {
+    if (response instanceof SuccessfulGetResponse) {
+      if (response.result.length === 0) {
         // When result array is empty, we are assuming there are no commits on this branch (ie, opened from an Issue).
         goodGitPractice = true;
       } else {
-        oldestCommit = this.getOldestCommit(apiResponse.result);
+        oldestCommit = this.getOldestCommit(response.result);
         goodGitPractice = this.isBranchYoungerThanThreshold(
           oldestCommit,
           customConfig.threshold,
@@ -60,11 +63,11 @@ export class BranchAge implements BotAction {
     }
 
     return new BranchAge(
-      apiResponse.apiRequest,
+      response.apiRequest,
       goodGitPractice,
       BranchAgeNote.buildMessage(
         customConfig,
-        apiResponse.apiRequest.success,
+        response.apiRequest.success,
         goodGitPractice,
         state,
         logger,

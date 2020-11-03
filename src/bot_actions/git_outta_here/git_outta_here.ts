@@ -1,7 +1,8 @@
 import {
+  FailedGetResponse,
   GitLabAPIRequest,
-  GitLabGetResponse,
   MergeRequestApi,
+  SuccessfulGetResponse,
 } from "../../gitlab";
 import * as winston from "winston";
 import { BotAction } from "../bot_action";
@@ -34,20 +35,22 @@ export class GitOuttaHere implements BotAction {
   ): Promise<BotAction> {
     let goodGitPractice!: boolean;
 
-    const apiResponse: GitLabGetResponse = await api.getSingleMRChanges();
+    const response:
+      | SuccessfulGetResponse
+      | FailedGetResponse = await api.getSingleMRChanges();
 
     if (
-      apiResponse.apiRequest.success &&
-      apiResponse.result.hasOwnProperty("changes")
+      response instanceof SuccessfulGetResponse &&
+      response.result.hasOwnProperty("changes")
     ) {
-      goodGitPractice = this.noLogFiles(apiResponse.result.changes);
+      goodGitPractice = this.noLogFiles(response.result.changes);
     }
 
     return new GitOuttaHere(
-      apiResponse.apiRequest,
+      response.apiRequest,
       goodGitPractice,
       GitOuttaHereNote.buildMessage(
-        apiResponse.apiRequest.success,
+        response.apiRequest.success,
         goodGitPractice,
         logger,
       ),

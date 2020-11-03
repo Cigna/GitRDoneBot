@@ -1,7 +1,9 @@
 import {
+  FailedGetResponse,
   GitLabAPIRequest,
-  GitLabGetResponse,
   MergeRequestApi,
+  NoGetResponseNeeded,
+  SuccessfulGetResponse,
 } from "../../gitlab";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import * as winston from "winston";
@@ -38,27 +40,30 @@ export class TooManyAssigned implements BotAction {
     logger: winston.Logger,
     assigneeId: number,
   ): Promise<BotAction> {
-    let apiResponse!: GitLabGetResponse;
+    let response!:
+      | SuccessfulGetResponse
+      | FailedGetResponse
+      | NoGetResponseNeeded;
     let goodGitPractice!: boolean;
 
     if (state !== "merge" && assigneeId !== null) {
-      apiResponse = await api.getMergeRequestsByAssigneeId(
+      response = await api.getMergeRequestsByAssigneeId(
         assigneeId,
         customConfig.threshold,
       );
 
-      if (apiResponse.apiRequest.success === true) {
-        goodGitPractice = apiResponse.result.length <= customConfig.threshold;
+      if (response instanceof SuccessfulGetResponse) {
+        goodGitPractice = response.result.length <= customConfig.threshold;
       }
     } else {
-      apiResponse = GitLabGetResponse.noRequestNeeded();
+      response = new NoGetResponseNeeded();
     }
 
     return new TooManyAssigned(
-      apiResponse.apiRequest,
+      response.apiRequest,
       goodGitPractice,
       TooManyAssignedNote.buildMessage(
-        apiResponse.apiRequest.success,
+        response.apiRequest.success,
         state,
         goodGitPractice,
         assigneeId,
