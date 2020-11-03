@@ -16,15 +16,13 @@ import { User } from "../../interfaces/gitlab_api_types";
  * 1. `approversNeeded`: `boolean` If true, Merge Request is merged with approvers. If false, Merge Request is merged without approvers.
  * If undefined, Merge Request is not merged.
  */
-export class SelfMerge extends BotAction {
+export class SelfMerge implements BotAction {
   private constructor(
-    apiRequest: GitLabAPIRequest,
-    goodGitPractice: boolean,
-    mrNote: string,
+    readonly apiRequest: GitLabAPIRequest,
+    readonly goodGitPractice: boolean,
+    readonly mrNote: string,
     readonly approversNeeded: boolean | undefined,
-  ) {
-    super(apiRequest, goodGitPractice, mrNote);
-  }
+  ) {}
 
   /**
    * Constructs a complete Self Merge object by analyzing the assignee id and author id or by analyzing the response(s) of HTTP call(s).

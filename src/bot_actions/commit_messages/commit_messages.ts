@@ -14,15 +14,13 @@ import { CommitMessagesNote } from "./commit_message_note";
  * of this class also contains the property:
  * 1. `calculatedThreshold`: `number` the number of failing commit titles that will result in bad practice for an individual commit message criteria
  */
-export class CommitMessages extends BotAction {
+export class CommitMessages implements BotAction {
   private constructor(
-    apiRequest: GitLabAPIRequest,
-    goodGitPractice: boolean,
-    mrNote: string,
+    readonly apiRequest: GitLabAPIRequest,
+    readonly goodGitPractice: boolean,
+    readonly mrNote: string,
     readonly calculatedThreshold: number,
-  ) {
-    super(apiRequest, goodGitPractice, mrNote);
-  }
+  ) {}
 
   /**
    * Constructs a complete Commit Message object by making an HTTP call and analyzing response.
