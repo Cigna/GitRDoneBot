@@ -100,7 +100,7 @@ export class SelfMergeNote extends BotActionNote {
    * @returns `message` of the `SelfMergeNote` object
    * */
   static buildMessage(
-    gitLabRequestSuccess: boolean | undefined,
+    apiRequestSuccess: boolean,
     state: string,
     goodGitPractice: boolean | undefined,
     approversNeeded: boolean | undefined,
@@ -109,7 +109,7 @@ export class SelfMergeNote extends BotActionNote {
     let note: SelfMergeNote;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiRequestSuccess): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }

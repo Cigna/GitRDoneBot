@@ -1,6 +1,5 @@
 import {
-  FailedGetResponse,
-  GitLabAPIRequest,
+  FailedResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
@@ -13,7 +12,7 @@ import { GitOuttaHereNote } from "./git_outta_here_note";
  */
 export class GitOuttaHere implements BotAction {
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
   ) {}
@@ -37,7 +36,7 @@ export class GitOuttaHere implements BotAction {
 
     const response:
       | SuccessfulGetResponse
-      | FailedGetResponse = await api.getSingleMRChanges();
+      | FailedResponse = await api.getSingleMRChanges();
 
     if (
       response instanceof SuccessfulGetResponse &&
@@ -47,10 +46,10 @@ export class GitOuttaHere implements BotAction {
     }
 
     return new GitOuttaHere(
-      response.apiRequest,
+      response,
       goodGitPractice,
       GitOuttaHereNote.buildMessage(
-        response.apiRequest.success,
+        response instanceof SuccessfulGetResponse,
         goodGitPractice,
         logger,
       ),

@@ -1,6 +1,5 @@
 import {
-  FailedGetResponse,
-  GitLabAPIRequest,
+  FailedResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../src/gitlab/";
@@ -15,7 +14,7 @@ describe("Caching for get requests behave right", () => {
     jest.clearAllMocks();
     // @ts-ignore
     api.fetchWrapper.makeGetRequest.mockResolvedValue(
-      new SuccessfulGetResponse(GitLabAPIRequest.from(200), { Response: 1 }),
+      new SuccessfulGetResponse(200, { Response: 1 }),
     );
     done();
   });
@@ -23,7 +22,6 @@ describe("Caching for get requests behave right", () => {
   test("doesn't use cache the first time", async () => {
     const response = await api.getSingleMRChanges();
     expect(api.fetchWrapper.makeGetRequest).toHaveBeenCalledTimes(1);
-    expect(response.apiRequest.success).toBe(true);
     expect(response).toBeInstanceOf(SuccessfulGetResponse);
     expect(api["MRChanges"]).toBeDefined;
   });
@@ -43,17 +41,14 @@ describe("Don't set cache if failed request", () => {
   beforeAll(async (done) => {
     jest.clearAllMocks();
     // @ts-ignore
-    api.fetchWrapper.makeGetRequest.mockResolvedValue(
-      new FailedGetResponse(GitLabAPIRequest.from(404)),
-    );
+    api.fetchWrapper.makeGetRequest.mockResolvedValue(new FailedResponse(404));
     done();
   });
 
   test("doesn't set the cache if failed", async () => {
     const response = await api.getSingleMRChanges();
     expect(api.fetchWrapper.makeGetRequest).toHaveBeenCalledTimes(1);
-    expect(response.apiRequest.success).toBe(false);
-    expect(response).toBeInstanceOf(FailedGetResponse);
+    expect(response).toBeInstanceOf(FailedResponse);
     expect(api["MRChanges"]).toBeUndefined;
   });
 });

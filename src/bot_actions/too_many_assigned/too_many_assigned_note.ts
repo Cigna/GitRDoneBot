@@ -58,7 +58,7 @@ export class TooManyAssignedNote extends BotActionNote {
    * @returns `message` of the `TooManyAssignedNote` object
    * */
   static buildMessage(
-    gitLabRequestSuccess: boolean | undefined,
+    apiRequestSuccess: boolean,
     state: string,
     goodGitPractice: boolean | undefined,
     assigneeId: number,
@@ -68,7 +68,7 @@ export class TooManyAssignedNote extends BotActionNote {
 
     switch (true) {
       case this.customCaseForCheckPermissionsMessage(
-        gitLabRequestSuccess,
+        apiRequestSuccess,
         state,
         assigneeId,
       ): {

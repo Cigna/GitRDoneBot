@@ -1,9 +1,8 @@
 import { BotAction } from "..";
 import {
   MergeRequestApi,
-  GitLabAPIRequest,
   SuccessfulGetResponse,
-  FailedGetResponse,
+  FailedResponse,
 } from "../../gitlab";
 import { GitLabCommit } from "../../interfaces";
 import * as winston from "winston";
@@ -19,7 +18,7 @@ export class CommitMessages implements BotAction {
   private static minimumThreshold = 2;
 
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly calculatedThreshold: number,
@@ -50,7 +49,7 @@ export class CommitMessages implements BotAction {
 
     const response:
       | SuccessfulGetResponse
-      | FailedGetResponse = await api.getSingleMRCommits();
+      | FailedResponse = await api.getSingleMRCommits();
 
     if (response instanceof SuccessfulGetResponse) {
       threshold = this.calculateThreshold(response.result.length);
@@ -68,10 +67,10 @@ export class CommitMessages implements BotAction {
     }
 
     return new CommitMessages(
-      response.apiRequest,
+      response,
       goodGitPractice,
       CommitMessagesNote.buildMessage(
-        response.apiRequest.success,
+        response instanceof SuccessfulGetResponse,
         state,
         goodGitPractice,
         constructiveFeedbackOnlyToggle,

@@ -35,14 +35,14 @@ export class GitOuttaHereNote extends BotActionNote {
    * @returns `message` of the `GitOuttaHereNote` object
    * */
   static buildMessage(
-    gitLabRequestSuccess: boolean | undefined,
+    apiRequestSuccess: boolean,
     goodGitPractice: boolean | undefined,
     logger: winston.Logger,
   ): string {
     let note: GitOuttaHereNote;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiRequestSuccess): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }

@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import * as HttpStatus from "http-status-codes";
 import {
   SuccessfulGetResponse,
-  FailedGetResponse,
+  FailedResponse,
   BuildGetResponse,
   GitLabPostResponse,
 } from ".";
@@ -21,8 +21,8 @@ export class FetchWrapper {
   // throw an error in the try/catch block.
   public async makeGetRequest(
     uri: string,
-  ): Promise<SuccessfulGetResponse | FailedGetResponse> {
-    let newResponse: SuccessfulGetResponse | FailedGetResponse;
+  ): Promise<SuccessfulGetResponse | FailedResponse> {
+    let newResponse: SuccessfulGetResponse | FailedResponse;
     try {
       const result: any = await this.get(uri);
       newResponse = BuildGetResponse(result.status, result.body);
@@ -40,8 +40,8 @@ export class FetchWrapper {
    */
   public async deleteGitlabResponseObject(
     uri: string,
-  ): Promise<FailedGetResponse | SuccessfulGetResponse> {
-    let response: FailedGetResponse | SuccessfulGetResponse;
+  ): Promise<FailedResponse | SuccessfulGetResponse> {
+    let response: FailedResponse | SuccessfulGetResponse;
     try {
       const statusCode: number = await this.delete(uri);
       response = BuildGetResponse(statusCode, {});

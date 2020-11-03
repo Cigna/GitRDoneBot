@@ -56,7 +56,7 @@ export class CommitMessagesNote extends BotActionNote {
    * @returns `message` of the `CommitMessagesNote` object
    * */
   static buildMessage(
-    gitLabRequestSuccess: boolean | undefined,
+    apiRequestSuccess: boolean,
     state: string,
     goodGitPractice: boolean | undefined,
     constructiveFeedbackOnlyToggle: boolean,
@@ -66,7 +66,7 @@ export class CommitMessagesNote extends BotActionNote {
     let note: CommitMessagesNote;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiRequestSuccess): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }

@@ -73,7 +73,7 @@ export class DiffSizeNote extends BotActionNote {
    * */
   static buildMessage(
     customConfig: BotActionConfig,
-    gitLabRequestSuccess: boolean | undefined,
+    apiRequestSuccess: boolean,
     state: string,
     goodGitPractice: boolean | undefined,
     totalDiffs: number,
@@ -82,7 +82,7 @@ export class DiffSizeNote extends BotActionNote {
     let note: DiffSizeNote;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiRequestSuccess): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }

@@ -1,40 +1,10 @@
 import * as HttpStatus from "http-status-codes";
-import {
-  FailedGetResponse,
-  GitLabAPIRequest,
-  GitLabPostResponse,
-} from "../../src/gitlab";
+import { FailedResponse } from "../../src/gitlab";
 
-export const bad_request_400 = new FailedGetResponse(
-  GitLabAPIRequest.from(HttpStatus.BAD_REQUEST),
-);
-export const unauthorized_401 = new FailedGetResponse(
-  GitLabAPIRequest.from(HttpStatus.UNAUTHORIZED),
-);
-export const post_response_unauthorized_401 = GitLabPostResponse.from(
-  HttpStatus.UNAUTHORIZED,
-);
-
-export const not_found_404 = new FailedGetResponse(
-  GitLabAPIRequest.from(HttpStatus.NOT_FOUND),
-);
-
-export const get_response_not_found_404 = new FailedGetResponse(
-  GitLabAPIRequest.from(HttpStatus.NOT_FOUND),
-);
-
-export const get_response_unauthorized_401 = new FailedGetResponse(
-  GitLabAPIRequest.from(HttpStatus.UNAUTHORIZED),
-);
-
-export const internal_error_500 = GitLabAPIRequest.from(
+export const bad_request_400 = new FailedResponse(HttpStatus.BAD_REQUEST);
+export const unauthorized_401 = new FailedResponse(HttpStatus.UNAUTHORIZED);
+export const not_found_404 = new FailedResponse(HttpStatus.NOT_FOUND);
+export const internal_error_500 = new FailedResponse(
   HttpStatus.INTERNAL_SERVER_ERROR,
 );
-
-export const fetch_network_error = GitLabAPIRequest.from(
-  HttpStatus.BAD_GATEWAY,
-);
-
-export const get_response_fetch_network_error = new FailedGetResponse(
-  GitLabAPIRequest.from(HttpStatus.BAD_GATEWAY),
-);
+export const fetch_network_error = new FailedResponse(HttpStatus.BAD_GATEWAY);

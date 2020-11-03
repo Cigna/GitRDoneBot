@@ -59,7 +59,7 @@ export class BranchAgeNote extends BotActionNote {
    * */
   static buildMessage(
     customConfig: BotActionConfig,
-    gitLabRequestSuccess: boolean | undefined,
+    apiRequestSuccess: boolean,
     goodGitPractice: boolean | undefined,
     state: string,
     logger: winston.Logger,
@@ -67,7 +67,7 @@ export class BranchAgeNote extends BotActionNote {
     let note: BranchAgeNote;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiRequestSuccess): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }

@@ -1,5 +1,5 @@
 import * as winston from "winston";
-import { SuccessfulGetResponse, FailedGetResponse, URI } from ".";
+import { SuccessfulGetResponse, FailedResponse, URI } from ".";
 import { GitLabPostResponse } from "./gitlab_post_response";
 import { FetchWrapper } from "./fetch_wrapper";
 
@@ -39,13 +39,13 @@ export class MergeRequestApi {
   /** HELPER METHOD FOR TESTS ONLY */
   public deleteEmoji(
     awardId: number,
-  ): Promise<SuccessfulGetResponse | FailedGetResponse> {
+  ): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forSingleEmoji(awardId);
     return this.fetchWrapper.deleteGitlabResponseObject(uri);
   }
 
   /** HELPER METHOD FOR TESTS ONLY */
-  public getAllEmojis(): Promise<SuccessfulGetResponse | FailedGetResponse> {
+  public getAllEmojis(): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makeGetRequest(uri);
   }
@@ -59,7 +59,7 @@ export class MergeRequestApi {
    * */
   public getAllMRNotes(
     page: number,
-  ): Promise<FailedGetResponse | SuccessfulGetResponse> {
+  ): Promise<FailedResponse | SuccessfulGetResponse> {
     const uri: string = this.uriBuilder.forNotesFilterByPage(page);
     return this.fetchWrapper.makeGetRequest(uri);
   }
@@ -82,7 +82,7 @@ export class MergeRequestApi {
    * if it's tried, a 403 Forbidden status will be returned :) */
   public deleteMRNote(
     noteId: number,
-  ): Promise<FailedGetResponse | SuccessfulGetResponse> {
+  ): Promise<FailedResponse | SuccessfulGetResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.deleteGitlabResponseObject(uri);
   }
@@ -92,7 +92,7 @@ export class MergeRequestApi {
   public getMergeRequestsByAssigneeId(
     assigneeId: number,
     threshold: number,
-  ): Promise<FailedGetResponse | SuccessfulGetResponse> {
+  ): Promise<FailedResponse | SuccessfulGetResponse> {
     const uri: string = this.uriBuilder.forMRsFilterByAssigneeId(
       assigneeId,
       threshold,
@@ -101,18 +101,18 @@ export class MergeRequestApi {
   }
 
   public getMRApprovalConfig(): Promise<
-    FailedGetResponse | SuccessfulGetResponse
+    FailedResponse | SuccessfulGetResponse
   > {
     const uri: string = this.uriBuilder.forMRApprovals();
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
   public async getSingleMRChanges(): Promise<
-    FailedGetResponse | SuccessfulGetResponse
+    FailedResponse | SuccessfulGetResponse
   > {
     const uri: string = this.uriBuilder.forMRChanges();
 
-    const response: FailedGetResponse | SuccessfulGetResponse =
+    const response: FailedResponse | SuccessfulGetResponse =
       this.MRChanges || (await this.fetchWrapper.makeGetRequest(uri));
     if (response instanceof SuccessfulGetResponse) {
       this.MRChanges = response;
@@ -121,11 +121,11 @@ export class MergeRequestApi {
   }
 
   public async getSingleMRCommits(): Promise<
-    FailedGetResponse | SuccessfulGetResponse
+    FailedResponse | SuccessfulGetResponse
   > {
     const uri: string = this.uriBuilder.forSingleMRCommits();
 
-    const response: FailedGetResponse | SuccessfulGetResponse =
+    const response: FailedResponse | SuccessfulGetResponse =
       this.MRCommits || (await this.fetchWrapper.makeGetRequest(uri));
     if (response instanceof SuccessfulGetResponse) {
       this.MRCommits = response;
@@ -133,7 +133,7 @@ export class MergeRequestApi {
     return response;
   }
 
-  public getSingleMR(): Promise<FailedGetResponse | SuccessfulGetResponse> {
+  public getSingleMR(): Promise<FailedResponse | SuccessfulGetResponse> {
     const uri: string = this.uriBuilder.forSingleMR();
     return this.fetchWrapper.makeGetRequest(uri);
   }
@@ -141,7 +141,7 @@ export class MergeRequestApi {
   // REPOSITORY FILES
 
   public getConfigurationFile(): Promise<
-    FailedGetResponse | SuccessfulGetResponse
+    FailedResponse | SuccessfulGetResponse
   > {
     const uri: string = this.uriBuilder.forSingleProjectRepoRawConfigFile();
     return this.fetchWrapper.makeGetRequest(uri);
