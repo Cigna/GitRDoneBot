@@ -6,14 +6,12 @@ import { NewGitWhoDisNote } from "./new_git_who_dis_note";
 /**
  * This class extends the `BotAction` class by analyzing the name of the author of the GitLab Merge Request.
  */
-export class NewGitWhoDis extends BotAction {
+export class NewGitWhoDis implements BotAction {
   private constructor(
-    apiRequest: GitLabAPIRequest,
-    goodGitPractice: boolean,
-    mrNote: string,
-  ) {
-    super(apiRequest, goodGitPractice, mrNote);
-  }
+    readonly apiRequest: GitLabAPIRequest,
+    readonly goodGitPractice: boolean,
+    readonly mrNote: string,
+  ) {}
 
   /**
    * Constructs a complete Bot Action object by analyzing the author name.
@@ -29,7 +27,7 @@ export class NewGitWhoDis extends BotAction {
     const goodGitPractice: boolean = this.authorNameIsNotLanId(authorName);
     const apiResponse: GitLabGetResponse = GitLabGetResponse.noRequestNeeded();
 
-    return new BotAction(
+    return new NewGitWhoDis(
       apiResponse.apiRequest,
       goodGitPractice,
       NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, logger),

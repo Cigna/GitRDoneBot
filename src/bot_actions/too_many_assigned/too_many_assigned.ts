@@ -11,14 +11,12 @@ import { TooManyAssignedNote } from "./too_many_assigned_note";
 /**
  * This class extends the `BotAction` class by analyzing the number of merge requests assigned to the assignee of the GitLab Merge Request.
  */
-export class TooManyAssigned extends BotAction {
+export class TooManyAssigned implements BotAction {
   private constructor(
-    apiRequest: GitLabAPIRequest,
-    goodGitPractice: boolean,
-    mrNote: string,
-  ) {
-    super(apiRequest, goodGitPractice, mrNote);
-  }
+    readonly apiRequest: GitLabAPIRequest,
+    readonly goodGitPractice: boolean,
+    readonly mrNote: string,
+  ) {}
 
   /**
    * Constructs a complete Bot Action object by making an HTTP call and analyzing response when the state is "merge" and the assigneeId is not null.
@@ -56,7 +54,7 @@ export class TooManyAssigned extends BotAction {
       apiResponse = GitLabGetResponse.noRequestNeeded();
     }
 
-    return new BotAction(
+    return new TooManyAssigned(
       apiResponse.apiRequest,
       goodGitPractice,
       TooManyAssignedNote.buildMessage(

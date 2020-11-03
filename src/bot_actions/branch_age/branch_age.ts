@@ -15,15 +15,13 @@ import { GitLabCommit } from "../../interfaces";
  * of this class also contains the property:
  * 1. `oldestCommit`: `GitLabCommit` with the oldest created_at date contained in the Merge Request
  */
-export class BranchAge extends BotAction {
+export class BranchAge implements BotAction {
   private constructor(
-    apiRequest: GitLabAPIRequest,
-    goodGitPractice: boolean,
-    mrNote: string,
+    readonly apiRequest: GitLabAPIRequest,
+    readonly goodGitPractice: boolean,
+    readonly mrNote: string,
     readonly oldestCommit: GitLabCommit,
-  ) {
-    super(apiRequest, goodGitPractice, mrNote);
-  }
+  ) {}
 
   /**
    * Constructs a complete Branch Age object by making an HTTP call and analyzing response.
