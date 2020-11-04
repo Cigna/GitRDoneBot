@@ -1,9 +1,13 @@
 import * as HttpStatus from "http-status-codes";
-import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";
+import {
+  MergeRequestApi,
+  NoGetResponseNeeded,
+  SuccessfulGetResponse,
+} from "../../src/gitlab";
 import {
   createNMergeRequestObjects,
-  get_response_not_found_404,
-  get_response_fetch_network_error,
+  not_found_404,
+  fetch_network_error,
 } from "../helpers";
 import { winlog } from "../../src/util";
 import { TooManyAssigned, BotActionNote } from "../../src/bot_actions";
@@ -13,19 +17,19 @@ import { TooManyAssignedNote } from "../../src/bot_actions/too_many_assigned/too
 
 // TEST FIXTURES
 const customConfig = BotActionConfig.from(TooManyAssignedDefaults, {});
-const noRequestNeededResponse = GitLabGetResponse.noRequestNeeded();
+const noRequestNeededResponse = new NoGetResponseNeeded();
 const defaultAssignedMRThreshold: number = 3;
-const getResponseWhereAssignedMRSBelowThreshold: GitLabGetResponse = GitLabGetResponse.from(
+const getResponseWhereAssignedMRSBelowThreshold: SuccessfulGetResponse = new SuccessfulGetResponse(
   HttpStatus.OK,
   createNMergeRequestObjects(defaultAssignedMRThreshold - 1),
 );
-const getResponseWhereAssignedMRSEqualsThreshold: GitLabGetResponse = GitLabGetResponse.from(
+const getResponseWhereAssignedMRSEqualsThreshold: SuccessfulGetResponse = new SuccessfulGetResponse(
   HttpStatus.OK,
   createNMergeRequestObjects(defaultAssignedMRThreshold),
 );
-const getResponseWhereAssignedMRSNotInThreshold: GitLabGetResponse = GitLabGetResponse.from(
+const getResponseWhereAssignedMRSNotInThreshold: SuccessfulGetResponse = new SuccessfulGetResponse(
   HttpStatus.OK,
-  createNMergeRequestObjects(defaultAssignedMRThreshold+1),
+  createNMergeRequestObjects(defaultAssignedMRThreshold + 1),
 );
 
 // TESTS
@@ -60,8 +64,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       });
 
       test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          getResponseWhereAssignedMRSBelowThreshold.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          getResponseWhereAssignedMRSBelowThreshold,
         );
       });
 
@@ -95,8 +99,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       });
 
       test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          getResponseWhereAssignedMRSEqualsThreshold.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          getResponseWhereAssignedMRSEqualsThreshold,
         );
       });
 
@@ -130,8 +134,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       });
 
       test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          getResponseWhereAssignedMRSNotInThreshold.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          getResponseWhereAssignedMRSNotInThreshold,
         );
       });
 
@@ -159,7 +163,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
 
         test("should return correct apiRequest values for API call not needed", () => {
-          expect(tooManyAssignedResponse.apiRequest).toEqual(
+          expect(tooManyAssignedResponse.apiResponse).toEqual(
             noRequestNeededResponse,
           );
         });
@@ -181,9 +185,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getMergeRequestsByAssigneeId.mockResolvedValue(
-          get_response_not_found_404,
-        );
+        api.getMergeRequestsByAssigneeId.mockResolvedValue(not_found_404);
         tooManyAssignedResponse = await TooManyAssigned.from(
           state,
           api,
@@ -195,9 +197,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       });
 
       test("should return correct apiRequest values for failed API call", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          get_response_not_found_404.apiRequest,
-        );
+        expect(tooManyAssignedResponse.apiResponse).toEqual(not_found_404);
       });
       test("should return goodGitPractice === undefined", () => {
         expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
@@ -214,9 +214,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getMergeRequestsByAssigneeId.mockResolvedValue(
-          get_response_fetch_network_error,
-        );
+        api.getMergeRequestsByAssigneeId.mockResolvedValue(fetch_network_error);
         tooManyAssignedResponse = await TooManyAssigned.from(
           state,
           api,
@@ -227,8 +225,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
       test("should return correct apiRequest values for failed API call due to unknown network error", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          get_response_fetch_network_error.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          fetch_network_error,
         );
       });
     });
@@ -253,8 +251,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
       test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          getResponseWhereAssignedMRSBelowThreshold.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          getResponseWhereAssignedMRSBelowThreshold,
         );
       });
       test("should return goodGitPractice === true", () => {
@@ -285,8 +283,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
       test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          getResponseWhereAssignedMRSNotInThreshold.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          getResponseWhereAssignedMRSNotInThreshold,
         );
       });
       test("should return goodGitPractice === false", () => {
@@ -313,8 +311,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       });
 
       test("should return correct apiRequest values for API call not needed", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          noRequestNeededResponse.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          noRequestNeededResponse,
         );
       });
 
@@ -334,9 +332,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getMergeRequestsByAssigneeId.mockResolvedValue(
-          get_response_not_found_404,
-        );
+        api.getMergeRequestsByAssigneeId.mockResolvedValue(not_found_404);
         tooManyAssignedResponse = await TooManyAssigned.from(
           state,
           api,
@@ -348,9 +344,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       });
 
       test("should return correct apiRequest values for failed API call", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          get_response_not_found_404.apiRequest,
-        );
+        expect(tooManyAssignedResponse.apiResponse).toEqual(not_found_404);
       });
       test("should return goodGitPractice === undefined", () => {
         expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
@@ -367,9 +361,7 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getMergeRequestsByAssigneeId.mockResolvedValue(
-          get_response_fetch_network_error,
-        );
+        api.getMergeRequestsByAssigneeId.mockResolvedValue(fetch_network_error);
         tooManyAssignedResponse = await TooManyAssigned.from(
           state,
           api,
@@ -380,8 +372,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
       test("should return correct apiRequest values for failed API call due to unknown network error", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          get_response_fetch_network_error.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          fetch_network_error,
         );
       });
     });
@@ -401,8 +393,8 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
       test("should return correct apiRequest values when API call not needed", () => {
-        expect(tooManyAssignedResponse.apiRequest).toEqual(
-          noRequestNeededResponse.apiRequest,
+        expect(tooManyAssignedResponse.apiResponse).toEqual(
+          noRequestNeededResponse,
         );
       });
 

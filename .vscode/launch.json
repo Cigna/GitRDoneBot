@@ -15,7 +15,7 @@
                 "${workspaceRoot}/node_modules/.bin/jest", 
                 "--runInBand",
                 "--verbose",
-                "__tests__/component_builder_tests_with_mocks/comment.test.ts"
+                "__tests__/component_builder_tests_with_mocks/too_many_assigned.test.ts"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

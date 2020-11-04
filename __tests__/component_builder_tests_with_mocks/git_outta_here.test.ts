@@ -175,9 +175,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(
-        get_response_fetch_network_error,
-      );
+      api.getSingleMRChanges.mockResolvedValue(fetch_network_error);
       gitOuttaHereResponse = await GitOuttaHere.from(api, winlog);
       done();
     });
