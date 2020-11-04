@@ -4,7 +4,11 @@ import {
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
-import { mockGitLabCommit, createNGitLabCommits } from "../helpers";
+import {
+  mockGitLabCommit,
+  createNGitLabCommits,
+  internal_error_500,
+} from "../helpers";
 import { winlog } from "../../src/util";
 import { CommitMessages } from "../../src/bot_actions";
 import { CommitMessagesNote } from "../../src/bot_actions/commit_messages/commit_message_note";
@@ -196,7 +200,7 @@ describe("Mock API Test: CommitMessages Class", () => {
       beforeAll(async () => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getSingleMRCommits.mockResolvedValueOnce(api_request_failure);
+        api.getSingleMRCommits.mockResolvedValueOnce(internal_error_500);
         commitMessageResponse = await CommitMessages.from(
           state,
           api,
@@ -250,7 +254,6 @@ describe("Mock API Test: CommitMessages Class", () => {
       });
 
       test("apiRequest values reflect a successful API call", () => {
-        
         expect(commitMessageResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
         );
@@ -296,7 +299,7 @@ describe("Mock API Test: CommitMessages Class", () => {
 
       test("apiRequest values reflect successful api call", () => {
         expect(commitMessageResponse.apiResponse).toEqual(
-          too_many_one_word_commits
+          too_many_one_word_commits,
         );
       });
 

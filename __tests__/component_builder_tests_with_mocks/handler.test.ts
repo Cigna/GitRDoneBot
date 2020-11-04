@@ -7,8 +7,8 @@ import { mockGitLabWebhookEvent } from "../helpers";
 import { Status, getToken } from "../../src/util";
 import { handleGitLabWebhook } from "../../handler";
 import { BotActionsResponse } from "../../src/merge_request";
-import { GitLabGetResponse } from "../../src/gitlab";
 import { CustomConfig } from "../../src/custom_config/custom_config";
+import { SuccessfulGetResponse } from "../../src/gitlab";
 
 const context: Context = {
   awsRequestId: "abcdefghi-1234-jklm-5678-nopqrstuvxyz90",
@@ -50,7 +50,7 @@ const nonMREvent = {
 };
 
 const customConfigUpdateToggleFalse: CustomConfig = {
-  apiRequest: GitLabGetResponse.from(HttpStatus.OK, {}).apiRequest,
+  apiResponse: new SuccessfulGetResponse(HttpStatus.OK, {}),
   branchAge: {
     constructiveFeedbackOnlyToggle: true,
     threshold: 2,

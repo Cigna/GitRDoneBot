@@ -76,7 +76,7 @@ describe("Mock API Test: DiffSize Class", () => {
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(get_response_not_found_404);
+      api.getSingleMRChanges.mockResolvedValue(not_found_404);
       diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
       done();
     });
@@ -118,11 +118,9 @@ describe("Mock API Test: DiffSize Class", () => {
     });
 
     test("apiRequest values reflect successful API call", async () => {
-      expect(diffSizeResponse.apiRequest.success).toBe(true);
-      expect(diffSizeResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(diffSizeResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
+      );
     });
 
     test("goodGitPractice is true", async () => {
@@ -158,11 +156,9 @@ describe("Mock API Test: DiffSize Class", () => {
     });
 
     test("apiRequest values reflect successful API call", async () => {
-      expect(diffSizeResponse.apiRequest.success).toBe(true);
-      expect(diffSizeResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(diffSizeResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
+      );
     });
 
     test("goodGitPractice is true", async () => {
@@ -193,11 +189,7 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
     test("apiRequest values reflect successful API call", async () => {
-      expect(diffSizeResponse.apiRequest.success).toBe(true);
-      expect(diffSizeResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(diffSizeResponse.apiResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
 
     test("goodGitPractice is false", async () => {
@@ -229,11 +221,9 @@ describe("Mock API Test: DiffSize Class", () => {
     });
 
     test("apiRequest values reflect successful API call", async () => {
-      expect(diffSizeResponse.apiRequest.success).toBe(true);
-      expect(diffSizeResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(diffSizeResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
+      );
     });
 
     test("goodGitPractice is true", async () => {

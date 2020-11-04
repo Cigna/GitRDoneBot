@@ -20,7 +20,12 @@ import {
   cleanUpMRNotes,
   mockGitLabWebhookEvent,
 } from "../helpers";
-import { MergeRequestApi } from "../../src/gitlab";
+import {
+  FailedResponse,
+  MergeRequestApi,
+  SuccessfulGetResponse,
+  SuccessfulPostORPutResponse,
+} from "../../src/gitlab";
 import { winlog } from "../../src/util";
 import { handleGitLabWebhook } from "../../handler";
 import { BotActionsResponse } from "../../src/merge_request";
@@ -115,7 +120,7 @@ beforeAll(async (done) => {
 
 describe("Live Integration Tests: mergeRequestApi.postEmoji", () => {
   describe("When GitLab API is called", () => {
-    let postEmojiResponse: GitLabPostResponse;
+    let postEmojiResponse: SuccessfulGetResponse | FailedResponse;
 
     beforeAll(async (done) => {
       postEmojiResponse = await api.postEmoji("trophy");
@@ -123,36 +128,26 @@ describe("Live Integration Tests: mergeRequestApi.postEmoji", () => {
     });
 
     test("request is successful", () => {
-      expect(postEmojiResponse.apiRequest.success).toBe(true);
-      expect(postEmojiResponse.apiRequest.status).toEqual({
-        code: HttpStatus.CREATED,
-        message: HttpStatus.getStatusText(HttpStatus.CREATED),
-      });
-    });
-
-    test("emoji id is returned", () => {
-      expect(postEmojiResponse.id).not.toBe(-1);
+      expect(postEmojiResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
     });
   });
 });
 
 describe("Live Integration Tests: mergeRequestApi.getAllMRNotes", () => {
-  let getAllMRNotesResponse: GitLabGetResponse;
+  let getAllMRNotesResponse: SuccessfulGetResponse | FailedResponse;
   let resultNoteArray: Array<Note>;
 
   beforeAll(async (done) => {
     getAllMRNotesResponse = await api.getAllMRNotes(1);
-    resultNoteArray = getAllMRNotesResponse.result;
+    if (getAllMRNotesResponse instanceof SuccessfulGetResponse) {
+      resultNoteArray = getAllMRNotesResponse.result;
+    }
     done();
   });
 
   describe("When GitLab API is called", () => {
     test("request is successful", () => {
-      expect(getAllMRNotesResponse.apiRequest.success).toBe(true);
-      expect(getAllMRNotesResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(getAllMRNotesResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
   });
 
@@ -184,24 +179,22 @@ describe("Live Integration Tests: mergeRequestApi.newMRNote", () => {
   describe("When GitLab API is called", () => {
     const NEW_NOTE_MESSAGE = "New note message";
 
-    let newMRNoteResponse: GitLabPostResponse;
+    let newMRNoteResponse: SuccessfulPostORPutResponse | FailedResponse;
 
     beforeAll(async (done) => {
       newMRNoteResponse = await api.newMRNote(NEW_NOTE_MESSAGE);
-      EDIT_MR_NOTE_ID = newMRNoteResponse.id;
+      if (newMRNoteResponse instanceof SuccessfulPostORPutResponse) {
+        EDIT_MR_NOTE_ID = newMRNoteResponse.id;
+      }
       done();
     });
 
     test("request is successful", () => {
-      expect(newMRNoteResponse.apiRequest.success).toBe(true);
-      expect(newMRNoteResponse.apiRequest.status).toEqual({
-        code: HttpStatus.CREATED,
-        message: HttpStatus.getStatusText(HttpStatus.CREATED),
-      });
+      expect(newMRNoteResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
     });
 
     test("note id is returned", () => {
-      expect(newMRNoteResponse.id).not.toBe(-1);
+      expect(EDIT_MR_NOTE_ID).not.toBe(-1);
     });
   });
 });
@@ -210,7 +203,7 @@ describe("Live Integration Tests: mergeRequestApi.editMRNote", () => {
   describe("When GitLab API is called", () => {
     const UPDATED_NOTE_MESSAGE = "New updated note message";
 
-    let editMRNoteResponse: GitLabPostResponse;
+    let editMRNoteResponse: SuccessfulPostORPutResponse | FailedResponse;
 
     beforeAll(async (done) => {
       editMRNoteResponse = await api.editMRNote(
@@ -221,15 +214,11 @@ describe("Live Integration Tests: mergeRequestApi.editMRNote", () => {
     });
 
     test("request is successful", () => {
-      expect(editMRNoteResponse.apiRequest.success).toBe(true);
-      expect(editMRNoteResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(editMRNoteResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
     });
 
     test("note id is returned", () => {
-      expect(editMRNoteResponse.id).not.toBe(-1);
+      expect(EDIT_MR_NOTE_ID).not.toBe(-1);
     });
   });
 });
@@ -238,7 +227,7 @@ describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId",
   describe("Happy Path", () => {
     const THRESHOLD = 3;
 
-    let allMRSByAssigneeIDResponse: GitLabGetResponse;
+    let allMRSByAssigneeIDResponse: SuccessfulGetResponse | FailedResponse;
     let resultMRsByAssigneeID: Array<MergeRequest>;
 
     beforeAll(async (done) => {
@@ -246,17 +235,17 @@ describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId",
         GRDB_SVP_USER_ID,
         THRESHOLD,
       );
-      resultMRsByAssigneeID = allMRSByAssigneeIDResponse.result;
+      if (allMRSByAssigneeIDResponse instanceof SuccessfulGetResponse) {
+        resultMRsByAssigneeID = allMRSByAssigneeIDResponse.result;
+      }
       done();
     });
 
     describe("When GitLab API is called", () => {
       test("request is successful", () => {
-        expect(allMRSByAssigneeIDResponse.apiRequest.success).toBe(true);
-        expect(allMRSByAssigneeIDResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+        expect(allMRSByAssigneeIDResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
     });
 
@@ -277,22 +266,20 @@ describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId",
 });
 
 describe("Live Integration Tests: mergeRequestApi.getMRApprovalConfig", () => {
-  let getMRApprovalConfigResponse: GitLabGetResponse;
+  let getMRApprovalConfigResponse: SuccessfulGetResponse | FailedResponse;
   let resultMRApproval: ApprovalsResponse;
 
   beforeAll(async (done) => {
     getMRApprovalConfigResponse = await api.getMRApprovalConfig();
-    resultMRApproval = getMRApprovalConfigResponse.result;
+    if (getMRApprovalConfigResponse instanceof SuccessfulGetResponse) {
+      resultMRApproval = getMRApprovalConfigResponse.result;
+    }
     done();
   });
 
   describe("When GitLab API is called", () => {
     test("request is successful", () => {
-      expect(getMRApprovalConfigResponse.apiRequest.success).toBe(true);
-      expect(getMRApprovalConfigResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(getMRApprovalConfigResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
 
     test("API response contains property approved_by", () => {
@@ -316,21 +303,19 @@ describe("Live Integration Tests: mergeRequestApi.getMRApprovalConfig", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMRChanges", () => {
-  let getSingleMRChangesResponse: GitLabGetResponse;
+  let getSingleMRChangesResponse: SuccessfulGetResponse | FailedResponse;
   let resultSingleMRChanges: { changes: Array<Change> };
 
   beforeAll(async (done) => {
     getSingleMRChangesResponse = await api.getSingleMRChanges();
-    resultSingleMRChanges = getSingleMRChangesResponse.result;
+    if (getSingleMRChangesResponse instanceof SuccessfulGetResponse) {
+      resultSingleMRChanges = getSingleMRChangesResponse.result;
+    }
     done();
   });
   describe("When GitLab API is called", () => {
     test("request is successful", () => {
-      expect(getSingleMRChangesResponse.apiRequest.success).toBe(true);
-      expect(getSingleMRChangesResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(getSingleMRChangesResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
 
     test("API response contains property changes", () => {
@@ -354,22 +339,20 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMRChanges", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMRCommits", () => {
-  let getSingleMRCommitsResponse: GitLabGetResponse;
+  let getSingleMRCommitsResponse: SuccessfulGetResponse | FailedResponse;
   let resultSingleMRCommits: Array<GitLabCommit>;
 
   beforeAll(async (done) => {
     getSingleMRCommitsResponse = await api.getSingleMRCommits();
-    resultSingleMRCommits = getSingleMRCommitsResponse.result;
+    if (getSingleMRCommitsResponse instanceof SuccessfulGetResponse) {
+      resultSingleMRCommits = getSingleMRCommitsResponse.result;
+    }
     done();
   });
 
   describe("When GitLab API is called", () => {
     test("request is successful", () => {
-      expect(getSingleMRCommitsResponse.apiRequest.success).toBe(true);
-      expect(getSingleMRCommitsResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(getSingleMRCommitsResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
   });
 
@@ -389,21 +372,19 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMRCommits", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
-  let getSingleMRResponse: GitLabGetResponse;
+  let getSingleMRResponse: SuccessfulGetResponse | FailedResponse;
   let resultSingleMR;
 
   beforeAll(async (done) => {
     getSingleMRResponse = await api.getSingleMR();
-    resultSingleMR = getSingleMRResponse.result;
+    if (getSingleMRResponse instanceof SuccessfulGetResponse) {
+      resultSingleMR = getSingleMRResponse.result;
+    }
     done();
   });
   describe("When GitLab API is called", () => {
     test("request is successful", () => {
-      expect(getSingleMRResponse.apiRequest.success).toBe(true);
-      expect(getSingleMRResponse.apiRequest.status).toEqual({
-        code: HttpStatus.OK,
-        message: HttpStatus.getStatusText(HttpStatus.OK),
-      });
+      expect(getSingleMRResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
 
     test("API response contains property merged_by", () => {
