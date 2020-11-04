@@ -88,8 +88,8 @@ describe("Mock API Test: Comment Class", () => {
         );
 
         expect(postResponse.id).toBe(singleGRDBNotePost.id);
-        expect(postResponse.apiRequest.success).toBe(true);
-        expect(postResponse.apiRequest.status).toEqual({
+        expect(postResponse.apiResponse.success).toBe(true);
+        expect(postResponse.apiResponse.status).toEqual({
           code: HttpStatus.CREATED,
           message: HttpStatus.getStatusText(HttpStatus.CREATED),
         });
@@ -108,7 +108,7 @@ describe("Mock API Test: Comment Class", () => {
         );
 
         expect(postResponse.id).toBe(undefined);
-        expect(postResponse.apiRequest).toEqual(noRequestNeeded.apiRequest);
+        expect(postResponse.apiResponse).toEqual(noRequestNeeded.apiRequest);
         expect(api.newMRNote).toHaveBeenCalledTimes(0);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -130,8 +130,8 @@ describe("Mock API Test: Comment Class", () => {
         );
 
         expect(postResponse.id).toBe(singleGRDBNotePost.id);
-        expect(postResponse.apiRequest.success).toBe(true);
-        expect(postResponse.apiRequest.status).toEqual({
+        expect(postResponse.apiResponse.success).toBe(true);
+        expect(postResponse.apiResponse.status).toEqual({
           code: HttpStatus.CREATED,
           message: HttpStatus.getStatusText(HttpStatus.CREATED),
         });
@@ -155,8 +155,8 @@ describe("Mock API Test: Comment Class", () => {
           sampleFullMessageArray,
         );
         expect(postResponse.id).toBe(GRDB_NOTE_NUMBER);
-        expect(postResponse.apiRequest.success).toBe(true);
-        expect(postResponse.apiRequest.status).toEqual({
+        expect(postResponse.apiResponse.success).toBe(true);
+        expect(postResponse.apiResponse.status).toEqual({
           code: HttpStatus.OK,
           message: HttpStatus.getStatusText(HttpStatus.OK),
         });
@@ -174,7 +174,7 @@ describe("Mock API Test: Comment Class", () => {
           sampleNoActionMessageArray,
         );
         expect(postResponse.id).toBe(undefined);
-        expect(postResponse.apiRequest).toEqual(noRequestNeeded.apiRequest);
+        expect(postResponse.apiResponse).toEqual(noRequestNeeded.apiRequest);
         expect(api.newMRNote).toHaveBeenCalledTimes(0);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -196,8 +196,8 @@ describe("Mock API Test: Comment Class", () => {
             sampleFullMessageArray,
           );
           expect(postResponse.id).toBe(singleGRDBNotePost.id);
-          expect(postResponse.apiRequest.success).toBe(true);
-          expect(postResponse.apiRequest.status).toEqual({
+          expect(postResponse.apiResponse.success).toBe(true);
+          expect(postResponse.apiResponse.status).toEqual({
             code: HttpStatus.CREATED,
             message: HttpStatus.getStatusText(HttpStatus.CREATED),
           });
@@ -221,8 +221,8 @@ describe("Mock API Test: Comment Class", () => {
             sampleFullMessageArray,
           );
           expect(postResponse.id).toBe(GRDB_NOTE_NUMBER);
-          expect(postResponse.apiRequest.success).toBe(true);
-          expect(postResponse.apiRequest.status).toEqual({
+          expect(postResponse.apiResponse.success).toBe(true);
+          expect(postResponse.apiResponse.status).toEqual({
             code: HttpStatus.OK,
             message: HttpStatus.getStatusText(HttpStatus.OK),
           });
@@ -240,7 +240,7 @@ describe("Mock API Test: Comment Class", () => {
             sampleNoActionMessageArray,
           );
           expect(postResponse.id).toBe(undefined);
-          expect(postResponse.apiRequest).toEqual(noRequestNeeded.apiRequest);
+          expect(postResponse.apiResponse).toEqual(noRequestNeeded.apiRequest);
           expect(api.newMRNote).toHaveBeenCalledTimes(0);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -259,8 +259,8 @@ describe("Mock API Test: Comment Class", () => {
             sampleFullMessageArray,
           );
           expect(postResponse.id).toBe(singleGRDBNotePost.id);
-          expect(postResponse.apiRequest.success).toBe(true);
-          expect(postResponse.apiRequest.status).toEqual({
+          expect(postResponse.apiResponse.success).toBe(true);
+          expect(postResponse.apiResponse.status).toEqual({
             code: HttpStatus.CREATED,
             message: HttpStatus.getStatusText(HttpStatus.CREATED),
           });

@@ -1,6 +1,6 @@
 import {
   FailedResponse,
-  NoGetResponseNeeded,
+  NoResponseNeeded,
   SuccessfulGetResponse,
 } from "../gitlab";
 
@@ -14,7 +14,7 @@ import {
  * failure in order to distinguish from when its value is explicitly set to false after performing some logic.
  * */
 export interface BotAction {
-  apiResponse: SuccessfulGetResponse | FailedResponse | NoGetResponseNeeded;
+  apiResponse: SuccessfulGetResponse | FailedResponse | NoResponseNeeded;
   goodGitPractice: boolean;
   mrNote: string;
 }

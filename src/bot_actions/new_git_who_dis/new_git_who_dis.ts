@@ -1,13 +1,13 @@
 import * as winston from "winston";
 import { BotAction } from "../bot_action";
-import { NoGetResponseNeeded } from "../../gitlab";
+import { NoResponseNeeded } from "../../gitlab";
 import { NewGitWhoDisNote } from "./new_git_who_dis_note";
 
 /**
  * This class extends the `BotAction` class by analyzing the name of the author of the GitLab Merge Request.
  */
 export class NewGitWhoDis implements BotAction {
-  readonly apiResponse: NoGetResponseNeeded = new NoGetResponseNeeded();
+  readonly apiResponse: NoResponseNeeded = new NoResponseNeeded();
 
   private constructor(
     readonly goodGitPractice: boolean,

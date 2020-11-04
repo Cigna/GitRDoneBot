@@ -1,6 +1,5 @@
 import {
   FailedResponse,
-  GitLabAPIRequest,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../gitlab";

@@ -1,7 +1,7 @@
 import * as HttpStatus from "http-status-codes";
 import {
   MergeRequestApi,
-  NoGetResponseNeeded,
+  NoResponseNeeded,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
 import {
@@ -17,7 +17,7 @@ import { TooManyAssignedNote } from "../../src/bot_actions/too_many_assigned/too
 
 // TEST FIXTURES
 const customConfig = BotActionConfig.from(TooManyAssignedDefaults, {});
-const noRequestNeededResponse = new NoGetResponseNeeded();
+const noRequestNeededResponse = new NoResponseNeeded();
 const defaultAssignedMRThreshold: number = 3;
 const getResponseWhereAssignedMRSBelowThreshold: SuccessfulGetResponse = new SuccessfulGetResponse(
   HttpStatus.OK,

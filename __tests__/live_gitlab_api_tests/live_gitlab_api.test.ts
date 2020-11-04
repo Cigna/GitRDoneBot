@@ -20,11 +20,7 @@ import {
   cleanUpMRNotes,
   mockGitLabWebhookEvent,
 } from "../helpers";
-import {
-  MergeRequestApi,
-  GitLabPostResponse,
-  GitLabGetResponse,
-} from "../../src/gitlab";
+import { MergeRequestApi } from "../../src/gitlab";
 import { winlog } from "../../src/util";
 import { handleGitLabWebhook } from "../../handler";
 import { BotActionsResponse } from "../../src/merge_request";

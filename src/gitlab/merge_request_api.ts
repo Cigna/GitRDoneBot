@@ -1,6 +1,6 @@
 import * as winston from "winston";
 import { SuccessfulGetResponse, FailedResponse, URI } from ".";
-import { GitLabPostResponse } from "./gitlab_post_response";
+import { SuccessfulPostORPutResponse } from "./api_responses";
 import { FetchWrapper } from "./fetch_wrapper";
 
 // For the ones that will never be cached, lets not declare them and clean up the function call for cached/not cached
@@ -29,9 +29,11 @@ export class MergeRequestApi {
 
   // EMOJIS
 
-  public postEmoji(qs: any): Promise<GitLabPostResponse> {
+  public postEmoji(
+    qs: any,
+  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forEmojis();
-    return this.fetchWrapper.postGitlabResponseObject(uri, {
+    return this.fetchWrapper.makePostRequest(uri, {
       name: qs,
     });
   }
@@ -41,7 +43,7 @@ export class MergeRequestApi {
     awardId: number,
   ): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forSingleEmoji(awardId);
-    return this.fetchWrapper.deleteGitlabResponseObject(uri);
+    return this.fetchWrapper.makeDeleteRequest(uri);
   }
 
   /** HELPER METHOD FOR TESTS ONLY */
@@ -64,14 +66,19 @@ export class MergeRequestApi {
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
-  public editMRNote(noteId: number, qs: any): Promise<GitLabPostResponse> {
+  public editMRNote(
+    noteId: number,
+    qs: any,
+  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
-    return this.fetchWrapper.putGitlabResponseObject(uri, { body: qs });
+    return this.fetchWrapper.makePutRequest(uri, { body: qs });
   }
 
-  public newMRNote(qs: any): Promise<GitLabPostResponse> {
+  public newMRNote(
+    qs: any,
+  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forNotes();
-    return this.fetchWrapper.postGitlabResponseObject(uri, { body: qs });
+    return this.fetchWrapper.makePostRequest(uri, { body: qs });
   }
 
   /**
@@ -84,7 +91,7 @@ export class MergeRequestApi {
     noteId: number,
   ): Promise<FailedResponse | SuccessfulGetResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
-    return this.fetchWrapper.deleteGitlabResponseObject(uri);
+    return this.fetchWrapper.makeDeleteRequest(uri);
   }
 
   // GENERAL MERGE REQUEST

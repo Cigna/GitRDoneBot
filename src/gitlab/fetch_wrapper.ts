@@ -1,12 +1,11 @@
 import * as winston from "winston";
 import fetch from "node-fetch";
 import * as HttpStatus from "http-status-codes";
+import { SuccessfulGetResponse, FailedResponse, BuildGetResponse } from ".";
 import {
-  SuccessfulGetResponse,
-  FailedResponse,
-  BuildGetResponse,
-  GitLabPostResponse,
-} from ".";
+  BuildPostORPutResponse,
+  SuccessfulPostORPutResponse,
+} from "./api_responses";
 
 interface RawFetchResponse {
   body: [] | {} | undefined | string;
@@ -38,7 +37,7 @@ export class FetchWrapper {
    * @remarks
    * If DELETE is successful, will return a 204 code as result.
    */
-  public async deleteGitlabResponseObject(
+  public async makeDeleteRequest(
     uri: string,
   ): Promise<FailedResponse | SuccessfulGetResponse> {
     let response: FailedResponse | SuccessfulGetResponse;
@@ -52,44 +51,36 @@ export class FetchWrapper {
     return response;
   }
 
-  public async putGitlabResponseObject(
+  public async makePutRequest(
     uri: string,
     qs: any,
-  ): Promise<GitLabPostResponse> {
-    let gitlabResponseObject: GitLabPostResponse;
+  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
+    let response: SuccessfulPostORPutResponse | FailedResponse;
 
     try {
       const result: any = await this.put(uri, qs);
-      gitlabResponseObject = GitLabPostResponse.from(
-        result.status,
-        result.body,
-      );
+      response = BuildPostORPutResponse(result.status, result.body);
     } catch (err) {
       this.logger.error(`${err}`);
-
-      gitlabResponseObject = GitLabPostResponse.from(HttpStatus.BAD_GATEWAY);
+      response = BuildPostORPutResponse(HttpStatus.BAD_GATEWAY);
     }
-    return gitlabResponseObject;
+    return response;
   }
 
-  public async postGitlabResponseObject(
+  public async makePostRequest(
     uri: string,
     qs: any,
-  ): Promise<GitLabPostResponse> {
-    let gitlabResponseObject: GitLabPostResponse;
+  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
+    let response: SuccessfulPostORPutResponse | FailedResponse;
 
     try {
       const result: any = await this.post(uri, qs);
-      gitlabResponseObject = GitLabPostResponse.from(
-        result.status,
-        result.body,
-      );
+      response = BuildPostORPutResponse(result.status, result.body);
     } catch (err) {
       this.logger.error(`${err}`);
-
-      gitlabResponseObject = GitLabPostResponse.from(HttpStatus.BAD_GATEWAY);
+      response = BuildPostORPutResponse(HttpStatus.BAD_GATEWAY);
     }
-    return gitlabResponseObject;
+    return response;
   }
 
   private get(uri: string): Promise<RawFetchResponse> {

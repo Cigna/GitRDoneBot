@@ -49,9 +49,15 @@ export class FailedResponse extends Response {
     super(statusCode);
   }
 }
-export class NoGetResponseNeeded extends Response {
+export class NoResponseNeeded extends Response {
   constructor() {
     super(HttpStatus.NO_CONTENT);
+  }
+}
+
+export class SuccessfulPostORPutResponse extends Response {
+  constructor(readonly statusCode: number, readonly id: number) {
+    super(statusCode);
   }
 }
 
@@ -65,6 +71,21 @@ export function BuildGetResponse(
   // undefined when no api request is required
   if (Response.computeSuccess(statusCode) && body !== undefined) {
     response = new SuccessfulGetResponse(statusCode, body);
+  } else {
+    response = new FailedResponse(statusCode);
+  }
+  return response;
+}
+
+export function BuildPostORPutResponse(
+  statusCode: number,
+  body?: any,
+): SuccessfulPostORPutResponse | FailedResponse {
+  let response: SuccessfulPostORPutResponse | FailedResponse;
+
+  // TODO: is there ever a case where success would be true but body.id wouldn't exist? we don't seem to be handling that here
+  if (Response.computeSuccess(statusCode) === true && body.id !== undefined) {
+    response = new SuccessfulPostORPutResponse(statusCode, body.id);
   } else {
     response = new FailedResponse(statusCode);
   }

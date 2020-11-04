@@ -29,14 +29,14 @@ describe("Mock API Test: Emoji Class", () => {
       api.postEmoji.mockResolvedValueOnce(newEmoji);
       const postResponse = await BotEmoji.post(api, [true]);
       expect(postResponse.id).toBe(newEmoji.id);
-      expect(postResponse.apiRequest).toEqual(newEmoji.apiRequest);
+      expect(postResponse.apiResponse).toEqual(newEmoji.apiRequest);
       expect(api.postEmoji).toHaveBeenCalledTimes(1);
     });
 
     test("posts no emoji when no content exists", async () => {
       const postResponse = await BotEmoji.post(api, [undefined]);
       expect(postResponse.id).toBe(undefined);
-      expect(postResponse.apiRequest).toEqual(noRequest.apiRequest);
+      expect(postResponse.apiResponse).toEqual(noRequest.apiRequest);
       expect(api.postEmoji).toHaveBeenCalledTimes(0);
     });
 

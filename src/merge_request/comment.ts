@@ -1,8 +1,9 @@
 import {
   MergeRequestApi,
-  GitLabPostResponse,
-  GitLabGetResponse,
-  GitLabAPIRequest,
+  SuccessfulGetResponse,
+  FailedResponse,
+  SuccessfulPostORPutResponse,
+  NoResponseNeeded,
 } from "../gitlab";
 import winston = require("winston");
 import { Note } from "../interfaces";
@@ -16,8 +17,10 @@ export class BotComment {
   static readonly noActionContent: string = "No BotComment action required.";
 
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
-    readonly id: number,
+    readonly apiResponse:
+      | SuccessfulPostORPutResponse
+      | NoResponseNeeded
+      | FailedResponse,
     readonly text: string,
   ) {}
 
@@ -79,34 +82,37 @@ export class BotComment {
     updateToggle: boolean,
     messages: Array<string>,
   ): Promise<BotComment> {
-    let apiResponse: GitLabPostResponse;
+    let response:
+      | SuccessfulPostORPutResponse
+      | NoResponseNeeded
+      | FailedResponse;
     const comment = this.compose(messages);
 
     switch (true) {
       case this.caseForNoActions(comment): {
-        apiResponse = GitLabPostResponse.noRequestNeeded();
+        response = new NoResponseNeeded();
         break;
       }
       case this.caseForNewNote(state, updateToggle): {
-        apiResponse = await api.newMRNote(comment);
+        response = await api.newMRNote(comment);
         break;
       }
       case this.caseForUpdateNote(state, updateToggle): {
         const noteId = await this.getMRNoteId(api);
         if (noteId === -1) {
-          apiResponse = await api.newMRNote(comment);
+          response = await api.newMRNote(comment);
         } else {
-          apiResponse = await api.editMRNote(noteId, comment);
+          response = await api.editMRNote(noteId, comment);
         }
         break;
       }
       default: {
-        apiResponse = GitLabPostResponse.unknownState();
-        logger.error(`${apiResponse.apiRequest.status.message}`);
+        response = new FailedResponse(500);
+        logger.error(`Encountered Unknown State`);
       }
     }
 
-    return new BotComment(apiResponse.apiRequest, apiResponse.id, comment);
+    return new BotComment(response, comment);
   }
 
   /**
@@ -122,18 +128,21 @@ export class BotComment {
 
     // Grab the next page of notes until the first note authored by GRDBot is found or the last page is reached.
     while (noteCount === 100) {
-      const apiResponse: GitLabGetResponse = await api.getAllMRNotes(
-        currentPage,
-      );
-      if (apiResponse.apiRequest.success && apiResponse.result.length !== 0) {
-        const grdbNote: Note = apiResponse.result.find((note: Note) => {
+      const response:
+        | SuccessfulGetResponse
+        | FailedResponse = await api.getAllMRNotes(currentPage);
+      if (
+        response instanceof SuccessfulGetResponse &&
+        response.result.length !== 0
+      ) {
+        const grdbNote: Note = response.result.find((note: Note) => {
           return note.author.username === botName;
         });
         noteId = grdbNote === undefined ? -1 : grdbNote.id;
         // set the noteCount to 0 to break the while loop if the noteId is a real number,
         // else set it to the length of the result array, which will cause the while loop
         // to continue if more notes exist
-        noteCount = noteId === -1 ? apiResponse.result.length : 0;
+        noteCount = noteId === -1 ? response.result.length : 0;
         currentPage++;
       } else {
         noteCount = 0;

@@ -1,7 +1,8 @@
 import {
+  FailedResponse,
   MergeRequestApi,
-  GitLabPostResponse,
-  GitLabAPIRequest,
+  NoResponseNeeded,
+  SuccessfulPostORPutResponse,
 } from "../gitlab";
 
 /**
@@ -14,8 +15,11 @@ export class BotEmoji {
   static readonly noAction: string = "No BotEmoji action required.";
 
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
-    readonly id: number,
+    readonly apiResponse:
+      | SuccessfulPostORPutResponse
+      | FailedResponse
+      | NoResponseNeeded,
+    // readonly id: number,
     readonly name: string,
   ) {}
 
@@ -55,20 +59,23 @@ export class BotEmoji {
     api: MergeRequestApi,
     allChecks: Array<boolean>,
   ): Promise<BotEmoji> {
-    let apiResponse: GitLabPostResponse;
+    let response:
+      | SuccessfulPostORPutResponse
+      | FailedResponse
+      | NoResponseNeeded;
     const emoji = this.compose(allChecks);
     const caseForNoActions: boolean = emoji === this.noAction;
 
     switch (true) {
       case caseForNoActions: {
-        apiResponse = GitLabPostResponse.noRequestNeeded();
+        response = new NoResponseNeeded();
         break;
       }
       default: {
-        apiResponse = await api.postEmoji(emoji);
+        response = await api.postEmoji(emoji);
       }
     }
 
-    return new BotEmoji(apiResponse.apiRequest, apiResponse.id, emoji);
+    return new BotEmoji(response, emoji);
   }
 }
