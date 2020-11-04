@@ -15,7 +15,7 @@
                 "${workspaceRoot}/node_modules/.bin/jest", 
                 "--runInBand",
                 "--verbose",
-                "__tests__/unit_tests/api.test.ts"
+                "__tests__/component_builder_tests_with_mocks/comment.test.ts"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

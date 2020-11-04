@@ -1,6 +1,10 @@
-import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";
+import {
+  FailedResponse,
+  MergeRequestApi,
+  SuccessfulGetResponse,
+} from "../../src/gitlab";
 import { winlog } from "../../src/util";
-import { get_response_not_found_404 } from "../helpers";
+import { not_found_404 } from "../helpers";
 import { CustomConfig } from "../../src/custom_config/custom_config";
 import {
   BranchAgeDefaults,
@@ -10,7 +14,7 @@ import {
 
 const DEFAULT_UPDATE_TOGGLE_VALUE = true;
 
-const invalidKeys = GitLabGetResponse.from(200, {
+const invalidKeys = new SuccessfulGetResponse(200, {
   difAnalysis: {
     thresholdInLinesOfDiff: 1,
   },
@@ -19,7 +23,7 @@ const invalidKeys = GitLabGetResponse.from(200, {
   },
 });
 
-const validKeysValidValues = GitLabGetResponse.from(200, {
+const validKeysValidValues = new SuccessfulGetResponse(200, {
   diffAnalysis: {
     thresholdInLinesOfDiff: 1,
     constructiveFeedbackOnlyToggle: true,
@@ -35,7 +39,7 @@ const validKeysValidValues = GitLabGetResponse.from(200, {
   updateMergeRequestComment: false,
 });
 
-const validKeysInvalidValues = GitLabGetResponse.from(200, {
+const validKeysInvalidValues = new SuccessfulGetResponse(200, {
   diffAnalysis: {
     thresholdInLinesOfDiff: 1000,
   },
@@ -63,8 +67,8 @@ describe("Mock API Test: CustomConfig Class", () => {
     });
 
     test("apiRequest values reflect successful API call", () => {
-      expect(customConfigResponse.apiRequest).toEqual(
-        validKeysValidValues.apiRequest,
+      expect(customConfigResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
       );
     });
 
@@ -122,8 +126,8 @@ describe("Mock API Test: CustomConfig Class", () => {
     });
 
     test("apiRequest values reflect successful API call", () => {
-      expect(customConfigResponse.apiRequest).toEqual(
-        validKeysInvalidValues.apiRequest,
+      expect(customConfigResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
       );
     });
 
@@ -174,7 +178,9 @@ describe("Mock API Test: CustomConfig Class", () => {
     });
 
     test("apiRequest values reflect successful API call", () => {
-      expect(customConfigResponse.apiRequest).toEqual(invalidKeys.apiRequest);
+      expect(customConfigResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
+      );
     });
 
     test("branchAge uses default values when custom values not detected due to invalid key name", () => {
@@ -218,15 +224,13 @@ describe("Mock API Test: CustomConfig Class", () => {
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
-      api.getConfigurationFile.mockResolvedValue(get_response_not_found_404);
+      api.getConfigurationFile.mockResolvedValue(not_found_404);
       customConfigResponse = await CustomConfig.from(api);
       done();
     });
 
     test("apiRequest values reflect successful API call", () => {
-      expect(customConfigResponse.apiRequest).toEqual(
-        get_response_not_found_404.apiRequest,
-      );
+      expect(customConfigResponse.apiResponse).toBeInstanceOf(FailedResponse);
     });
 
     test("branchAge uses default values when custom values do not exist", () => {

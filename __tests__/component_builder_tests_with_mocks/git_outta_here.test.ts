@@ -1,15 +1,12 @@
 import * as HttpStatus from "http-status-codes";
-import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";
+import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
 import { winlog } from "../../src/util";
 import { GitOuttaHere, BotActionNote } from "../../src/bot_actions";
-import {
-  get_response_not_found_404,
-  get_response_fetch_network_error,
-} from "../helpers";
+import { not_found_404, fetch_network_error } from "../helpers";
 import { GitOuttaHereNote } from "../../src/bot_actions/git_outta_here/git_outta_here_note";
 
 // TEST FIXTURES
-const log_files_exist = GitLabGetResponse.from(HttpStatus.OK, {
+const log_files_exist = new SuccessfulGetResponse(HttpStatus.OK, {
   changes: [
     {
       old_path: "README.md",
@@ -36,7 +33,7 @@ const log_files_exist = GitLabGetResponse.from(HttpStatus.OK, {
   ],
 });
 
-const no_log_files = GitLabGetResponse.from(HttpStatus.OK, {
+const no_log_files = new SuccessfulGetResponse(HttpStatus.OK, {
   changes: [
     {
       old_path: "README.md",
@@ -52,7 +49,7 @@ const no_log_files = GitLabGetResponse.from(HttpStatus.OK, {
   ],
 });
 
-const changes_equal_zero = GitLabGetResponse.from(200, {
+const changes_equal_zero = new SuccessfulGetResponse(200, {
   changes: [],
 });
 
@@ -74,9 +71,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
     });
 
     test("apiRequest values reflect failed API call", () => {
-      expect(gitOuttaHereResponse.apiRequest).toEqual(
-        get_response_not_found_404.apiRequest,
-      );
+      expect(gitOuttaHereResponse.apiResponse).toEqual(not_found_404);
     });
 
     test("goodGitPractice is undefined", () => {
@@ -102,13 +97,9 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
     });
 
     test("apiRequest values reflect successful API call", () => {
-      expect(gitOuttaHereResponse.apiRequest).toEqual({
-        success: true,
-        status: {
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        },
-      });
+      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
+      );
     });
 
     test("goodGitPractice is false", () => {
@@ -134,13 +125,9 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
     });
 
     test("apiRequest values reflect successful API call", () => {
-      expect(gitOuttaHereResponse.apiRequest).toEqual({
-        success: true,
-        status: {
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        },
-      });
+      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
+      );
     });
 
     test("goodGitPractice is true", () => {
@@ -166,13 +153,9 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
     });
 
     test("apiRequest values reflect successful API call", () => {
-      expect(gitOuttaHereResponse.apiRequest).toEqual({
-        success: true,
-        status: {
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        },
-      });
+      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
+      );
     });
 
     test("goodGitPractice is true", () => {
@@ -200,9 +183,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
     });
 
     test("apiRequest values reflect failed API call due to unknown network error", () => {
-      expect(gitOuttaHereResponse.apiRequest).toEqual(
-        get_response_fetch_network_error.apiRequest,
-      );
+      expect(gitOuttaHereResponse.apiResponse).toEqual(fetch_network_error);
     });
   });
 });

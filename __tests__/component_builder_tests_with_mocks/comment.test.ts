@@ -1,10 +1,15 @@
 import * as HttpStatus from "http-status-codes";
 import {
-  GitLabGetResponse,
   GitLabPostResponse,
   MergeRequestApi,
+  SuccessfulGetResponse,
 } from "../../src/gitlab";
-import { mockNote, createNNotes } from "../helpers";
+import {
+  mockNote,
+  createNNotes,
+  unauthorized_401,
+  bad_request_400,
+} from "../helpers";
 import { winlog, getBotUsername } from "../../src/util";
 import { BotComment } from "../../src/merge_request";
 
@@ -21,26 +26,29 @@ const sampleNoActionMessageArray = ["NA", "NA", "NA", "NA"];
 const GRDB_NOTE_NUMBER = 42;
 const botName = getBotUsername(process.env.GITLAB_BOT_ACCOUNT_NAME);
 
-const emptyNote = GitLabGetResponse.from(HttpStatus.OK, []);
+const emptyNote = new SuccessfulGetResponse(HttpStatus.OK, []);
 
-const lessThanOneHundredNotesWithGRDB = GitLabGetResponse.from(HttpStatus.OK, [
-  mockNote(0, "river_tam"),
-  mockNote(GRDB_NOTE_NUMBER, botName),
-  mockNote(2, "hoban_washburne"),
-]);
+const lessThanOneHundredNotesWithGRDB = new SuccessfulGetResponse(
+  HttpStatus.OK,
+  [
+    mockNote(0, "river_tam"),
+    mockNote(GRDB_NOTE_NUMBER, botName),
+    mockNote(2, "hoban_washburne"),
+  ],
+);
 
-const lessThanOneHundredNotesNoGRDB = GitLabGetResponse.from(HttpStatus.OK, [
+const lessThanOneHundredNotesNoGRDB = new SuccessfulGetResponse(HttpStatus.OK, [
   mockNote(0, "river_tam"),
   mockNote(1, "malcolm_reynolds"),
   mockNote(2, "zoe_washburne"),
 ]);
 
-const oneHundredNotesNoGRDB = GitLabGetResponse.from(
+const oneHundredNotesNoGRDB = new SuccessfulGetResponse(
   HttpStatus.OK,
   createNNotes(100, "shepherd_book"),
 );
 
-const singleGRDBNoteGet = GitLabGetResponse.from(HttpStatus.OK, [
+const singleGRDBNoteGet = new SuccessfulGetResponse(HttpStatus.OK, [
   mockNote(GRDB_NOTE_NUMBER, botName),
 ]);
 
@@ -311,9 +319,7 @@ describe("Mock API Test: Comment Class", () => {
 
     test("returns -1 when 3XX-5XX response from GitLab", async () => {
       // @ts-ignore
-      api.getAllMRNotes.mockResolvedValueOnce(
-        GitLabGetResponse.from(HttpStatus.UNAUTHORIZED, {}),
-      );
+      api.getAllMRNotes.mockResolvedValueOnce(unauthorized_401);
       const noteIdResponse = await BotComment.getMRNoteId(api);
       expect(noteIdResponse).toBe(-1);
       expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
@@ -321,9 +327,7 @@ describe("Mock API Test: Comment Class", () => {
 
     test("returns -1 when error returned from fetch", async () => {
       // @ts-ignore
-      api.getAllMRNotes.mockResolvedValueOnce(
-        GitLabGetResponse.from(HttpStatus.BAD_GATEWAY, {}),
-      );
+      api.getAllMRNotes.mockResolvedValueOnce(fetch_network_error);
       const noteIdResponse = await BotComment.getMRNoteId(api);
       expect(noteIdResponse).toBe(-1);
       expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);

@@ -39,6 +39,9 @@ class Response {
 export class SuccessfulGetResponse extends Response {
   constructor(readonly statusCode: number, readonly result: any) {
     super(statusCode);
+    if (result == undefined) {
+      this.result = {};
+    }
   }
 }
 export class FailedResponse extends Response {

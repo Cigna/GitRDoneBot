@@ -1,11 +1,12 @@
 import * as HttpStatus from "http-status-codes";
-import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";
+import {
+  FailedResponse,
+  MergeRequestApi,
+  SuccessfulGetResponse,
+} from "../../src/gitlab";
 import { winlog } from "../../src/util";
 import { DiffSize, BotActionNote } from "../../src/bot_actions";
-import {
-  get_response_not_found_404,
-  get_response_fetch_network_error,
-} from "../helpers";
+import { not_found_404, fetch_network_error } from "../helpers";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { DiffSizeDefaults } from "../../src/custom_config/action_config_defaults";
 import { DiffSizeNote } from "../../src/bot_actions/diff_size/diff_size_note";
@@ -14,16 +15,19 @@ import { DiffSizeNote } from "../../src/bot_actions/diff_size/diff_size_note";
 
 const customConfig = BotActionConfig.from(DiffSizeDefaults, {});
 
-const customConfigThresholdOne = BotActionConfig.from({
-  actionName: "diffAnalysis",
-  thresholdName: "thresholdInLinesOfDiff",
-  thresholdDefault: 1,
-  thresholdMin: 0,
-  thresholdMax: 500,
-  constructiveFeedbackOnlyToggleDefault: false,
-}, {});
+const customConfigThresholdOne = BotActionConfig.from(
+  {
+    actionName: "diffAnalysis",
+    thresholdName: "thresholdInLinesOfDiff",
+    thresholdDefault: 1,
+    thresholdMin: 0,
+    thresholdMax: 500,
+    constructiveFeedbackOnlyToggleDefault: false,
+  },
+  {},
+);
 
-const changes_between_zero_and_500 = GitLabGetResponse.from(200, {
+const changes_between_zero_and_500 = new SuccessfulGetResponse(200, {
   changes: [
     {
       old_path: "README.md",
@@ -39,7 +43,7 @@ const changes_between_zero_and_500 = GitLabGetResponse.from(200, {
   ],
 });
 
-const changes_more_than_500 = GitLabGetResponse.from(200, {
+const changes_more_than_500 = new SuccessfulGetResponse(200, {
   changes: [
     {
       old_path: "README.md",
@@ -55,7 +59,7 @@ const changes_more_than_500 = GitLabGetResponse.from(200, {
   ],
 });
 
-const changes_equal_zero = GitLabGetResponse.from(200, {
+const changes_equal_zero = new SuccessfulGetResponse(200, {
   changes: [],
 });
 
@@ -78,9 +82,7 @@ describe("Mock API Test: DiffSize Class", () => {
     });
 
     test("apiRequest values reflect failed API call", async () => {
-      expect(diffSizeResponse.apiRequest).toBe(
-        get_response_not_found_404.apiRequest,
-      );
+      expect(diffSizeResponse.apiResponse).toBeInstanceOf(FailedResponse);
     });
 
     test("goodGitPractice is undefined", async () => {
@@ -146,7 +148,12 @@ describe("Mock API Test: DiffSize Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_between_zero_and_500);
-      diffSizeResponse = await DiffSize.from(state, api, customConfigThresholdOne, winlog);
+      diffSizeResponse = await DiffSize.from(
+        state,
+        api,
+        customConfigThresholdOne,
+        winlog,
+      );
       done();
     });
 
@@ -169,7 +176,9 @@ describe("Mock API Test: DiffSize Class", () => {
     });
 
     test("totalDiffs value is equal to the threshold", async () => {
-      expect(diffSizeResponse.totalDiffs).toEqual(customConfigThresholdOne.threshold);
+      expect(diffSizeResponse.totalDiffs).toEqual(
+        customConfigThresholdOne.threshold,
+      );
     });
   });
 
@@ -248,17 +257,13 @@ describe("Mock API Test: DiffSize Class", () => {
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(
-        get_response_fetch_network_error,
-      );
+      api.getSingleMRChanges.mockResolvedValue(fetch_network_error);
       diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
       done();
     });
 
     test("apiRequest values reflect failed API call due to unknown network error", async () => {
-      expect(diffSizeResponse.apiRequest).toBe(
-        get_response_fetch_network_error.apiRequest,
-      );
+      expect(diffSizeResponse.apiResponse).toBe(fetch_network_error);
     });
   });
 });
