@@ -72,15 +72,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect successful API call", () => {
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
         expect(commitMessageResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
-        );
-        expect(commitMessageResponse.apiResponse.statusCode).toEqual(
-          HttpStatus.OK,
-        );
-        expect(commitMessageResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.OK),
         );
       });
 
@@ -117,15 +111,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect successful API call", async () => {
+      test("should return apiResponse state of SuccessfulGetResponse", async () => {
         expect(commitMessageResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
-        );
-        expect(commitMessageResponse.apiResponse.statusCode).toEqual(
-          HttpStatus.OK,
-        );
-        expect(commitMessageResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.OK),
         );
       });
 
@@ -164,15 +152,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect successful API call", async () => {
+      test("should return apiResponse state of SuccessfulGetResponse", async () => {
         expect(commitMessageResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
-        );
-        expect(commitMessageResponse.apiResponse.statusCode).toEqual(
-          HttpStatus.OK,
-        );
-        expect(commitMessageResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.OK),
         );
       });
 
@@ -209,15 +191,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect failed API call", () => {
+      test("should return apiResponse state of FailedResponse", () => {
         expect(commitMessageResponse.apiResponse).toBeInstanceOf(
           FailedResponse,
-        );
-        expect(commitMessageResponse.apiResponse.statusCode).toEqual(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-        expect(commitMessageResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR),
         );
       });
 
@@ -253,15 +229,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect a successful API call", () => {
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
         expect(commitMessageResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
-        );
-        expect(commitMessageResponse.apiResponse.statusCode).toEqual(
-          HttpStatus.OK,
-        );
-        expect(commitMessageResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.OK),
         );
       });
 
@@ -297,9 +267,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect successful api call", () => {
-        expect(commitMessageResponse.apiResponse).toEqual(
-          too_many_one_word_commits,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 

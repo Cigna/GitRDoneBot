@@ -10,7 +10,6 @@ import {
   createNNotes,
   unauthorized_401,
   fetch_network_error,
-  bad_request_400,
 } from "../helpers";
 import { winlog, getBotUsername } from "../../src/util";
 import { BotComment } from "../../src/merge_request";
