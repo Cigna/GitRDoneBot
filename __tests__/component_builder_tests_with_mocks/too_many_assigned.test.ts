@@ -1,5 +1,6 @@
 import * as HttpStatus from "http-status-codes";
 import {
+  FailedResponse,
   MergeRequestApi,
   NoResponseNeeded,
   SuccessfulGetResponse,
@@ -63,9 +64,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          getResponseWhereAssignedMRSBelowThreshold,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -98,9 +99,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          getResponseWhereAssignedMRSEqualsThreshold,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -133,9 +134,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          getResponseWhereAssignedMRSNotInThreshold,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -162,9 +163,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
 
-        test("should return correct apiRequest values for API call not needed", () => {
-          expect(tooManyAssignedResponse.apiResponse).toEqual(
-            noRequestNeededResponse,
+        test("should return apiResponse state of NoResponseNeeded", () => {
+          expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+            NoResponseNeeded,
           );
         });
 
@@ -196,8 +197,10 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for failed API call", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(not_found_404);
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          FailedResponse,
+        );
       });
       test("should return goodGitPractice === undefined", () => {
         expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
@@ -224,9 +227,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return correct apiRequest values for failed API call due to unknown network error", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          fetch_network_error,
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          FailedResponse,
         );
       });
     });
@@ -250,9 +253,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          getResponseWhereAssignedMRSBelowThreshold,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
       test("should return goodGitPractice === true", () => {
@@ -282,9 +285,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          getResponseWhereAssignedMRSNotInThreshold,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
       test("should return goodGitPractice === false", () => {
@@ -310,9 +313,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for API call not needed", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          noRequestNeededResponse,
+      test("should return apiResponse state of NoResponseNeeded", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          NoResponseNeeded,
         );
       });
 
@@ -343,8 +346,10 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for failed API call", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(not_found_404);
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          FailedResponse,
+        );
       });
       test("should return goodGitPractice === undefined", () => {
         expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
@@ -371,9 +376,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return correct apiRequest values for failed API call due to unknown network error", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          fetch_network_error,
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          FailedResponse,
         );
       });
     });
@@ -392,9 +397,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return correct apiRequest values when API call not needed", () => {
-        expect(tooManyAssignedResponse.apiResponse).toEqual(
-          noRequestNeededResponse,
+      test("should return apiResponse state of NoResponseNeeded", () => {
+        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
+          NoResponseNeeded,
         );
       });
 
