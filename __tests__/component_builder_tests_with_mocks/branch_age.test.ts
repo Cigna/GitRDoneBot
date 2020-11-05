@@ -61,13 +61,9 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect successful API call", () => {
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
         expect(branchAgeResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
-        );
-        expect(branchAgeResponse.apiResponse.statusCode).toEqual(HttpStatus.OK);
-        expect(branchAgeResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.OK),
         );
       });
 
@@ -102,13 +98,9 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect successful API call", () => {
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
         expect(branchAgeResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
-        );
-        expect(branchAgeResponse.apiResponse.statusCode).toEqual(HttpStatus.OK);
-        expect(branchAgeResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.OK),
         );
       });
 
@@ -145,13 +137,9 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect successful API call", () => {
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
         expect(branchAgeResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
-        );
-        expect(branchAgeResponse.apiResponse.statusCode).toEqual(HttpStatus.OK);
-        expect(branchAgeResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.OK),
         );
       });
 
@@ -188,13 +176,9 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect successful API call", () => {
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
         expect(branchAgeResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
-        );
-        expect(branchAgeResponse.apiResponse.statusCode).toEqual(HttpStatus.OK);
-        expect(branchAgeResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.OK),
         );
       });
 
@@ -229,9 +213,8 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect unknown network error", () => {
+      test("should return apiResponse state of FailedResponse", () => {
         expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
-        expect(branchAgeResponse.apiResponse).toEqual(fetch_network_error);
       });
     });
   });
@@ -253,14 +236,8 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect not found API call", () => {
+      test("should return apiResponse state of FailedResponse", () => {
         expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
-        expect(branchAgeResponse.apiResponse.statusCode).toEqual(
-          HttpStatus.UNAUTHORIZED,
-        );
-        expect(branchAgeResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED),
-        );
       });
 
       test("oldestCommit is undefined", () => {
@@ -294,14 +271,8 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect not found API call", () => {
+      test("should return apiResponse state of FailedResponse", () => {
         expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
-        expect(branchAgeResponse.apiResponse.statusCode).toEqual(
-          HttpStatus.NOT_FOUND,
-        );
-        expect(branchAgeResponse.apiResponse.message).toEqual(
-          HttpStatus.getStatusText(HttpStatus.NOT_FOUND),
-        );
       });
 
       test("oldestCommit is undefined", () => {
