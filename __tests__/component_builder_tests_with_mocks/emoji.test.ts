@@ -1,6 +1,7 @@
 // TEST FIXTURES
 
 import {
+  FailedResponse,
   MergeRequestApi,
   NoResponseNeeded,
   SuccessfulPostORPutResponse,
@@ -10,8 +11,6 @@ import { BotEmoji } from "../../src/merge_request";
 import { unauthorized_401, fetch_network_error } from "../helpers";
 
 const newEmoji = new SuccessfulPostORPutResponse(201, 42);
-
-const noRequest = new NoResponseNeeded();
 
 // TESTS
 
@@ -46,7 +45,7 @@ describe("Mock API Test: Emoji Class", () => {
       // @ts-ignore
       api.postEmoji.mockResolvedValueOnce(unauthorized_401);
       const postResponse = await BotEmoji.post(api, [true]);
-      expect(postResponse.apiResponse).toEqual(unauthorized_401);
+      expect(postResponse.apiResponse).toBeInstanceOf(FailedResponse);
       expect(api.postEmoji).toHaveBeenCalledTimes(1);
     });
 
@@ -54,7 +53,7 @@ describe("Mock API Test: Emoji Class", () => {
       // @ts-ignore
       api.postEmoji.mockResolvedValueOnce(fetch_network_error);
       const postResponse = await BotEmoji.post(api, [true]);
-      expect(postResponse.apiResponse).toEqual(fetch_network_error);
+      expect(postResponse.apiResponse).toBeInstanceOf(FailedResponse);
       expect(api.postEmoji).toHaveBeenCalledTimes(1);
     });
   });
