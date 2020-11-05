@@ -165,8 +165,8 @@ export class BotActionsResponse {
         diffSize.goodGitPractice,
         selfMerge.goodGitPractice,
         branchAge.goodGitPractice,
+        gitOuttaHere.goodGitPractice,
         tooManyAssigned.goodGitPractice,
-        newGitWhoDis.goodGitPractice,
         commitMessage.goodGitPractice,
       ]);
 
@@ -176,11 +176,11 @@ export class BotActionsResponse {
       // gets overall status from statuses returned by individual Bot Action API calls
       status = Status.fromCodes([
         branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
+        commitMessage.apiResponse.statusCode,
+        diffSize.apiResponse.statusCode,
+        gitOuttaHere.apiResponse.statusCode,
+        selfMerge.apiResponse.statusCode,
+        tooManyAssigned.apiResponse.statusCode,
       ]);
     } catch (err) {
       logger.error(`BotActionsResponse Error: ${err.message}`);
