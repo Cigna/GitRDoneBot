@@ -1,5 +1,9 @@
 import * as HttpStatus from "http-status-codes";
-import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
+import {
+  FailedResponse,
+  MergeRequestApi,
+  SuccessfulGetResponse,
+} from "../../src/gitlab";
 import { winlog } from "../../src/util";
 import { GitOuttaHere, BotActionNote } from "../../src/bot_actions";
 import { not_found_404, fetch_network_error } from "../helpers";
@@ -70,8 +74,8 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       done();
     });
 
-    test("apiRequest values reflect failed API call", () => {
-      expect(gitOuttaHereResponse.apiResponse).toEqual(not_found_404);
+    test("should return apiResponse state of FailedResponse", () => {
+      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(FailedResponse);
     });
 
     test("goodGitPractice is undefined", () => {
@@ -96,7 +100,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", () => {
+    test("should return apiResponse state of SuccessfulGetResponse", () => {
       expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -124,7 +128,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", () => {
+    test("should return apiResponse state of SuccessfulGetResponse", () => {
       expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -152,7 +156,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", () => {
+    test("should return apiResponse state of SuccessfulGetResponse", () => {
       expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -180,8 +184,8 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       done();
     });
 
-    test("apiRequest values reflect failed API call due to unknown network error", () => {
-      expect(gitOuttaHereResponse.apiResponse).toEqual(fetch_network_error);
+    test("should return apiResponse state of FailedResponse", () => {
+      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(FailedResponse);
     });
   });
 });
