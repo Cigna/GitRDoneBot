@@ -476,7 +476,7 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
 });
 
 describe("Live lambda handler response with mocked Infra (Error Cases)", () => {
-  let tempToken: string | undefined = process.env.GITLAB_BOT_ACCOUNT_API_TOKEN;
+  let tempToken = process.env.GITLAB_BOT_ACCOUNT_API_TOKEN;
 
   beforeAll(() => {
     process.env.GITLAB_BOT_ACCOUNT_API_TOKEN = "BAD_TOKEN";
@@ -502,8 +502,7 @@ describe("Live lambda handler response with mocked Infra (Error Cases)", () => {
     };
 
     return wrapped.runHandler(openEvent, context, null).then((response) => {
-      expect(response).toBeDefined();
       expect(response.statusCode).toBe(HttpStatus.MULTI_STATUS);
     });
-  });
+  }, 30000);
 });
