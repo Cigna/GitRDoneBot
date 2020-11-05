@@ -30,8 +30,8 @@ const handleGitLabWebhook = async (
   event: any,
 ): Promise<GenericResponse | BotActionsResponse> => {
   let gitLabEvent: any;
-  let objectKind: string | undefined;
-  let response: GenericResponse | BotActionsResponse;
+  let token, baseURI, objectKind: string | undefined;
+  let response!: GenericResponse | BotActionsResponse;
 
   try {
     gitLabEvent = JSON.parse(event.body);
@@ -45,26 +45,33 @@ const handleGitLabWebhook = async (
     };
   }
 
-  switch (objectKind) {
-    case "merge_request":
-      const state = getState(gitLabEvent);
+  try {
+    token = getToken(process.env.GITLAB_BOT_ACCOUNT_API_TOKEN);
+    baseURI = getBaseURI(process.env.GITLAB_BASE_URI);
+  } catch (err) {
+    winlog.error(`Env var loading Error: ${err.message}`);
+    response = {
+      status: Status.from(HttpStatus.INTERNAL_SERVER_ERROR),
+    };
+  }
 
-      /**
-       * We only perform analysis on Merge Request events in the following states
-       * in order to minimize the chattiness of the service.
-       */
-      if (state === "open" || state === "merge" || state === "update") {
-        try {
-          const token = getToken(process.env.GITLAB_BOT_ACCOUNT_API_TOKEN);
+  if (response === undefined) {
+    switch (objectKind) {
+      case "merge_request":
+        const state = getState(gitLabEvent);
+        /**
+         * We only perform analysis on Merge Request events in the following states
+         * in order to minimize the chattiness of the service.
+         */
+        if (state === "open" || state === "merge" || state === "update") {
           const projectId = getProjectId(gitLabEvent);
           const mrId = getMrId(gitLabEvent);
-          const baseURI = getBaseURI(process.env.GITLAB_BASE_URI);
 
           const api = new MergeRequestApi(
-            token,
+            token as string,
             projectId,
             mrId,
-            baseURI,
+            baseURI as string,
             winlog,
           );
 
@@ -88,26 +95,21 @@ const handleGitLabWebhook = async (
               winlog,
             );
           }
-        } catch (err) {
-          /** getToken will throw an error if no token exists in environment */
-          winlog.error(`handleGitLabWebhook Error: ${err.message}`);
+        } else {
+          /** No action required for any MR states besides open, merge, and update */
           response = {
-            status: Status.from(HttpStatus.INTERNAL_SERVER_ERROR),
+            status: Status.forNoAction(),
           };
         }
-      } else {
-        /** No action required for any MR states besides open, merge, and update */
+        break;
+      default:
+        /** No action required for any incoming GitLab event that is not a merge request */
         response = {
-          status: Status.forNoAction(),
+          status: Status.forNotSupported(),
         };
-      }
-      break;
-    default:
-      /** No action required for any incoming GitLab event that is not a merge request */
-      response = {
-        status: Status.forNotSupported(),
-      };
+    }
   }
+
   return response;
 };
 
