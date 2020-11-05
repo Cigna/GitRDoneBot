@@ -66,7 +66,7 @@ describe("Mock API Test: CustomConfig Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", () => {
+    test("should return apiResponse state of SuccessfulGetResponse", () => {
       expect(customConfigResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -125,7 +125,7 @@ describe("Mock API Test: CustomConfig Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", () => {
+    test("should return apiResponse state of SuccessfulGetResponse", () => {
       expect(customConfigResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -177,7 +177,7 @@ describe("Mock API Test: CustomConfig Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", () => {
+    test("should return apiResponse state of SuccessfulGetResponse", () => {
       expect(customConfigResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -229,7 +229,7 @@ describe("Mock API Test: CustomConfig Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", () => {
+    test("should return apiResponse state of FailedResponse", () => {
       expect(customConfigResponse.apiResponse).toBeInstanceOf(FailedResponse);
     });
 
