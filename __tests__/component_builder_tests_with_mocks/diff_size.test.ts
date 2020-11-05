@@ -81,7 +81,7 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("apiRequest values reflect failed API call", async () => {
+    test("should return apiResponse state of FailedResponse", async () => {
       expect(diffSizeResponse.apiResponse).toBeInstanceOf(FailedResponse);
     });
 
@@ -117,7 +117,7 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", async () => {
+    test("should return apiResponse state of SuccessfulGetResponse", async () => {
       expect(diffSizeResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -155,7 +155,7 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", async () => {
+    test("should return apiResponse state of SuccessfulGetResponse", async () => {
       expect(diffSizeResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -188,8 +188,10 @@ describe("Mock API Test: DiffSize Class", () => {
       diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
       done();
     });
-    test("apiRequest values reflect successful API call", async () => {
-      expect(diffSizeResponse.apiResponse).toBeInstanceOf(SuccessfulGetResponse);
+    test("should return apiResponse state of SuccessfulGetResponse", async () => {
+      expect(diffSizeResponse.apiResponse).toBeInstanceOf(
+        SuccessfulGetResponse,
+      );
     });
 
     test("goodGitPractice is false", async () => {
@@ -220,7 +222,7 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("apiRequest values reflect successful API call", async () => {
+    test("should return apiResponse state of SuccessfulGetResponse", async () => {
       expect(diffSizeResponse.apiResponse).toBeInstanceOf(
         SuccessfulGetResponse,
       );
@@ -252,8 +254,8 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("apiRequest values reflect failed API call due to unknown network error", async () => {
-      expect(diffSizeResponse.apiResponse).toBe(fetch_network_error);
+    test("should return apiResponse state of FailedResponse", async () => {
+      expect(diffSizeResponse.apiResponse).toBeInstanceOf(FailedResponse);
     });
   });
 });
