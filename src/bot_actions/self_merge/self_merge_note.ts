@@ -107,7 +107,6 @@ export class SelfMergeNote extends BotActionNote {
     logger: winston.Logger,
   ): string {
     let note: SelfMergeNote;
-
     switch (true) {
       case this.standardCaseForCheckPermissionsMessage(apiRequestSuccess): {
         note = this.fromMessage(this.checkPermissionsMessage);

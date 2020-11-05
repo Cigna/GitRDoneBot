@@ -1,5 +1,6 @@
 import * as HttpStatus from "http-status-codes";
 import {
+  FailedResponse,
   MergeRequestApi,
   NoResponseNeeded,
   SuccessfulGetResponse,
@@ -69,8 +70,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for API call not needed", () => {
-        expect(selfMergeResponse.apiResponse).toEqual(noRequestNeededResponse);
+      test("should return apiResponse state of NoResponseNeeded", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(NoResponseNeeded);
       });
 
       test("should call API methods correct number of times", () => {
@@ -108,8 +109,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for API call not needed", () => {
-        expect(selfMergeResponse.apiResponse).toEqual(noRequestNeededResponse);
+      test("should return apiResponse state of NoResponseNeeded", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(NoResponseNeeded);
       });
 
       test("should call API methods correct number of times", () => {
@@ -151,7 +152,7 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
         expect(selfMergeResponse.apiResponse).toBeInstanceOf(
           SuccessfulGetResponse,
         );
@@ -196,9 +197,9 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(selfMergeResponse.apiResponse).toEqual(
-          get_mr_approval_self_approved,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -243,9 +244,9 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(selfMergeResponse.apiResponse).toEqual(
-          get_mr_approval_no_approvals,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -290,9 +291,9 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(selfMergeResponse.apiResponse).toEqual(
-          get_mr_approval_no_approvals,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -336,8 +337,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for failed API call", () => {
-        expect(selfMergeResponse.apiResponse).toEqual(not_found_404);
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
 
       test("should call API methods correct number of times", () => {
@@ -378,8 +379,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for failed API call", () => {
-        expect(selfMergeResponse.apiResponse).toEqual(not_found_404);
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
 
       test("should call API methods correct number of times", () => {
@@ -418,8 +419,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for failed API call due to unknown network error", () => {
-        expect(selfMergeResponse.apiResponse).toEqual(fetch_network_error);
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
 
       test("should call API methods correct number of times", () => {

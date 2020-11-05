@@ -65,15 +65,18 @@ export class SelfMerge implements BotAction {
           whoApproved.result.hasOwnProperty("approved_by") &&
           whoApproved.result.approved_by.length
         ) {
+          approversNeeded = false;
+          response = whoApproved;
           goodGitPractice = this.mrIsNotSelfApproved(
             whoApproved.result.approved_by,
             authorId,
           );
-          approversNeeded = false;
         } else {
-          // if approval array is empty, plan B is to see who merged the MR
+          // if approval array is empty, second api call required to see who merged the MR
           approversNeeded = true;
-          const whoMerged = await api.getSingleMR();
+          const whoMerged:
+            | SuccessfulGetResponse
+            | FailedResponse = await api.getSingleMR();
           response = whoMerged;
           if (
             whoMerged instanceof SuccessfulGetResponse &&
@@ -85,14 +88,18 @@ export class SelfMerge implements BotAction {
             );
           }
         }
+      } else {
+        response = whoApproved;
       }
     }
 
+    // success var
     return new SelfMerge(
       response,
       goodGitPractice,
       SelfMergeNote.buildMessage(
-        response instanceof (SuccessfulGetResponse || NoResponseNeeded),
+        response instanceof SuccessfulGetResponse ||
+          response instanceof NoResponseNeeded,
         state,
         goodGitPractice,
         approversNeeded,
