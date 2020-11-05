@@ -175,12 +175,12 @@ export class BotActionsResponse {
 
       // gets overall status from statuses returned by individual Bot Action API calls
       status = Status.fromCodes([
+        diffSize.apiResponse.statusCode,
+        selfMerge.apiResponse.statusCode,
         branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
-        branchAge.apiResponse.statusCode,
+        tooManyAssigned.apiResponse.statusCode,
+        newGitWhoDis.apiResponse.statusCode,
+        commitMessage.apiResponse.statusCode,
       ]);
     } catch (err) {
       logger.error(`BotActionsResponse Error: ${err.message}`);
