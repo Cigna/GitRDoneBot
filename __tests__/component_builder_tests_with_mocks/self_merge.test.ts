@@ -2,7 +2,7 @@ import * as HttpStatus from "http-status-codes";
 import {
   FailedResponse,
   MergeRequestApi,
-  NoResponseNeeded,
+  NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
 import { mockUser, not_found_404, fetch_network_error } from "../helpers";
@@ -37,8 +37,6 @@ const get_single_mr_not_self_merged = new SuccessfulGetResponse(HttpStatus.OK, {
   merged_by: mockUser(ASSIGNEE_ID),
 });
 
-const noRequestNeededResponse = new NoResponseNeeded();
-
 // TESTS
 
 jest.mock("../../src/gitlab/merge_request_api");
@@ -70,8 +68,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return apiResponse state of NoResponseNeeded", () => {
-        expect(selfMergeResponse.apiResponse).toBeInstanceOf(NoResponseNeeded);
+      test("should return apiResponse state of NoRequestNeeded", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
       });
 
       test("should call API methods correct number of times", () => {
@@ -109,8 +107,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return apiResponse state of NoResponseNeeded", () => {
-        expect(selfMergeResponse.apiResponse).toBeInstanceOf(NoResponseNeeded);
+      test("should return apiResponse state of NoRequestNeeded", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
       });
 
       test("should call API methods correct number of times", () => {

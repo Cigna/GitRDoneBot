@@ -2,9 +2,9 @@ import { BotAction } from "../bot_action";
 
 import * as winston from "winston";
 import {
-  FailedResponse,
+  ApiResponse,
   MergeRequestApi,
-  NoResponseNeeded,
+  NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../gitlab";
 import { SelfMergeNote } from "./self_merge_note";
@@ -19,10 +19,7 @@ import { User } from "../../interfaces/gitlab_api_types";
  */
 export class SelfMerge implements BotAction {
   private constructor(
-    readonly apiResponse:
-      | SuccessfulGetResponse
-      | FailedResponse
-      | NoResponseNeeded,
+    readonly apiResponse: ApiResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly approversNeeded: boolean | undefined,
@@ -49,16 +46,14 @@ export class SelfMerge implements BotAction {
   ): Promise<SelfMerge> {
     let goodGitPractice!: boolean;
     let approversNeeded!: boolean;
-    let response!: SuccessfulGetResponse | FailedResponse | NoResponseNeeded;
+    let response!: ApiResponse;
 
     if (state !== "merge") {
-      response = new NoResponseNeeded();
+      response = new NoRequestNeeded();
       goodGitPractice = this.mrIsNotSelfAssignedOrMerged(assigneeId, authorId);
     } else {
       // Make API call for merge state only
-      const whoApproved:
-        | SuccessfulGetResponse
-        | FailedResponse = await api.getMRApprovalConfig();
+      const whoApproved: ApiResponse = await api.getMRApprovalConfig();
 
       if (whoApproved instanceof SuccessfulGetResponse) {
         if (
@@ -74,9 +69,7 @@ export class SelfMerge implements BotAction {
         } else {
           // if approval array is empty, second api call required to see who merged the MR
           approversNeeded = true;
-          const whoMerged:
-            | SuccessfulGetResponse
-            | FailedResponse = await api.getSingleMR();
+          const whoMerged: ApiResponse = await api.getSingleMR();
           response = whoMerged;
           if (
             whoMerged instanceof SuccessfulGetResponse &&

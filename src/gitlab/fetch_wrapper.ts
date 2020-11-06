@@ -1,19 +1,21 @@
 import * as winston from "winston";
 import fetch from "node-fetch";
 import * as HttpStatus from "http-status-codes";
-import {
-  SuccessfulGetResponse,
-  FailedResponse,
-  BuildGetResponse,
-  SuccessfulPostORPutResponse,
-  BuildPostORPutResponse,
-} from ".";
+import { BuildGetResponse, BuildPostORPutResponse, ApiResponse } from ".";
+
+// Fetch treats 4XX or 5XX errors like regular responses.
+// Fetch differentiates these from a 'network error' which will
+// throw an error in the try/catch block.
 
 interface RawFetchResponse {
   body: [] | {} | undefined | string;
   status: number;
 }
 
+/**
+ * This utility class contains methods and properties required to make HTTP calls using the Fetch API library
+ * and building custom response objects.
+ */
 export class FetchWrapper {
   private readonly commonHeaders: {};
   private readonly deleteOptions: {};
@@ -34,13 +36,13 @@ export class FetchWrapper {
     };
   }
 
-  // Fetch treats 4XX or 5XX errors like regular responses.
-  // Fetch differentiates these from a 'network error' which will
-  // throw an error in the try/catch block.
-  public async makeGetRequest(
-    uri: string,
-  ): Promise<SuccessfulGetResponse | FailedResponse> {
-    let newResponse: SuccessfulGetResponse | FailedResponse;
+  /**
+   * Sends an HTTP GET request
+   * @param uri The specific API endpoint to send a request to
+   * @returns `ApiResponse` instance that indicates whether the call succeeded or failed
+   */
+  public async makeGetRequest(uri: string): Promise<ApiResponse> {
+    let newResponse: ApiResponse;
     try {
       const result: RawFetchResponse = await this.handleFetch(
         uri,
@@ -54,11 +56,14 @@ export class FetchWrapper {
     return newResponse;
   }
 
-  public async makePutRequest(
-    uri: string,
-    qs: any,
-  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
-    let response: SuccessfulPostORPutResponse | FailedResponse;
+  /**
+   * Sends an HTTP PUT request
+   * @param uri The specific API endpoint to send a request to
+   * @param qs Querystring data required by the API endpoint
+   * @returns `ApiResponse` instance that indicates whether the call succeeded or failed
+   */
+  public async makePutRequest(uri: string, qs: any): Promise<ApiResponse> {
+    let response: ApiResponse;
     const putOptions = {
       body: JSON.stringify(qs),
       headers: this.commonHeaders,
@@ -75,11 +80,14 @@ export class FetchWrapper {
     return response;
   }
 
-  public async makePostRequest(
-    uri: string,
-    qs: any,
-  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
-    let response: SuccessfulPostORPutResponse | FailedResponse;
+  /**
+   * Sends an HTTP POST request
+   * @param uri The specific API endpoint to send a request to
+   * @param qs Querystring data required by the API endpoint
+   * @returns `ApiResponse` instance that indicates whether the call succeeded or failed
+   */
+  public async makePostRequest(uri: string, qs: any): Promise<ApiResponse> {
+    let response: ApiResponse;
     const postOptions = {
       body: JSON.stringify(qs),
       headers: this.commonHeaders,
@@ -110,10 +118,8 @@ export class FetchWrapper {
    * @remarks
    * If DELETE is successful, will return a 204 code as result.
    */
-  public async makeDeleteRequest(
-    uri: string,
-  ): Promise<FailedResponse | SuccessfulGetResponse> {
-    let response: FailedResponse | SuccessfulGetResponse;
+  public async makeDeleteRequest(uri: string): Promise<ApiResponse> {
+    let response: ApiResponse;
     try {
       const statusCode: number = await this.handleDeleteFetch(
         uri,

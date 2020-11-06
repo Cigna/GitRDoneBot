@@ -1,7 +1,7 @@
 import * as HttpStatus from "http-status-codes";
 import {
   MergeRequestApi,
-  NoResponseNeeded,
+  NoRequestNeeded,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
@@ -63,8 +63,6 @@ const singleGRDBNotePut = new SuccessfulPostORPutResponse(
   GRDB_NOTE_NUMBER,
 );
 
-const noRequestNeeded = new NoResponseNeeded();
-
 // TESTS
 jest.mock("../../src/gitlab/merge_request_api");
 
@@ -107,7 +105,7 @@ describe("Mock API Test: Comment Class", () => {
           sampleNoActionMessageArray,
         );
 
-        expect(postResponse.apiResponse).toBeInstanceOf(NoResponseNeeded);
+        expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
         expect(api.newMRNote).toHaveBeenCalledTimes(0);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -166,7 +164,7 @@ describe("Mock API Test: Comment Class", () => {
           updateToggle,
           sampleNoActionMessageArray,
         );
-        expect(postResponse.apiResponse).toBeInstanceOf(NoResponseNeeded);
+        expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
         expect(api.newMRNote).toHaveBeenCalledTimes(0);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -225,7 +223,7 @@ describe("Mock API Test: Comment Class", () => {
             updateToggle,
             sampleNoActionMessageArray,
           );
-          expect(postResponse.apiResponse).toBeInstanceOf(NoResponseNeeded);
+          expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
           expect(api.newMRNote).toHaveBeenCalledTimes(0);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);

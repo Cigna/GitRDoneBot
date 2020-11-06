@@ -2,7 +2,7 @@ import * as HttpStatus from "http-status-codes";
 import {
   FailedResponse,
   MergeRequestApi,
-  NoResponseNeeded,
+  NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
 import {
@@ -18,7 +18,7 @@ import { TooManyAssignedNote } from "../../src/bot_actions/too_many_assigned/too
 
 // TEST FIXTURES
 const customConfig = BotActionConfig.from(TooManyAssignedDefaults, {});
-const noRequestNeededResponse = new NoResponseNeeded();
+const noRequestNeededResponse = new NoRequestNeeded();
 const defaultAssignedMRThreshold: number = 3;
 const getResponseWhereAssignedMRSBelowThreshold: SuccessfulGetResponse = new SuccessfulGetResponse(
   HttpStatus.OK,
@@ -163,9 +163,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
 
-        test("should return apiResponse state of NoResponseNeeded", () => {
+        test("should return apiResponse state of NoRequestNeeded", () => {
           expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-            NoResponseNeeded,
+            NoRequestNeeded,
           );
         });
 
@@ -313,9 +313,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return apiResponse state of NoResponseNeeded", () => {
+      test("should return apiResponse state of NoRequestNeeded", () => {
         expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          NoResponseNeeded,
+          NoRequestNeeded,
         );
       });
 
@@ -397,9 +397,9 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return apiResponse state of NoResponseNeeded", () => {
+      test("should return apiResponse state of NoRequestNeeded", () => {
         expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          NoResponseNeeded,
+          NoRequestNeeded,
         );
       });
 

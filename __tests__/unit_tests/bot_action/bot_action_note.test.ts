@@ -1,7 +1,7 @@
 import { BotActionNote } from "../../../src/bot_actions";
 import {
   FailedResponse,
-  NoResponseNeeded,
+  NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../../src/gitlab";
 
@@ -50,7 +50,7 @@ describe("standardCaseForCheckPermissionsMessage(apiResponse) function", () => {
     });
   });
 
-  describe("when apiResponse is NoResponseNeeded", (apiResponse = new NoResponseNeeded()) => {
+  describe("when apiResponse is NoRequestNeeded", (apiResponse = new NoRequestNeeded()) => {
     test("RETURNS BOOLEAN: false", () => {
       expect(
         BotActionNote.standardCaseForCheckPermissionsMessage(apiResponse),
