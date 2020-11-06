@@ -152,22 +152,23 @@ export class BotActionsResponse {
         customConfig.updateMergeRequestComment,
         [
           branchAge.mrNote,
+          commitMessage.mrNote,
           diffSize.mrNote,
+          gitOuttaHere.mrNote,
+          newGitWhoDis.mrNote,
           selfMerge.mrNote,
           tooManyAssigned.mrNote,
-          newGitWhoDis.mrNote,
-          gitOuttaHere.mrNote,
-          commitMessage.mrNote,
         ],
       );
 
       const postEmojiPromise: Promise<BotEmoji> = BotEmoji.post(api, [
-        diffSize.goodGitPractice,
-        selfMerge.goodGitPractice,
         branchAge.goodGitPractice,
-        gitOuttaHere.goodGitPractice,
-        tooManyAssigned.goodGitPractice,
         commitMessage.goodGitPractice,
+        diffSize.goodGitPractice,
+        gitOuttaHere.goodGitPractice,
+        newGitWhoDis.goodGitPractice,
+        selfMerge.goodGitPractice,
+        tooManyAssigned.goodGitPractice,
       ]);
 
       // fire POST logic in parallel - must be performed only after all Bot Action promises have resolved
@@ -175,8 +176,6 @@ export class BotActionsResponse {
 
       // gets overall status from statuses returned by individual Bot Action API calls
       status = Status.fromCodes([
-        diffSize.apiResponse.statusCode,
-        selfMerge.apiResponse.statusCode,
         branchAge.apiResponse.statusCode,
         commitMessage.apiResponse.statusCode,
         diffSize.apiResponse.statusCode,
