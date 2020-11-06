@@ -3,7 +3,7 @@
 import {
   FailedResponse,
   MergeRequestApi,
-  NoResponseNeeded,
+  NoRequestNeeded,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
 import { winlog } from "../../src/util";
@@ -37,7 +37,7 @@ describe("Mock API Test: Emoji Class", () => {
 
     test("posts no emoji when no content exists", async () => {
       const postResponse = await BotEmoji.post(api, [undefined]);
-      expect(postResponse.apiResponse).toBeInstanceOf(NoResponseNeeded);
+      expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
       expect(api.postEmoji).toHaveBeenCalledTimes(0);
     });
 

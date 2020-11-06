@@ -1,8 +1,4 @@
-import {
-  FailedResponse,
-  MergeRequestApi,
-  SuccessfulGetResponse,
-} from "../gitlab";
+import { ApiResponse, MergeRequestApi, SuccessfulGetResponse } from "../gitlab";
 import { BotActionConfig } from "./bot_action_config";
 import {
   BranchAgeDefaults,
@@ -21,7 +17,7 @@ export class CustomConfig {
     readonly diffSize: BotActionConfig,
     readonly tooManyMergeRequests: BotActionConfig,
     readonly updateMergeRequestComment: boolean,
-    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
+    readonly apiResponse: ApiResponse,
   ) {}
 
   /**
@@ -31,9 +27,7 @@ export class CustomConfig {
    * @returns CustomConfig with loaded values
    * */
   static async from(api: MergeRequestApi): Promise<CustomConfig> {
-    const response:
-      | SuccessfulGetResponse
-      | FailedResponse = await api.getConfigurationFile();
+    const response: ApiResponse = await api.getConfigurationFile();
 
     let result: any;
 

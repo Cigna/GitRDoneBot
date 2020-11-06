@@ -1,31 +1,20 @@
 import * as HttpStatus from "http-status-codes";
 
-// TODO: Update all code comment docs
-
 /**
- * Each instance of this class contains an instance of `GitLabAPIRequest` and, if it exists, payload received from GitLab API `GET` request.
- */
-
-/**
- * Formats response received from GitLab API `GET` request.
- * @param statusCode HTTP status code
- * @param body JSON payload response received from API request
- * @param statusMessage optional param for constructing non-standard HTTP status message
- * @returns GitLabGetResponse containing HTTP status information and either:
- * * payload received from API call
+ * Base class that contains status code received from HTTP request.
  *
- * OR
- * * message conveying why there is no payload
- * @remarks `result` will be `undefined` when api call not required
- * */
-
+ * Is extended by multiple subclasses to capture state of request as a specific instance type.
+ *
+ * Subclasses contain different information relevant to their state, such as a response body
+ */
 export class ApiResponse {
   readonly message: string;
   constructor(readonly statusCode: number) {
     this.message = HttpStatus.getStatusText(statusCode);
   }
+
   public static computeSuccess(statusCode: number): boolean {
-    let success: boolean | undefined;
+    let success: boolean;
 
     if (
       statusCode === HttpStatus.OK ||
@@ -39,6 +28,10 @@ export class ApiResponse {
     return success;
   }
 }
+
+/**
+ * Subclass of ApiResponse. Contains data payload from GET request, if one exists.
+ */
 export class SuccessfulGetResponse extends ApiResponse {
   constructor(readonly statusCode: number, readonly result: any) {
     super(statusCode);
@@ -48,28 +41,43 @@ export class SuccessfulGetResponse extends ApiResponse {
   }
 }
 
+/**
+ * Subclass of ApiResponse. Used for all API requests that respond with codes other than 200 or 201.
+ */
 export class FailedResponse extends ApiResponse {
   constructor(readonly statusCode: number) {
     super(statusCode);
   }
 }
-export class NoResponseNeeded extends ApiResponse {
+
+/**
+ * Subclass of ApiResponse. Always contains status code 204.
+ */
+export class NoRequestNeeded extends ApiResponse {
   constructor() {
     super(HttpStatus.NO_CONTENT);
   }
 }
 
+/**
+ * Subclass of ApiResponse. Contains id of object created by POST/PUT request, if one exists.
+ */
 export class SuccessfulPostORPutResponse extends ApiResponse {
   constructor(readonly statusCode: number, readonly id: number) {
     super(statusCode);
   }
 }
 
+/**
+ * @param statusCode HTTP status code
+ * @param body Data payload received from HTTP GET request
+ * @returns `SuccessfulGetResponse` or `FailedResponse`
+ */
 export function BuildGetResponse<T>(
   statusCode: number,
   body: T[] | T | undefined,
-): SuccessfulGetResponse | FailedResponse {
-  let response: SuccessfulGetResponse | FailedResponse;
+): ApiResponse {
+  let response: ApiResponse;
 
   if (ApiResponse.computeSuccess(statusCode) && body !== undefined) {
     response = new SuccessfulGetResponse(statusCode, body);
@@ -79,12 +87,16 @@ export function BuildGetResponse<T>(
   return response;
 }
 
-// TODO: what types can body potentially be
-export function BuildPostORPutResponse<T>(
+/**
+ * @param statusCode HTTP status code
+ * @param body (Optional) Data payload received from HTTP PUT/POST request
+ * @returns `SuccessfulPostORPutResponse` or `FailedResponse`
+ */
+export function BuildPostORPutResponse(
   statusCode: number,
   body?: any,
-): SuccessfulPostORPutResponse | FailedResponse {
-  let response: SuccessfulPostORPutResponse | FailedResponse;
+): ApiResponse {
+  let response: ApiResponse;
 
   if (
     ApiResponse.computeSuccess(statusCode) === true &&

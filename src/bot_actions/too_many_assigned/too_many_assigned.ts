@@ -1,7 +1,7 @@
 import {
-  FailedResponse,
+  ApiResponse,
   MergeRequestApi,
-  NoResponseNeeded,
+  NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../gitlab";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
@@ -14,10 +14,7 @@ import { TooManyAssignedNote } from "./too_many_assigned_note";
  */
 export class TooManyAssigned implements BotAction {
   private constructor(
-    readonly apiResponse:
-      | SuccessfulGetResponse
-      | FailedResponse
-      | NoResponseNeeded,
+    readonly apiResponse: ApiResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
   ) {}
@@ -33,7 +30,7 @@ export class TooManyAssigned implements BotAction {
    *
    * @returns BotAction object constructed after getting number of merge requests already assigned to assignee, determining goodGitPractice based on that value, and instantiating a new note object.
    *
-   * @remarks If api call fails, returns BotAction where `goodGitPractice` and `apiResponse` will be undefined.
+   * @remarks If api call fails, returns BotAction where `goodGitPractice` will be undefined.
    * */
   static async from(
     state: string,
@@ -42,7 +39,7 @@ export class TooManyAssigned implements BotAction {
     logger: winston.Logger,
     assigneeId: number,
   ): Promise<BotAction> {
-    let response!: SuccessfulGetResponse | FailedResponse | NoResponseNeeded;
+    let response!: ApiResponse;
     let goodGitPractice!: boolean;
 
     if (state !== "merge" && assigneeId !== null) {
@@ -55,7 +52,7 @@ export class TooManyAssigned implements BotAction {
         goodGitPractice = response.result.length <= customConfig.threshold;
       }
     } else {
-      response = new NoResponseNeeded();
+      response = new NoRequestNeeded();
     }
 
     return new TooManyAssigned(
