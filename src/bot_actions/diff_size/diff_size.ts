@@ -67,7 +67,7 @@ export class DiffSize implements BotAction {
       goodGitPractice,
       DiffSizeNote.buildMessage(
         customConfig,
-        response instanceof SuccessfulGetResponse,
+        response,
         state,
         goodGitPractice,
         totalDiffs,

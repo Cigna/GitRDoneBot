@@ -48,11 +48,7 @@ export class GitOuttaHere implements BotAction {
     return new GitOuttaHere(
       response,
       goodGitPractice,
-      GitOuttaHereNote.buildMessage(
-        response instanceof SuccessfulGetResponse,
-        goodGitPractice,
-        logger,
-      ),
+      GitOuttaHereNote.buildMessage(response, goodGitPractice, logger),
     );
   }
 

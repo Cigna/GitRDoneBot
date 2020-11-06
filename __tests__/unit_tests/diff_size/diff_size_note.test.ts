@@ -2,12 +2,15 @@ import { winlog } from "../../../src/util";
 import { BotActionConfig } from "../../../src/custom_config/bot_action_config";
 import { DiffSizeDefaults } from "../../../src/custom_config/action_config_defaults";
 import { DiffSizeNote } from "../../../src/bot_actions/diff_size/diff_size_note";
+import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
 
 // default value for customConfig.constructiveFeedbackOnlyToggle is false
 const falseCustomConfig = BotActionConfig.from(DiffSizeDefaults, {});
 const trueCustomConfig = BotActionConfig.from(DiffSizeDefaults, {
   diffAnalysis: { constructiveFeedbackOnlyToggle: true },
 });
+const successfulResponse = new SuccessfulGetResponse(200, {});
+const failedResponse = new FailedResponse(401);
 
 describe("DiffSizeNote.fromMessage(message)", () => {
   describe("any message string", (message = "Helpful reminder from your friendly neighborhood GitRDoneBot.") => {
@@ -1040,9 +1043,9 @@ describe("DiffSizeNote.caseForGoodMessage(state, goodGitPractice, constructiveFe
   });
 });
 
-describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, goodGitPractice, totalDiffs, logger)", () => {
-  // All DiffSizeNote logic only cares if gitLabRequestSuccess === false; true or undefined are ignored
-  describe("gitLabRequestSuccess !== false", (gitLabRequestSuccess = undefined) => {
+describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPractice, totalDiffs, logger)", () => {
+  // All DiffSizeNote logic only cares if apiResponse === false; true or undefined are ignored
+  describe("apiResponse !== false", (apiResponse = successfulResponse) => {
     describe("'open' state", (state = "open") => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         describe("customConfig.constructiveFeedbackOnlyToggle === true", (customConfig = trueCustomConfig) => {
@@ -1051,7 +1054,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1066,7 +1069,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1083,7 +1086,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1098,7 +1101,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1117,7 +1120,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1132,7 +1135,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1149,7 +1152,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1164,7 +1167,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1183,7 +1186,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1198,7 +1201,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1215,7 +1218,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1230,7 +1233,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1251,7 +1254,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1266,7 +1269,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1283,7 +1286,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1298,7 +1301,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1317,7 +1320,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1332,7 +1335,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1349,7 +1352,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1364,7 +1367,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1383,7 +1386,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1398,7 +1401,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1415,7 +1418,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1430,7 +1433,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1451,7 +1454,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1466,7 +1469,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1483,7 +1486,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1498,7 +1501,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1517,7 +1520,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1532,7 +1535,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1549,7 +1552,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1564,7 +1567,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1583,7 +1586,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1598,7 +1601,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1615,7 +1618,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1630,7 +1633,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,
@@ -1644,8 +1647,8 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
     });
   });
 
-  // if gitLabRequestSuccess === false, all other params are ignored
-  describe("gitLabRequestSuccess === false", (gitLabRequestSuccess = false) => {
+  // if apiResponse === FailedResponse, all other params are ignored
+  describe("apiResponse === FailedResponse", (apiResponse = failedResponse) => {
     describe("state === undefined", (state = undefined) => {
       describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
         describe("constructiveFeedbackOnlyToggle === undefined", (customConfig = undefined) => {
@@ -1654,7 +1657,7 @@ describe("DiffSizeNote.buildMessage(customConfig, gitLabRequestSuccess, state, g
               expect(
                 DiffSizeNote.buildMessage(
                   customConfig,
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   totalDiffs,

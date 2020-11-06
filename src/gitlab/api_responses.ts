@@ -19,7 +19,7 @@ import * as HttpStatus from "http-status-codes";
  * @remarks `result` will be `undefined` when api call not required
  * */
 
-class Response {
+export class ApiResponse {
   readonly message: string;
   constructor(readonly statusCode: number) {
     this.message = HttpStatus.getStatusText(statusCode);
@@ -39,7 +39,7 @@ class Response {
     return success;
   }
 }
-export class SuccessfulGetResponse extends Response {
+export class SuccessfulGetResponse extends ApiResponse {
   constructor(readonly statusCode: number, readonly result: any) {
     super(statusCode);
     if (result === undefined) {
@@ -48,18 +48,18 @@ export class SuccessfulGetResponse extends Response {
   }
 }
 
-export class FailedResponse extends Response {
+export class FailedResponse extends ApiResponse {
   constructor(readonly statusCode: number) {
     super(statusCode);
   }
 }
-export class NoResponseNeeded extends Response {
+export class NoResponseNeeded extends ApiResponse {
   constructor() {
     super(HttpStatus.NO_CONTENT);
   }
 }
 
-export class SuccessfulPostORPutResponse extends Response {
+export class SuccessfulPostORPutResponse extends ApiResponse {
   constructor(readonly statusCode: number, readonly id: number) {
     super(statusCode);
   }
@@ -71,7 +71,7 @@ export function BuildGetResponse<T>(
 ): SuccessfulGetResponse | FailedResponse {
   let response: SuccessfulGetResponse | FailedResponse;
 
-  if (Response.computeSuccess(statusCode) && body !== undefined) {
+  if (ApiResponse.computeSuccess(statusCode) && body !== undefined) {
     response = new SuccessfulGetResponse(statusCode, body);
   } else {
     response = new FailedResponse(statusCode);
@@ -87,7 +87,7 @@ export function BuildPostORPutResponse<T>(
   let response: SuccessfulPostORPutResponse | FailedResponse;
 
   if (
-    Response.computeSuccess(statusCode) === true &&
+    ApiResponse.computeSuccess(statusCode) === true &&
     body !== undefined &&
     body.hasOwnProperty("id")
   ) {

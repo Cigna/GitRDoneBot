@@ -1,5 +1,6 @@
 import * as winston from "winston";
 import { BotActionNote } from "..";
+import { ApiResponse } from "../../gitlab";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Commit Messages Action.
@@ -56,7 +57,7 @@ export class CommitMessagesNote extends BotActionNote {
    * @returns `message` of the `CommitMessagesNote` object
    * */
   static buildMessage(
-    apiRequestSuccess: boolean,
+    apiResponse: ApiResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     constructiveFeedbackOnlyToggle: boolean,
@@ -66,7 +67,7 @@ export class CommitMessagesNote extends BotActionNote {
     let note: CommitMessagesNote;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(apiRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiResponse): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }

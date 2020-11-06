@@ -66,7 +66,7 @@ export class BranchAge implements BotAction {
       goodGitPractice,
       BranchAgeNote.buildMessage(
         customConfig,
-        response instanceof SuccessfulGetResponse,
+        response,
         goodGitPractice,
         state,
         logger,

@@ -70,7 +70,7 @@ export class CommitMessages implements BotAction {
       response,
       goodGitPractice,
       CommitMessagesNote.buildMessage(
-        response instanceof SuccessfulGetResponse,
+        response,
         state,
         goodGitPractice,
         constructiveFeedbackOnlyToggle,

@@ -62,7 +62,7 @@ export class TooManyAssigned implements BotAction {
       response,
       goodGitPractice,
       TooManyAssignedNote.buildMessage(
-        response instanceof (SuccessfulGetResponse || NoResponseNeeded),
+        response,
         state,
         goodGitPractice,
         assigneeId,

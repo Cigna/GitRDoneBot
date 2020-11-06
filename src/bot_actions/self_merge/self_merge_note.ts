@@ -1,5 +1,6 @@
 import { BotActionNote } from "../bot_action_note";
 import * as winston from "winston";
+import { ApiResponse } from "../../gitlab";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Self Merge action.
@@ -100,7 +101,7 @@ export class SelfMergeNote extends BotActionNote {
    * @returns `message` of the `SelfMergeNote` object
    * */
   static buildMessage(
-    apiRequestSuccess: boolean,
+    apiResponse: ApiResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     approversNeeded: boolean | undefined,
@@ -108,7 +109,7 @@ export class SelfMergeNote extends BotActionNote {
   ): string {
     let note: SelfMergeNote;
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(apiRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiResponse): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }

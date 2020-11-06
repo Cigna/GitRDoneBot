@@ -93,15 +93,11 @@ export class SelfMerge implements BotAction {
       }
     }
 
-    const apiRequestSuccess: boolean =
-      response instanceof SuccessfulGetResponse ||
-      response instanceof NoResponseNeeded;
-
     return new SelfMerge(
       response,
       goodGitPractice,
       SelfMergeNote.buildMessage(
-        apiRequestSuccess,
+        response,
         state,
         goodGitPractice,
         approversNeeded,
