@@ -5,15 +5,15 @@ import * as jestPlugin from "serverless-jest-plugin";
 import { Context } from "aws-lambda";
 import { mockGitLabWebhookEvent } from "../helpers";
 import { getToken } from "../../src/util";
-import {
-  handleGitLabWebhook,
-  HealthCheckResponse,
-  NoActionResponse,
-  NotSupportedResponse,
-} from "../../handler";
+import { handleGitLabWebhook } from "../../handler";
 import { BotActionsResponse } from "../../src/merge_request";
 import { CustomConfig } from "../../src/custom_config/custom_config";
 import { SuccessfulGetResponse } from "../../src/gitlab";
+import {
+  HealthCheckResponse,
+  NoActionResponse,
+  NotSupportedResponse,
+} from "../../src/interfaces";
 
 const context: Context = {
   awsRequestId: "abcdefghi-1234-jklm-5678-nopqrstuvxyz90",

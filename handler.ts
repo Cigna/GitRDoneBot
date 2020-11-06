@@ -1,5 +1,11 @@
 import { Context, Handler } from "aws-lambda";
-import { LambdaResponse } from "./src/interfaces";
+import {
+  ErrorResponse,
+  HealthCheckResponse,
+  LambdaResponse,
+  NoActionResponse,
+  NotSupportedResponse,
+} from "./src/interfaces";
 import { MergeRequestApi } from "./src/gitlab";
 import {
   BotActionsResponse,
@@ -9,30 +15,9 @@ import {
   getState,
 } from "./src/merge_request";
 import { winlog, getToken, getBaseURI } from "./src/util";
-import * as HttpStatus from "http-status-codes";
 import { CustomConfig } from "./src/custom_config/custom_config";
 
 let containerId: string;
-
-export class HealthCheckResponse implements LambdaResponse {
-  body = "CloudWatch timer healthcheck";
-  statusCode = HttpStatus.IM_A_TEAPOT;
-}
-
-export class NoActionResponse implements LambdaResponse {
-  body = "No action required for this state";
-  statusCode = HttpStatus.OK;
-}
-
-export class ErrorResponse implements LambdaResponse {
-  body = HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR);
-  statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-}
-
-export class NotSupportedResponse implements LambdaResponse {
-  body = "Not a supported GitLab event.";
-  statusCode = HttpStatus.OK;
-}
 
 /**
  * Processes incoming GitLab webhook events that have come through API Gateway.
@@ -46,12 +31,10 @@ export class NotSupportedResponse implements LambdaResponse {
  * 1. GenericResponse with "no action needed" message when incoming event is a Merge Request event in an unsupported state.
  * 1. GenericResponse with standard HTTP 500 internal server error message if any error occurs while processing event.
  */
-const handleGitLabWebhook = async (
-  event: any,
-): Promise<BotActionsResponse | NoActionResponse | ErrorResponse> => {
+const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   let gitLabEvent: any;
   let token, baseURI, objectKind: string | undefined;
-  let response!: BotActionsResponse | NoActionResponse | ErrorResponse;
+  let response!: LambdaResponse;
 
   try {
     gitLabEvent = JSON.parse(event.body);
@@ -142,9 +125,7 @@ const webhook: Handler = async (
     containerId = context.awsRequestId;
   }
 
-  const response:
-    | BotActionsResponse
-    | HealthCheckResponse = event.hasOwnProperty("body")
+  const response: LambdaResponse = event.hasOwnProperty("body")
     ? await handleGitLabWebhook(event)
     : new HealthCheckResponse();
 

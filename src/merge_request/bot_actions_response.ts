@@ -50,7 +50,7 @@ export class BotActionsResponse implements LambdaResponse {
 
     // variables declared here so they will be in scope for response constructor
     // only status is guaranteed to be set regardless of error
-    let status: number,
+    let statusCode: number,
       branchAge!: BranchAge,
       commitMessage!: CommitMessages,
       diffSize!: DiffSize,
@@ -161,7 +161,7 @@ export class BotActionsResponse implements LambdaResponse {
       [comment, emoji] = [await postCommentPromise, await postEmojiPromise];
 
       // gets overall status from statuses returned by individual Bot Action API calls
-      status = this.fromCodes([
+      statusCode = this.fromCodes([
         branchAge.apiResponse.statusCode,
         commitMessage.apiResponse.statusCode,
         diffSize.apiResponse.statusCode,
@@ -171,7 +171,7 @@ export class BotActionsResponse implements LambdaResponse {
       ]);
     } catch (err) {
       logger.error(`BotActionsResponse Error: ${err.message}`);
-      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     const responseBody = JSON.stringify({
@@ -188,7 +188,7 @@ export class BotActionsResponse implements LambdaResponse {
       emoji,
     });
 
-    return new BotActionsResponse(status, responseBody);
+    return new BotActionsResponse(statusCode, responseBody);
   }
   /**
    * Provides an overall status from a set of status codes

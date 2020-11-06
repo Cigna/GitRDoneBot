@@ -7,6 +7,7 @@ import {
   Change,
   GitLabCommit,
   ApprovalsResponse,
+  LambdaResponse,
 } from "../../src/interfaces";
 import {
   mockNote,
@@ -21,17 +22,12 @@ import {
 } from "../helpers";
 import {
   ApiResponse,
-  FailedResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
 import { winlog } from "../../src/util";
-import {
-  ErrorResponse,
-  handleGitLabWebhook,
-  NoActionResponse,
-} from "../../handler";
+import { handleGitLabWebhook } from "../../handler";
 import { BotActionsResponse } from "../../src/merge_request";
 import * as mod from "../../handler";
 import * as jestPlugin from "serverless-jest-plugin";
@@ -110,10 +106,10 @@ beforeAll(async (done) => {
   }
 
   api = new MergeRequestApi(
-    API_TOKEN,
+    API_TOKEN as string,
     PROJECT_ID,
     MERGE_REQ_ID,
-    BASE_URI,
+    BASE_URI as string,
     winlog,
   );
   await cleanUpEmojis(api);
@@ -410,7 +406,7 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
 });
 
 describe("Live Integration API Tests: handler.handleGitLabWebhook responses", () => {
-  let response: BotActionsResponse | NoActionResponse | ErrorResponse;
+  let response: LambdaResponse;
 
   beforeAll(async (done) => {
     const openEvent = {
