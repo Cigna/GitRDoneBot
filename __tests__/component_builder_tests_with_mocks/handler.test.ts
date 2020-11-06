@@ -4,8 +4,13 @@ import * as jestPlugin from "serverless-jest-plugin";
 
 import { Context } from "aws-lambda";
 import { mockGitLabWebhookEvent } from "../helpers";
-import { Status, getToken } from "../../src/util";
-import { handleGitLabWebhook } from "../../handler";
+import { getToken } from "../../src/util";
+import {
+  handleGitLabWebhook,
+  HealthCheckResponse,
+  NoActionResponse,
+  NotSupportedResponse,
+} from "../../handler";
 import { BotActionsResponse } from "../../src/merge_request";
 import { CustomConfig } from "../../src/custom_config/custom_config";
 import { SuccessfulGetResponse } from "../../src/gitlab";
@@ -131,15 +136,16 @@ jest.mock("../../src/custom_config/custom_config");
 const lambdaWrapper = jestPlugin.lambdaWrapper;
 const wrapped = lambdaWrapper.wrap(mod, { handler: "webhook" });
 
+const noActionResponseBody = new NoActionResponse().body;
+const notSupportedResponseBody = new NotSupportedResponse().body;
+const healthCheckResponseBody = new HealthCheckResponse().body;
+
 describe("Mock API Integration Tests: Lambda Handler webhook function", () => {
   test("handleGitLabWebhook() is invoked when GitLab event received", () => {
     return wrapped.runHandler(closedEvent, context, null).then((response) => {
       expect(response).toBeDefined();
       expect(response.statusCode).toBe(HttpStatus.OK);
-      const deStringifiedResponse = JSON.parse(response.body);
-      expect(deStringifiedResponse.response.status.message).toBe(
-        Status.forNoAction().message,
-      );
+      expect(response.body).toBe(noActionResponseBody);
     });
   });
 
@@ -149,10 +155,7 @@ describe("Mock API Integration Tests: Lambda Handler webhook function", () => {
       .then((response) => {
         expect(response).toBeDefined();
         expect(response.statusCode).toBe(HttpStatus.IM_A_TEAPOT);
-        const deStringifiedResponse = JSON.parse(response.body);
-        expect(deStringifiedResponse.response.status.message).toBe(
-          Status.forHealthCheck().message,
-        );
+        expect(response.body).toBe(healthCheckResponseBody);
       });
   });
 });
@@ -161,22 +164,22 @@ describe("Mock API Integration Tests: Lamda Handler handleGitLabWebhook function
   test("Non-MR GitLab Event: returns 'not MR' response", async () => {
     const response: any = await handleGitLabWebhook(nonMREvent);
     expect(response).not.toBeInstanceOf(BotActionsResponse);
-    expect(response.status.message).toBe(Status.forNotSupported().message);
-    expect(response.status.code).toBe(HttpStatus.OK);
+    expect(response.body).toBe(notSupportedResponseBody);
+    expect(response.statusCode).toBe(HttpStatus.OK);
   });
 
   test("Reopened State: returns 'no action' response", async () => {
     const response: any = await handleGitLabWebhook(reopenedEvent);
     expect(response).not.toBeInstanceOf(BotActionsResponse);
-    expect(response.status.message).toBe(Status.forNoAction().message);
-    expect(response.status.code).toBe(HttpStatus.OK);
+    expect(response.body).toBe(noActionResponseBody);
+    expect(response.statusCode).toBe(HttpStatus.OK);
   });
 
   test("Closed State: returns 'no action' response", async () => {
     const response: any = await handleGitLabWebhook(closedEvent);
     expect(response).not.toBeInstanceOf(BotActionsResponse);
-    expect(response.status.message).toBe(Status.forNoAction().message);
-    expect(response.status.code).toBe(HttpStatus.OK);
+    expect(response.body).toBe(noActionResponseBody);
+    expect(response.statusCode).toBe(HttpStatus.OK);
   });
 
   test("Updated State: returns 'no action' response when toggle is false", async () => {
@@ -184,8 +187,8 @@ describe("Mock API Integration Tests: Lamda Handler handleGitLabWebhook function
     CustomConfig.from.mockResolvedValue(customConfigUpdateToggleFalse);
     const response = await handleGitLabWebhook(updateEvent);
     expect(response).not.toBeInstanceOf(BotActionsResponse);
-    expect(response.status.message).toBe(Status.forNoAction().message);
-    expect(response.status.code).toBe(HttpStatus.OK);
+    expect(response.body).toBe(noActionResponseBody);
+    expect(response.statusCode).toBe(HttpStatus.OK);
   });
 });
 

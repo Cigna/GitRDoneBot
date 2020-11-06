@@ -7,7 +7,6 @@ import {
   Change,
   GitLabCommit,
   ApprovalsResponse,
-  GenericResponse,
 } from "../../src/interfaces";
 import {
   mockNote,
@@ -27,7 +26,11 @@ import {
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
 import { winlog } from "../../src/util";
-import { handleGitLabWebhook } from "../../handler";
+import {
+  ErrorResponse,
+  handleGitLabWebhook,
+  NoActionResponse,
+} from "../../handler";
 import { BotActionsResponse } from "../../src/merge_request";
 import * as mod from "../../handler";
 import * as jestPlugin from "serverless-jest-plugin";
@@ -406,7 +409,7 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
 });
 
 describe("Live Integration API Tests: handler.handleGitLabWebhook responses", () => {
-  let response: BotActionsResponse | GenericResponse;
+  let response: BotActionsResponse | NoActionResponse | ErrorResponse;
 
   beforeAll(async (done) => {
     const openEvent = {
@@ -427,7 +430,7 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
   test("Open State: returns MergeRequestHandler response", () => {
     expect(response).toBeInstanceOf(BotActionsResponse);
     expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.status.code,
+      response.statusCode,
     );
   });
 });
@@ -450,7 +453,7 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
     const response = await handleGitLabWebhook(mergedEvent);
     expect(response).toBeInstanceOf(BotActionsResponse);
     expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.status.code,
+      response.statusCode,
     );
   }, 30000);
 
@@ -470,7 +473,7 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
     const response = await handleGitLabWebhook(updateEvent);
     expect(response).toBeInstanceOf(BotActionsResponse);
     expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.status.code,
+      response.statusCode,
     );
   }, 30000);
 });
