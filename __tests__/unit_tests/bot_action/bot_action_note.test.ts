@@ -50,7 +50,7 @@ describe("standardCaseForCheckPermissionsMessage(apiResponse) function", () => {
     });
   });
 
-  describe("when apiResponse is NoRequestNeeded", (apiResponse = new NoRequestNeeded()) => {
+  describe("when apiResponse is NoResponseNeeded", (apiResponse = new NoRequestNeeded()) => {
     test("RETURNS BOOLEAN: false", () => {
       expect(
         BotActionNote.standardCaseForCheckPermissionsMessage(apiResponse),

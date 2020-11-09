@@ -9,7 +9,7 @@ import {
 export function mockGitLabWebhookEvent(
   authorId: number,
   projectId: number,
-  assigneeId: number,
+  assigneeId: number | null,
   mrId: number,
   mrState: string,
   objectKind: string,
@@ -44,7 +44,6 @@ export function mockNote(noteId: number, username: string): Note {
   return {
     id: noteId,
     body: "Comment for MR",
-    attachment: null,
     author: {
       id: 2,
       name: "River Tam",
@@ -107,7 +106,7 @@ export function mockChange(diff: string): Change {
 }
 
 export function createNNotes(count: number, username: string): any {
-  let notes = [];
+  let notes: Array<Note> = [];
   for (let i = 0; i < count; i++) {
     notes.push(mockNote(100 + i, username));
   }
@@ -115,7 +114,7 @@ export function createNNotes(count: number, username: string): any {
 }
 
 export function createNGitLabCommits(count: number): any {
-  let commits = [];
+  let commits: Array<GitLabCommit> = [];
   for (let i = 0; i < count; i++) {
     commits.push(mockGitLabCommit("", Date.now().toString()));
   }
@@ -123,9 +122,9 @@ export function createNGitLabCommits(count: number): any {
 }
 
 export function createNMergeRequestObjects(count: number): any {
-  let MRs = [];
+  let MRs: Array<MergeRequest> = [];
   for (let i = 0; i < count; i++) {
-    MRs.push({ mock_merge_request_object: i });
+    MRs.push(mockMergeRequest());
   }
   return MRs;
 }

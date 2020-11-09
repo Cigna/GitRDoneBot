@@ -7,7 +7,7 @@ import {
   Change,
   GitLabCommit,
   ApprovalsResponse,
-  GenericResponse,
+  LambdaResponse,
 } from "../../src/interfaces";
 import {
   mockNote,
@@ -22,7 +22,6 @@ import {
 } from "../helpers";
 import {
   ApiResponse,
-  FailedResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
@@ -107,10 +106,10 @@ beforeAll(async (done) => {
   }
 
   api = new MergeRequestApi(
-    API_TOKEN,
+    API_TOKEN as string,
     PROJECT_ID,
     MERGE_REQ_ID,
-    BASE_URI,
+    BASE_URI as string,
     winlog,
   );
   await cleanUpEmojis(api);
@@ -407,7 +406,7 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
 });
 
 describe("Live Integration API Tests: handler.handleGitLabWebhook responses", () => {
-  let response: BotActionsResponse | GenericResponse;
+  let response: LambdaResponse;
 
   beforeAll(async (done) => {
     const openEvent = {
@@ -428,7 +427,7 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
   test("Open State: returns MergeRequestHandler response", () => {
     expect(response).toBeInstanceOf(BotActionsResponse);
     expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.status.code,
+      response.statusCode,
     );
   });
 });
@@ -451,7 +450,7 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
     const response = await handleGitLabWebhook(mergedEvent);
     expect(response).toBeInstanceOf(BotActionsResponse);
     expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.status.code,
+      response.statusCode,
     );
   }, 30000);
 
@@ -471,7 +470,7 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
     const response = await handleGitLabWebhook(updateEvent);
     expect(response).toBeInstanceOf(BotActionsResponse);
     expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.status.code,
+      response.statusCode,
     );
   }, 30000);
 });
