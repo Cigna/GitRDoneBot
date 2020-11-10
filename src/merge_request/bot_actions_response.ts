@@ -190,14 +190,15 @@ export class BotActionsResponse implements LambdaResponse {
 
     return new BotActionsResponse(statusCode, responseBody);
   }
+
   /**
    * Provides an overall status from a set of status codes
    *
    * @param allCodes Array of status codes
    *
    * @returns
-   * 1. Status with code of 200 when none of the elements of allCodes are a `4XX` or `5XX`.
-   * 1. Status with code of 207 when at least one element of allCodes is a `4XX` or `5XX`.
+   * 1. 200 when none of the elements of allCodes are a `4XX` or `5XX`.
+   * 1. 207 when at least one element of allCodes is a `4XX` or `5XX`.
    */
   static fromCodes(allCodes: Array<number>): number {
     const statusCode: number = allCodes.some((code) => {
