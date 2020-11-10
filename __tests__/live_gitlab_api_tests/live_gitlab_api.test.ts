@@ -21,7 +21,7 @@ import {
   mockGitLabWebhookEvent,
 } from "../helpers";
 import {
-  ApiResponse,
+  FailedResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
@@ -120,7 +120,7 @@ beforeAll(async (done) => {
 
 describe("Live Integration Tests: mergeRequestApi.postEmoji", () => {
   describe("When GitLab API is called", () => {
-    let postEmojiResponse: ApiResponse;
+    let postEmojiResponse: SuccessfulPostORPutResponse | FailedResponse;
 
     beforeAll(async (done) => {
       postEmojiResponse = await api.postEmoji("trophy");
@@ -134,7 +134,7 @@ describe("Live Integration Tests: mergeRequestApi.postEmoji", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getAllMRNotes", () => {
-  let getAllMRNotesResponse: ApiResponse;
+  let getAllMRNotesResponse: SuccessfulGetResponse | FailedResponse;
   let resultNoteArray: Array<Note>;
 
   beforeAll(async (done) => {
@@ -179,7 +179,7 @@ describe("Live Integration Tests: mergeRequestApi.newMRNote", () => {
   describe("When GitLab API is called", () => {
     const NEW_NOTE_MESSAGE = "New note message";
 
-    let newMRNoteResponse: ApiResponse;
+    let newMRNoteResponse: SuccessfulPostORPutResponse | FailedResponse;
 
     beforeAll(async (done) => {
       newMRNoteResponse = await api.newMRNote(NEW_NOTE_MESSAGE);
@@ -203,7 +203,7 @@ describe("Live Integration Tests: mergeRequestApi.editMRNote", () => {
   describe("When GitLab API is called", () => {
     const UPDATED_NOTE_MESSAGE = "New updated note message";
 
-    let editMRNoteResponse: ApiResponse;
+    let editMRNoteResponse: SuccessfulPostORPutResponse | FailedResponse;
 
     beforeAll(async (done) => {
       editMRNoteResponse = await api.editMRNote(
@@ -227,7 +227,7 @@ describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId",
   describe("Happy Path", () => {
     const THRESHOLD = 3;
 
-    let allMRSByAssigneeIDResponse: ApiResponse;
+    let allMRSByAssigneeIDResponse: SuccessfulGetResponse | FailedResponse;
     let resultMRsByAssigneeID: Array<MergeRequest>;
 
     beforeAll(async (done) => {
@@ -266,7 +266,7 @@ describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId",
 });
 
 describe("Live Integration Tests: mergeRequestApi.getMRApprovalConfig", () => {
-  let getMRApprovalConfigResponse: ApiResponse;
+  let getMRApprovalConfigResponse: SuccessfulGetResponse | FailedResponse;
   let resultMRApproval: ApprovalsResponse;
 
   beforeAll(async (done) => {
@@ -303,7 +303,7 @@ describe("Live Integration Tests: mergeRequestApi.getMRApprovalConfig", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMRChanges", () => {
-  let getSingleMRChangesResponse: ApiResponse;
+  let getSingleMRChangesResponse: SuccessfulGetResponse | FailedResponse;
   let resultSingleMRChanges: { changes: Array<Change> };
 
   beforeAll(async (done) => {
@@ -339,7 +339,7 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMRChanges", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMRCommits", () => {
-  let getSingleMRCommitsResponse: ApiResponse;
+  let getSingleMRCommitsResponse: SuccessfulGetResponse | FailedResponse;
   let resultSingleMRCommits: Array<GitLabCommit>;
 
   beforeAll(async (done) => {
@@ -372,7 +372,7 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMRCommits", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
-  let getSingleMRResponse: ApiResponse;
+  let getSingleMRResponse: SuccessfulGetResponse | FailedResponse;
   let resultSingleMR;
 
   beforeAll(async (done) => {

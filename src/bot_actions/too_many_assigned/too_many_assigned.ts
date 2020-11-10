@@ -1,5 +1,5 @@
 import {
-  ApiResponse,
+  FailedResponse,
   MergeRequestApi,
   NoRequestNeeded,
   SuccessfulGetResponse,
@@ -15,7 +15,10 @@ import { TooManyAssignedNote } from "./too_many_assigned_note";
  * */
 export class TooManyAssigned implements BotAction {
   private constructor(
-    readonly apiResponse: ApiResponse,
+    readonly apiResponse:
+      | SuccessfulGetResponse
+      | NoRequestNeeded
+      | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
   ) {}
@@ -40,7 +43,7 @@ export class TooManyAssigned implements BotAction {
     logger: winston.Logger,
     assigneeId: number,
   ): Promise<BotAction> {
-    let response!: ApiResponse;
+    let response: SuccessfulGetResponse | NoRequestNeeded | FailedResponse;
     let goodGitPractice!: boolean;
 
     if (state !== "merge" && assigneeId !== null) {

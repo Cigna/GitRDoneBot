@@ -1,7 +1,7 @@
 import * as winston from "winston";
 import { BotActionNote } from "../bot_action_note";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
-import { ApiResponse } from "../../gitlab";
+import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
@@ -60,7 +60,7 @@ export class BranchAgeNote extends BotActionNote {
    * */
   static buildMessage(
     customConfig: BotActionConfig,
-    apiResponse: ApiResponse,
+    apiResponse: SuccessfulGetResponse | FailedResponse,
     goodGitPractice: boolean | undefined,
     state: string,
     logger: winston.Logger,

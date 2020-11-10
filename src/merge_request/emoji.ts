@@ -1,4 +1,9 @@
-import { ApiResponse, MergeRequestApi, NoRequestNeeded } from "../gitlab";
+import {
+  FailedResponse,
+  MergeRequestApi,
+  NoRequestNeeded,
+  SuccessfulPostORPutResponse,
+} from "../gitlab";
 
 /**
  * This class handles the logic for determining which emoji to post to end-user's Merge Request based on all `goodGitPractice` properties from individual Bot Actions.
@@ -10,7 +15,10 @@ export class BotEmoji {
   static readonly noAction: string = "No BotEmoji action required.";
 
   private constructor(
-    readonly apiResponse: ApiResponse,
+    readonly apiResponse:
+      | SuccessfulPostORPutResponse
+      | NoRequestNeeded
+      | FailedResponse,
     readonly name: string,
   ) {}
 
@@ -24,7 +32,7 @@ export class BotEmoji {
    * */
   static compose(allChecks: Array<boolean>): string {
     let emoji: string;
-    const allUndefined: boolean = allChecks.every((bool) => bool === undefined);
+    const allUndefined = allChecks.every((bool) => bool === undefined);
 
     if (allUndefined) {
       emoji = this.noAction;
@@ -50,9 +58,12 @@ export class BotEmoji {
     api: MergeRequestApi,
     allChecks: Array<boolean>,
   ): Promise<BotEmoji> {
-    let response: ApiResponse;
+    let response:
+      | SuccessfulPostORPutResponse
+      | NoRequestNeeded
+      | FailedResponse;
     const emoji = this.compose(allChecks);
-    const caseForNoActions: boolean = emoji === this.noAction;
+    const caseForNoActions = emoji === this.noAction;
 
     switch (true) {
       case caseForNoActions: {

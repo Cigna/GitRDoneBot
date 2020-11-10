@@ -1,7 +1,7 @@
 import * as winston from "winston";
 import { BotActionNote } from "../bot_action_note";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
-import { ApiResponse } from "../../gitlab";
+import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Diff Size action.
@@ -74,7 +74,7 @@ export class DiffSizeNote extends BotActionNote {
    * */
   static buildMessage(
     customConfig: BotActionConfig,
-    apiResponse: ApiResponse,
+    apiResponse: SuccessfulGetResponse | FailedResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     totalDiffs: number,

@@ -1,6 +1,10 @@
 import { BotActionNote } from "../bot_action_note";
 import * as winston from "winston";
-import { ApiResponse, FailedResponse } from "../../gitlab";
+import {
+  FailedResponse,
+  NoRequestNeeded,
+  SuccessfulGetResponse,
+} from "../../gitlab";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Too Many Assigned action.
@@ -19,7 +23,7 @@ export class TooManyAssignedNote extends BotActionNote {
    * @remarks Custom case needed instead of using generic BotActionNote `standardCaseForCheckPermissionsMessage` because extra param assigneeId needs to be checked.
    */
   static customCaseForCheckPermissionsMessage(
-    apiResponse: ApiResponse,
+    apiResponse: SuccessfulGetResponse | NoRequestNeeded | FailedResponse,
     state: string,
     assigneeId: number | null,
   ): boolean {
@@ -61,7 +65,7 @@ export class TooManyAssignedNote extends BotActionNote {
    * @returns `message` of the `TooManyAssignedNote` object
    * */
   static buildMessage(
-    apiResponse: ApiResponse,
+    apiResponse: SuccessfulGetResponse | NoRequestNeeded | FailedResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     assigneeId: number,

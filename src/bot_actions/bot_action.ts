@@ -1,4 +1,8 @@
-import { ApiResponse } from "../gitlab";
+import {
+  FailedResponse,
+  NoRequestNeeded,
+  SuccessfulGetResponse,
+} from "../gitlab";
 
 /**
  * This interface defines the core properties that are dynamically
@@ -10,7 +14,7 @@ import { ApiResponse } from "../gitlab";
  * failure in order to distinguish from when its value is explicitly set to false after performing some logic.
  * */
 export interface BotAction {
-  apiResponse: ApiResponse;
+  apiResponse: SuccessfulGetResponse | FailedResponse | NoRequestNeeded;
   goodGitPractice: boolean;
   mrNote: string;
 }

@@ -1,5 +1,5 @@
 import {
-  ApiResponse,
+  FailedResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
@@ -13,7 +13,7 @@ import { GitOuttaHereNote } from "./git_outta_here_note";
  * */
 export class GitOuttaHere implements BotAction {
   private constructor(
-    readonly apiResponse: ApiResponse,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
   ) {}
@@ -32,10 +32,10 @@ export class GitOuttaHere implements BotAction {
   static async from(
     api: MergeRequestApi,
     logger: winston.Logger,
-  ): Promise<BotAction> {
+  ): Promise<GitOuttaHere> {
     let goodGitPractice!: boolean;
 
-    const response: ApiResponse = await api.getSingleMRChanges();
+    const response = await api.getSingleMRChanges();
 
     if (
       response instanceof SuccessfulGetResponse &&

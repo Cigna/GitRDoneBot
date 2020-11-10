@@ -1,7 +1,7 @@
 import { BotAction } from "../bot_action";
 import * as winston from "winston";
 import {
-  ApiResponse,
+  FailedResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
@@ -16,7 +16,7 @@ import { GitLabCommit } from "../../interfaces";
  */
 export class BranchAge implements BotAction {
   private constructor(
-    readonly apiResponse: ApiResponse,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly oldestCommit: GitLabCommit,
@@ -43,7 +43,7 @@ export class BranchAge implements BotAction {
     let goodGitPractice!: boolean;
     let oldestCommit!: GitLabCommit;
 
-    const response: ApiResponse = await api.getSingleMRCommits();
+    const response = await api.getSingleMRCommits();
 
     if (response instanceof SuccessfulGetResponse) {
       if (response.result.length === 0) {

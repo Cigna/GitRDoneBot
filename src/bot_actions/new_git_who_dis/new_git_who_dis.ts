@@ -1,6 +1,6 @@
 import * as winston from "winston";
 import { BotAction } from "../bot_action";
-import { ApiResponse, NoRequestNeeded } from "../../gitlab";
+import { NoRequestNeeded } from "../../gitlab";
 import { NewGitWhoDisNote } from "./new_git_who_dis_note";
 
 /**
@@ -8,7 +8,7 @@ import { NewGitWhoDisNote } from "./new_git_who_dis_note";
  * This class implements the `BotAction` interface.
  * */
 export class NewGitWhoDis implements BotAction {
-  readonly apiResponse: ApiResponse = new NoRequestNeeded();
+  readonly apiResponse = new NoRequestNeeded();
 
   private constructor(
     readonly goodGitPractice: boolean,
@@ -26,7 +26,7 @@ export class NewGitWhoDis implements BotAction {
     logger: winston.Logger,
     authorName: string,
   ): Promise<BotAction> {
-    const goodGitPractice: boolean = this.authorNameIsNotLanId(authorName);
+    const goodGitPractice = this.authorNameIsNotLanId(authorName);
 
     return new NewGitWhoDis(
       goodGitPractice,

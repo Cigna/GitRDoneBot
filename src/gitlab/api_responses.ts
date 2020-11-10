@@ -76,8 +76,8 @@ export class SuccessfulPostORPutResponse extends ApiResponse {
 export function BuildGetResponse<T>(
   statusCode: number,
   body: T[] | T | undefined,
-): ApiResponse {
-  let response: ApiResponse;
+): SuccessfulGetResponse | FailedResponse {
+  let response;
 
   if (ApiResponse.computeSuccess(statusCode) && body !== undefined) {
     response = new SuccessfulGetResponse(statusCode, body);
@@ -95,8 +95,8 @@ export function BuildGetResponse<T>(
 export function BuildPostORPutResponse(
   statusCode: number,
   body?: any,
-): ApiResponse {
-  let response: ApiResponse;
+): SuccessfulPostORPutResponse | FailedResponse {
+  let response;
 
   if (
     ApiResponse.computeSuccess(statusCode) === true &&

@@ -11,6 +11,7 @@ import { CustomConfig } from "../../src/custom_config/custom_config";
 import { SuccessfulGetResponse } from "../../src/gitlab";
 import {
   HealthCheckResponse,
+  LambdaResponse,
   NoActionResponse,
   NotSupportedResponse,
 } from "../../src/interfaces";
@@ -162,21 +163,21 @@ describe("Mock API Integration Tests: Lambda Handler webhook function", () => {
 
 describe("Mock API Integration Tests: Lamda Handler handleGitLabWebhook function", () => {
   test("Non-MR GitLab Event: returns 'not MR' response", async () => {
-    const response: any = await handleGitLabWebhook(nonMREvent);
+    const response = await handleGitLabWebhook(nonMREvent);
     expect(response).not.toBeInstanceOf(BotActionsResponse);
     expect(response.body).toBe(notSupportedResponseBody);
     expect(response.statusCode).toBe(HttpStatus.OK);
   });
 
   test("Reopened State: returns 'no action' response", async () => {
-    const response: any = await handleGitLabWebhook(reopenedEvent);
+    const response = await handleGitLabWebhook(reopenedEvent);
     expect(response).not.toBeInstanceOf(BotActionsResponse);
     expect(response.body).toBe(noActionResponseBody);
     expect(response.statusCode).toBe(HttpStatus.OK);
   });
 
   test("Closed State: returns 'no action' response", async () => {
-    const response: any = await handleGitLabWebhook(closedEvent);
+    const response = await handleGitLabWebhook(closedEvent);
     expect(response).not.toBeInstanceOf(BotActionsResponse);
     expect(response.body).toBe(noActionResponseBody);
     expect(response.statusCode).toBe(HttpStatus.OK);

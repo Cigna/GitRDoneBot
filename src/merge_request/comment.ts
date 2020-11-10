@@ -3,7 +3,7 @@ import {
   SuccessfulGetResponse,
   FailedResponse,
   NoRequestNeeded,
-  ApiResponse,
+  SuccessfulPostORPutResponse,
 } from "../gitlab";
 import winston = require("winston");
 import { Note } from "../interfaces";
@@ -17,7 +17,10 @@ export class BotComment {
   static readonly noActionContent: string = "No BotComment action required.";
 
   private constructor(
-    readonly apiResponse: ApiResponse,
+    readonly apiResponse:
+      | SuccessfulPostORPutResponse
+      | NoRequestNeeded
+      | FailedResponse,
     readonly text: string,
   ) {}
 
@@ -79,7 +82,10 @@ export class BotComment {
     updateToggle: boolean,
     messages: Array<string>,
   ): Promise<BotComment> {
-    let response: ApiResponse;
+    let response:
+      | SuccessfulPostORPutResponse
+      | NoRequestNeeded
+      | FailedResponse;
     const comment = this.compose(messages);
 
     switch (true) {
@@ -122,7 +128,7 @@ export class BotComment {
 
     // Grab the next page of notes until the first note authored by GRDBot is found or the last page is reached.
     while (noteCount === 100) {
-      const response: ApiResponse = await api.getAllMRNotes(currentPage);
+      const response = await api.getAllMRNotes(currentPage);
       if (
         response instanceof SuccessfulGetResponse &&
         response.result.length !== 0
