@@ -54,7 +54,7 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
     response = new ErrorResponse();
   }
 
-  if (response instanceof ErrorResponse == false) {
+  if (!(response instanceof ErrorResponse)) {
     switch (objectKind) {
       case "merge_request":
         const state = getState(gitLabEvent);
