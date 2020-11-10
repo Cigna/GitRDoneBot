@@ -8,8 +8,9 @@ import { BotAction } from "../bot_action";
 import { GitOuttaHereNote } from "./git_outta_here_note";
 
 /**
- * This class extends the `BotAction` class by checking for log files in the changes contained in the GitLab Merge Request.
- */
+ * This class checks for log files in the changes contained in the GitLab Merge Request.
+ * This class implements the `BotAction` interface.
+ * */
 export class GitOuttaHere implements BotAction {
   private constructor(
     readonly apiResponse: ApiResponse,

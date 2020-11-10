@@ -9,9 +9,8 @@ import * as winston from "winston";
 import { CommitMessagesNote } from "./commit_message_note";
 
 /**
- * This class extends the `BotAction` class by analyzing the titles of the commits contained in the GitLab Merge Request.
- * In addition to the standard `BotAction` properties, each instance
- * of this class also contains the property:
+ * This class analyzes the titles of the commits contained in the GitLab Merge Request.
+ * This class implements the `BotAction` interface and also contains the property:
  * 1. `calculatedThreshold`: `number` the number of failing commit titles that will result in bad practice for an individual commit message criteria
  */
 export class CommitMessages implements BotAction {

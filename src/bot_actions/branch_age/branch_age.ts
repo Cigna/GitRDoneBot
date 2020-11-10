@@ -10,9 +10,8 @@ import { BranchAgeNote } from "./branch_age_note";
 import { GitLabCommit } from "../../interfaces";
 
 /**
- * This class extends the `BotAction` class by analyzing the age of the commits contained in the GitLab Merge Request.
- * In addition to the standard `BotAction` properties, each instance
- * of this class also contains the property:
+ * This class analyzes the age of the commits contained in the GitLab Merge Request.
+ * This class implements the `BotAction` interface and also contains the property:
  * 1. `oldestCommit`: `GitLabCommit` with the oldest created_at date contained in the Merge Request
  */
 export class BranchAge implements BotAction {

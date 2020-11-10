@@ -3,10 +3,6 @@ import fetch from "node-fetch";
 import * as HttpStatus from "http-status-codes";
 import { BuildGetResponse, BuildPostORPutResponse, ApiResponse } from ".";
 
-// Fetch treats 4XX or 5XX errors like regular responses.
-// Fetch differentiates these from a 'network error' which will
-// throw an error in the try/catch block.
-
 interface RawFetchResponse {
   body: [] | {} | undefined | string;
   status: number;
@@ -15,6 +11,8 @@ interface RawFetchResponse {
 /**
  * This utility class contains methods and properties required to make HTTP calls using the Fetch API library
  * and building custom response objects.
+ * @remarks Fetch treats 4XX or 5XX response codes as successful responses.
+ * Fetch differentiates these from a 'network error' which will throw an error in the try/catch block.
  */
 export class FetchWrapper {
   private readonly commonHeaders: {};

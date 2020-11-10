@@ -4,8 +4,9 @@ import { ApiResponse, NoRequestNeeded } from "../../gitlab";
 import { NewGitWhoDisNote } from "./new_git_who_dis_note";
 
 /**
- * This class extends the `BotAction` class by analyzing the name of the author of the GitLab Merge Request.
- */
+ * This class analyzes the name of the author of the GitLab Merge Request.
+ * This class implements the `BotAction` interface.
+ * */
 export class NewGitWhoDis implements BotAction {
   readonly apiResponse: ApiResponse = new NoRequestNeeded();
 

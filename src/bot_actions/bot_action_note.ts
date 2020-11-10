@@ -1,4 +1,4 @@
-import { ApiResponse, FailedResponse, SuccessfulGetResponse } from "../gitlab";
+import { ApiResponse, FailedResponse } from "../gitlab";
 
 /**
  * This extensible class defines the core message property that is dynamically calculated by each distinct Bot Action Note:

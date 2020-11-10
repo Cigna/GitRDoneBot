@@ -11,9 +11,8 @@ import { SelfMergeNote } from "./self_merge_note";
 import { User } from "../../interfaces/gitlab_api_types";
 
 /**
- * This class extends the `BotAction` class by analyzing the assignee or the approvers and the user who merged the GitLab Merge Request.
- * In addition to the standard `BotAction` properties, each instance
- * of this class also contains the property:
+ * This class analyzes the assignee or the approvers and the user who merged the GitLab Merge Request.
+ * This class implements the `BotAction` interface and also contains the property:
  * 1. `approversNeeded`: `boolean` If true, Merge Request is merged with approvers. If false, Merge Request is merged without approvers.
  * If undefined, Merge Request is not merged.
  */

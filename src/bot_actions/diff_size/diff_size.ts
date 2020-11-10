@@ -8,14 +8,12 @@ import * as winston from "winston";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { DiffSizeNote } from "./diff_size_note";
 import { Change } from "../../interfaces";
-// import * as parse from "parse-diff";
 
 /**
- * This class extends the `BotAction` class by analyzing how many lines of diff are contained in the GitLab Merge Request.
- * In addition to the standard `BotAction` properties, each instance
- * of this class also contains the property:
+ * This class analyzes how many lines of diff are contained in the GitLab Merge Request.
+ * This class implements the `BotAction` interface and also contains the property:
  * 1. `totalDiffs`: `number` lines of diff contained in the Merge Request
- */
+ * */
 export class DiffSize implements BotAction {
   private constructor(
     readonly apiResponse: ApiResponse,

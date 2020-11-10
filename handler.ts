@@ -25,11 +25,11 @@ let containerId: string;
  * @param event GitLab webhook event wrapped with AWS metadata. The `body` property of this param is the
  * original GitLab webhook event, which is a stringified JSON object.
  *
- * @returns
+ * @returns a LambdaResponse of subtype
  * 1. BotActionsResponse when incoming event is a Merge Request event in a supported state.
- * 1. GenericResponse with "not supported" message when incoming event is not a Merge Request event.
- * 1. GenericResponse with "no action needed" message when incoming event is a Merge Request event in an unsupported state.
- * 1. GenericResponse with standard HTTP 500 internal server error message if any error occurs while processing event.
+ * 1. NotSupportedResponse with "not supported" message when incoming event is not a Merge Request event.
+ * 1. NoActionResponse with "no action needed" message when incoming event is a Merge Request event in an unsupported state.
+ * 1. ErrorResponse if there is an HTTP 500 internal server error message if any error occurs while processing event.
  */
 const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   let gitLabEvent: any;

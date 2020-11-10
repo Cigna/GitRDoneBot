@@ -10,8 +10,9 @@ import { BotAction } from "../bot_action";
 import { TooManyAssignedNote } from "./too_many_assigned_note";
 
 /**
- * This class extends the `BotAction` class by analyzing the number of merge requests assigned to the assignee of the GitLab Merge Request.
- */
+ * This class analyzes the number of merge requests assigned to the assignee of the GitLab Merge Request.
+ * This class implements the `BotAction` interface.
+ * */
 export class TooManyAssigned implements BotAction {
   private constructor(
     readonly apiResponse: ApiResponse,
