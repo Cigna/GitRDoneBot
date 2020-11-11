@@ -1,5 +1,6 @@
 import {
   FailedResponse,
+  NoRequestNeeded,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../gitlab";
@@ -39,7 +40,8 @@ export abstract class BotActionNote {
     apiResponse:
       | SuccessfulGetResponse
       | SuccessfulPostORPutResponse
-      | FailedResponse,
+      | FailedResponse
+      | NoRequestNeeded,
   ): boolean {
     return apiResponse instanceof FailedResponse;
   }

@@ -1,6 +1,10 @@
 import * as winston from "winston";
 import { BotAction } from "../bot_action";
-import { NoRequestNeeded } from "../../gitlab";
+import {
+  FailedResponse,
+  NoRequestNeeded,
+  SuccessfulGetResponse,
+} from "../../gitlab";
 import { NewGitWhoDisNote } from "./new_git_who_dis_note";
 
 /**
@@ -8,12 +12,17 @@ import { NewGitWhoDisNote } from "./new_git_who_dis_note";
  * This class implements the `BotAction` interface.
  * */
 export class NewGitWhoDis implements BotAction {
-  readonly apiResponse = new NoRequestNeeded();
+  readonly apiResponse:
+    | SuccessfulGetResponse
+    | FailedResponse
+    | NoRequestNeeded;
 
   private constructor(
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
-  ) {}
+  ) {
+    this.apiResponse = new NoRequestNeeded();
+  }
 
   /**
    * Constructs a complete Bot Action object by analyzing the author name.
