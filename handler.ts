@@ -1,5 +1,11 @@
 import { Context, Handler } from "aws-lambda";
-import { GenericResponse, LambdaResponse } from "./src/interfaces";
+import {
+  ErrorResponse,
+  HealthCheckResponse,
+  LambdaResponse,
+  NoActionResponse,
+  NotSupportedResponse,
+} from "./src/interfaces";
 import { MergeRequestApi } from "./src/gitlab";
 import {
   BotActionsResponse,
@@ -8,8 +14,7 @@ import {
   getProjectId,
   getState,
 } from "./src/merge_request";
-import { Status, winlog, getToken, getBaseURI } from "./src/util";
-import * as HttpStatus from "http-status-codes";
+import { winlog, getToken, getBaseURI } from "./src/util";
 import { CustomConfig } from "./src/custom_config/custom_config";
 
 let containerId: string;
@@ -20,18 +25,16 @@ let containerId: string;
  * @param event GitLab webhook event wrapped with AWS metadata. The `body` property of this param is the
  * original GitLab webhook event, which is a stringified JSON object.
  *
- * @returns
+ * @returns a LambdaResponse of subtype
  * 1. BotActionsResponse when incoming event is a Merge Request event in a supported state.
- * 1. GenericResponse with "not supported" message when incoming event is not a Merge Request event.
- * 1. GenericResponse with "no action needed" message when incoming event is a Merge Request event in an unsupported state.
- * 1. GenericResponse with standard HTTP 500 internal server error message if any error occurs while processing event.
+ * 1. NotSupportedResponse with "not supported" message when incoming event is not a Merge Request event.
+ * 1. NoActionResponse with "no action needed" message when incoming event is a Merge Request event in an unsupported state.
+ * 1. ErrorResponse if there is an HTTP 500 internal server error message if any error occurs while processing event.
  */
-const handleGitLabWebhook = async (
-  event: any,
-): Promise<GenericResponse | BotActionsResponse> => {
+const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   let gitLabEvent: any;
-  let objectKind: string | undefined;
-  let response: GenericResponse | BotActionsResponse;
+  let token, baseURI, objectKind: string | undefined;
+  let response!: LambdaResponse;
 
   try {
     gitLabEvent = JSON.parse(event.body);
@@ -40,31 +43,34 @@ const handleGitLabWebhook = async (
   } catch (err) {
     objectKind = undefined;
     winlog.error(`Error parsing event.body: ${err.message}`);
-    response = {
-      status: Status.from(HttpStatus.INTERNAL_SERVER_ERROR),
-    };
+    response = new ErrorResponse();
   }
 
-  switch (objectKind) {
-    case "merge_request":
-      const state = getState(gitLabEvent);
+  try {
+    token = getToken(process.env.GITLAB_BOT_ACCOUNT_API_TOKEN);
+    baseURI = getBaseURI(process.env.GITLAB_BASE_URI);
+  } catch (err) {
+    winlog.error(`Env var loading Error: ${err.message}`);
+    response = new ErrorResponse();
+  }
 
-      /**
-       * We only perform analysis on Merge Request events in the following states
-       * in order to minimize the chattiness of the service.
-       */
-      if (state === "open" || state === "merge" || state === "update") {
-        try {
-          const token = getToken(process.env.GITLAB_BOT_ACCOUNT_API_TOKEN);
+  if (!(response instanceof ErrorResponse)) {
+    switch (objectKind) {
+      case "merge_request":
+        const state = getState(gitLabEvent);
+        /**
+         * We only perform analysis on Merge Request events in the following states
+         * in order to minimize the chattiness of the service.
+         */
+        if (state === "open" || state === "merge" || state === "update") {
           const projectId = getProjectId(gitLabEvent);
           const mrId = getMrId(gitLabEvent);
-          const baseURI = getBaseURI(process.env.GITLAB_BASE_URI);
 
           const api = new MergeRequestApi(
-            token,
+            token as string,
             projectId,
             mrId,
-            baseURI,
+            baseURI as string,
             winlog,
           );
 
@@ -76,9 +82,7 @@ const handleGitLabWebhook = async (
             state === "update" &&
             customConfig.updateMergeRequestComment === false
           ) {
-            response = {
-              status: Status.forNoAction(),
-            };
+            response = new NoActionResponse();
           } else {
             response = await BotActionsResponse.from(
               api,
@@ -88,43 +92,17 @@ const handleGitLabWebhook = async (
               winlog,
             );
           }
-        } catch (err) {
-          /** getToken will throw an error if no token exists in environment */
-          winlog.error(`handleGitLabWebhook Error: ${err.message}`);
-          response = {
-            status: Status.from(HttpStatus.INTERNAL_SERVER_ERROR),
-          };
+        } else {
+          /** No action required for any MR states besides open, merge, and update */
+          response = new NoActionResponse();
         }
-      } else {
-        /** No action required for any MR states besides open, merge, and update */
-        response = {
-          status: Status.forNoAction(),
-        };
-      }
-      break;
-    default:
-      /** No action required for any incoming GitLab event that is not a merge request */
-      response = {
-        status: Status.forNotSupported(),
-      };
+        break;
+      default:
+        /** No action required for any incoming GitLab event that is not a merge request */
+        response = new NotSupportedResponse();
+    }
   }
-  return response;
-};
 
-/**
- * Processes events sent by CloudWatch Rule to reduce cold start.
- *
- * @returns GenericResponse declaring this is a health check event.
- *
- * @remarks Rule set in CloudWatch that pings the Lambda every 15 minutes in order to reduce timeouts from cold start.
- * https://read.acloud.guru/how-to-keep-your-lambda-functions-warm-9d7e1aa6e2f0
- */
-const handleHealthCheck = (): GenericResponse => {
-  winlog.info(`CloudWatch timer healthcheck. Container ID: ${containerId}`);
-
-  const response: GenericResponse = {
-    status: Status.forHealthCheck(),
-  };
   return response;
 };
 
@@ -136,28 +114,24 @@ const handleHealthCheck = (): GenericResponse => {
  * @returns LambdaResponse standard interface determined by AWS
  * 1. If event is GitLab webhook, returns wrapped BotActions response
  * 1. If event is CloudWatch Rule, returns wrapped GenericResponse response
+ *  @remarks Rule set in CloudWatch that pings the Lambda every 15 minutes in order to reduce timeouts from cold start.
+ * https://read.acloud.guru/how-to-keep-your-lambda-functions-warm-9d7e1aa6e2f0
  * */
-const webhook: Handler = async (event: any, context: Context) => {
+const webhook: Handler = async (
+  event: any,
+  context: Context,
+): Promise<LambdaResponse> => {
   if (!containerId && context.hasOwnProperty("awsRequestId")) {
     containerId = context.awsRequestId;
   }
 
-  const response: GenericResponse | BotActionsResponse = event.hasOwnProperty(
-    "body",
-  )
+  const response = event.hasOwnProperty("body")
     ? await handleGitLabWebhook(event)
-    : handleHealthCheck();
+    : new HealthCheckResponse();
 
   winlog.info(response);
 
-  const lambdafiedResponse: LambdaResponse = {
-    body: JSON.stringify({
-      response,
-    }),
-    statusCode: response.status.code,
-  };
-
-  return lambdafiedResponse;
+  return response;
 };
 
-export { webhook, handleGitLabWebhook, handleHealthCheck };
+export { webhook, handleGitLabWebhook };

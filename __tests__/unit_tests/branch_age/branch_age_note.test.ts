@@ -2,12 +2,15 @@ import { winlog } from "../../../src/util";
 import { BotActionConfig } from "../../../src/custom_config/bot_action_config";
 import { BranchAgeDefaults } from "../../../src/custom_config/action_config_defaults";
 import { BranchAgeNote } from "../../../src/bot_actions/branch_age/branch_age_note";
+import { SuccessfulGetResponse, FailedResponse } from "../../../src/gitlab";
 
 // default value for customConfig.constructiveFeedbackOnlyToggle is false
 const falseCustomConfig = BotActionConfig.from(BranchAgeDefaults, {});
 const trueCustomConfig = BotActionConfig.from(BranchAgeDefaults, {
   branchAgeAnalysis: { constructiveFeedbackOnlyToggle: true },
 });
+const successfulResponse = new SuccessfulGetResponse(200, {});
+const failedResponse = new FailedResponse(401);
 
 describe("BranchAgeNote.fromMessage(message)", () => {
   describe("any message string", (message = "Helpful reminder from your friendly neighborhood GitRDoneBot.") => {
@@ -510,8 +513,8 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
   });
 });
 
-describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGitPractice, state, logger)", () => {
-  describe("gitLabRequestSuccess !== false", (gitLabRequestSuccess = undefined) => {
+describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice, state, logger)", () => {
+  describe("apiResponse !== FailedResponse", (apiResponse = successfulResponse) => {
     describe("'open' state", (state = "open") => {
       describe("customConfig.constructiveFeedbackOnlyToggle === true", (customConfig = trueCustomConfig) => {
         describe("goodGitPractice === true", (goodGitPractice = true) => {
@@ -519,7 +522,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -533,7 +536,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -547,7 +550,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -563,7 +566,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -577,7 +580,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -591,7 +594,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -609,7 +612,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -623,7 +626,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -637,7 +640,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -653,7 +656,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -667,7 +670,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -681,7 +684,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -699,7 +702,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -713,7 +716,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -727,7 +730,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -743,7 +746,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -757,7 +760,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -771,7 +774,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,
@@ -783,8 +786,8 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
     });
   });
 
-  // if gitLabRequestSuccess === false, all other params are ignored
-  describe("gitLabRequestSuccess === false", (gitLabRequestSuccess = false) => {
+  // if apiResponse === FailedResponse, all other params are ignored
+  describe("apiResponse === FailedResponse", (apiResponse = failedResponse) => {
     describe("state === undefined", (state = undefined) => {
       describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
         describe("customConfig === undefined", (customConfig = undefined) => {
@@ -792,7 +795,7 @@ describe("BranchAgeNote.buildMessage(customConfig, gitLabRequestSuccess, goodGit
             expect(
               BranchAgeNote.buildMessage(
                 customConfig,
-                gitLabRequestSuccess,
+                apiResponse,
                 goodGitPractice,
                 state,
                 winlog,

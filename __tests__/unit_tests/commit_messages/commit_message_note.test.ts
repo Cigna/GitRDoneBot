@@ -1,5 +1,9 @@
 import { winlog } from "../../../src/util";
 import { CommitMessagesNote } from "../../../src/bot_actions/commit_messages/commit_message_note";
+import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
+
+const successfulResponse = new SuccessfulGetResponse(200, {});
+const failedResponse = new FailedResponse(401);
 
 describe("CommitMessagesNote.fromMessage(message)", () => {
   describe("any message string", (message = "Helpful reminder from your friendly neighborhood GitRDoneBot.") => {
@@ -802,8 +806,8 @@ describe("CommitMessagesNote.caseForGoodMessage(state, goodGitPractice, construc
   });
 });
 
-describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPractice, thresholdTestedNudges, constructiveFeedbackOnlyToggle, totalCommits, logger)", () => {
-  describe("gitLabRequestSuccess !== false", (gitLabRequestSuccess = undefined) => {
+describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, thresholdTestedNudges, constructiveFeedbackOnlyToggle, totalCommits, logger)", () => {
+  describe("apiResponse !== FailedResponse", (apiResponse = successfulResponse) => {
     describe("state === 'open'", (state = "open") => {
       describe("goodGitPractice === 'true'", (goodGitPractice = true) => {
         describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
@@ -811,7 +815,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -826,7 +830,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -843,7 +847,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -858,7 +862,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: good + hashtag", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -879,7 +883,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -894,7 +898,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: bad + hashtag", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -911,7 +915,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -926,7 +930,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: bad + hashtag", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -945,7 +949,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -960,7 +964,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: unknownState", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -977,7 +981,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -992,7 +996,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: unknownState", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1013,7 +1017,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1028,7 +1032,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1045,7 +1049,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1060,7 +1064,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: good + hashtag", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1081,7 +1085,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1096,7 +1100,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: bad + hashtag", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1113,7 +1117,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1128,7 +1132,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: bad + hashtag", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1147,7 +1151,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1162,7 +1166,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: unknownState", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1179,7 +1183,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1194,7 +1198,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: unknownState", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1215,7 +1219,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1230,7 +1234,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1247,7 +1251,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1262,7 +1266,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1281,7 +1285,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1296,7 +1300,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: bad + hashtag", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1313,7 +1317,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1328,7 +1332,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: bad + hashtag", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1347,7 +1351,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1362,7 +1366,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: unknownState", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1379,7 +1383,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: noActionMessage", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1394,7 +1398,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: unknownState", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
@@ -1409,7 +1413,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
     });
   });
 
-  describe("gitLabRequestSuccess === false", (gitLabRequestSuccess = false) => {
+  describe("apiResponse === FailedResponse", (apiResponse = failedResponse) => {
     describe("state === undefined", (state = undefined) => {
       describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
         describe("constructiveFeedbackOnlyToggle === undefined", (constructiveFeedbackOnlyToggle = undefined) => {
@@ -1417,7 +1421,7 @@ describe("CommitMessagesNote.buildMessage(gitLabRequestSuccess, state, goodGitPr
             test("RETURNS STRING: checkPermissions", () => {
               expect(
                 CommitMessagesNote.buildMessage(
-                  gitLabRequestSuccess,
+                  apiResponse,
                   state,
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,

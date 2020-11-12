@@ -1,7 +1,7 @@
 import {
-  GitLabGetResponse,
-  GitLabAPIRequest,
+  FailedResponse,
   MergeRequestApi,
+  SuccessfulGetResponse,
 } from "../gitlab";
 import { BotActionConfig } from "./bot_action_config";
 import {
@@ -21,7 +21,7 @@ export class CustomConfig {
     readonly diffSize: BotActionConfig,
     readonly tooManyMergeRequests: BotActionConfig,
     readonly updateMergeRequestComment: boolean,
-    readonly apiRequest: GitLabAPIRequest,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
   ) {}
 
   /**
@@ -31,15 +31,13 @@ export class CustomConfig {
    * @returns CustomConfig with loaded values
    * */
   static async from(api: MergeRequestApi): Promise<CustomConfig> {
-    const apiResponse: GitLabGetResponse = await api.getConfigurationFile();
-
-    const apiRequest = apiResponse.apiRequest;
+    const response = await api.getConfigurationFile();
 
     let result: any;
 
     // no 404 returned from GitLab API
-    if (apiRequest.success) {
-      result = apiResponse.result;
+    if (response instanceof SuccessfulGetResponse) {
+      result = response.result;
     } else {
       result = {};
     }
@@ -72,7 +70,7 @@ export class CustomConfig {
       diff,
       tooManyMergeRequests,
       updateMergeRequestComment,
-      apiRequest,
+      response,
     );
   }
 

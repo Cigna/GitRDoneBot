@@ -10,13 +10,12 @@ import {
   TooManyAssigned,
 } from "../bot_actions";
 import { MergeRequestApi } from "../gitlab";
-import { MergeRequestEvent } from "../interfaces";
+import { LambdaResponse, MergeRequestEvent } from "../interfaces";
 import {
   BotComment,
   BotEmoji,
   getMergeRequestEventData,
 } from "../merge_request";
-import { Status } from "../util";
 import { CustomConfig } from "../custom_config/custom_config";
 
 /**
@@ -26,21 +25,8 @@ import { CustomConfig } from "../custom_config/custom_config";
  * GitLab will retry requests if a response is not received back within 10 seconds, so instances of this class are passed back by the lambda function to satisfy that requirement.
  * However, GitLab does nothing with this data - the core purpose of instances of this class is to log information for analysis & debugging.
  */
-export class BotActionsResponse {
-  private constructor(
-    readonly status: Status,
-    readonly mergeRequestEvent: MergeRequestEvent,
-    readonly customConfig: CustomConfig,
-    readonly branchAge: BranchAge,
-    readonly commitMessage: CommitMessages,
-    readonly diffSize: DiffSize,
-    readonly gitOuttaHere: GitOuttaHere,
-    readonly newGitWhoDis: NewGitWhoDis,
-    readonly selfMerge: SelfMerge,
-    readonly tooManyAssigned: TooManyAssigned,
-    readonly comment: BotComment,
-    readonly emoji: BotEmoji,
-  ) {}
+export class BotActionsResponse implements LambdaResponse {
+  private constructor(readonly statusCode: number, readonly body: string) {}
 
   /**
    * Uses information from Merge Request webhook event to invoke Bot Actions. Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request.
@@ -64,7 +50,7 @@ export class BotActionsResponse {
 
     // variables declared here so they will be in scope for response constructor
     // only status is guaranteed to be set regardless of error
-    let status: Status,
+    let statusCode: number,
       branchAge!: BranchAge,
       commitMessage!: CommitMessages,
       diffSize!: DiffSize,
@@ -152,43 +138,43 @@ export class BotActionsResponse {
         customConfig.updateMergeRequestComment,
         [
           branchAge.mrNote,
+          commitMessage.mrNote,
           diffSize.mrNote,
+          gitOuttaHere.mrNote,
+          newGitWhoDis.mrNote,
           selfMerge.mrNote,
           tooManyAssigned.mrNote,
-          newGitWhoDis.mrNote,
-          gitOuttaHere.mrNote,
-          commitMessage.mrNote,
         ],
       );
 
       const postEmojiPromise: Promise<BotEmoji> = BotEmoji.post(api, [
-        diffSize.goodGitPractice,
-        selfMerge.goodGitPractice,
         branchAge.goodGitPractice,
-        tooManyAssigned.goodGitPractice,
-        newGitWhoDis.goodGitPractice,
         commitMessage.goodGitPractice,
+        diffSize.goodGitPractice,
+        gitOuttaHere.goodGitPractice,
+        newGitWhoDis.goodGitPractice,
+        selfMerge.goodGitPractice,
+        tooManyAssigned.goodGitPractice,
       ]);
 
       // fire POST logic in parallel - must be performed only after all Bot Action promises have resolved
       [comment, emoji] = [await postCommentPromise, await postEmojiPromise];
 
       // gets overall status from statuses returned by individual Bot Action API calls
-      status = Status.fromCodes([
-        branchAge.apiRequest.status.code,
-        commitMessage.apiRequest.status.code,
-        diffSize.apiRequest.status.code,
-        gitOuttaHere.apiRequest.status.code,
-        selfMerge.apiRequest.status.code,
-        tooManyAssigned.apiRequest.status.code,
+      statusCode = this.fromCodes([
+        branchAge.apiResponse.statusCode,
+        commitMessage.apiResponse.statusCode,
+        diffSize.apiResponse.statusCode,
+        gitOuttaHere.apiResponse.statusCode,
+        selfMerge.apiResponse.statusCode,
+        tooManyAssigned.apiResponse.statusCode,
       ]);
     } catch (err) {
       logger.error(`BotActionsResponse Error: ${err.message}`);
-      status = Status.from(HttpStatus.INTERNAL_SERVER_ERROR);
+      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
-    return new BotActionsResponse(
-      status,
+    const responseBody = JSON.stringify({
       mergeRequestEvent,
       customConfig,
       branchAge,
@@ -200,6 +186,26 @@ export class BotActionsResponse {
       tooManyAssigned,
       comment,
       emoji,
-    );
+    });
+
+    return new BotActionsResponse(statusCode, responseBody);
+  }
+
+  /**
+   * Provides an overall status from a set of status codes
+   *
+   * @param allCodes Array of status codes
+   *
+   * @returns
+   * 1. 200 when none of the elements of allCodes are a `4XX` or `5XX`.
+   * 1. 207 when at least one element of allCodes is a `4XX` or `5XX`.
+   */
+  static fromCodes(allCodes: Array<number>): number {
+    const statusCode: number = allCodes.some((code) => {
+      return code >= 400;
+    })
+      ? 207
+      : 200;
+    return statusCode;
   }
 }

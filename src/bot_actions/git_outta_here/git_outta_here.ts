@@ -1,18 +1,19 @@
 import {
-  GitLabAPIRequest,
-  GitLabGetResponse,
+  FailedResponse,
   MergeRequestApi,
+  SuccessfulGetResponse,
 } from "../../gitlab";
 import * as winston from "winston";
 import { BotAction } from "../bot_action";
 import { GitOuttaHereNote } from "./git_outta_here_note";
 
 /**
- * This class extends the `BotAction` class by checking for log files in the changes contained in the GitLab Merge Request.
- */
+ * This class checks for log files in the changes contained in the GitLab Merge Request.
+ * This class implements the `BotAction` interface.
+ * */
 export class GitOuttaHere implements BotAction {
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
   ) {}
@@ -31,26 +32,22 @@ export class GitOuttaHere implements BotAction {
   static async from(
     api: MergeRequestApi,
     logger: winston.Logger,
-  ): Promise<BotAction> {
+  ): Promise<GitOuttaHere> {
     let goodGitPractice!: boolean;
 
-    const apiResponse: GitLabGetResponse = await api.getSingleMRChanges();
+    const response = await api.getSingleMRChanges();
 
     if (
-      apiResponse.apiRequest.success &&
-      apiResponse.result.hasOwnProperty("changes")
+      response instanceof SuccessfulGetResponse &&
+      response.result.hasOwnProperty("changes")
     ) {
-      goodGitPractice = this.noLogFiles(apiResponse.result.changes);
+      goodGitPractice = this.noLogFiles(response.result.changes);
     }
 
     return new GitOuttaHere(
-      apiResponse.apiRequest,
+      response,
       goodGitPractice,
-      GitOuttaHereNote.buildMessage(
-        apiResponse.apiRequest.success,
-        goodGitPractice,
-        logger,
-      ),
+      GitOuttaHereNote.buildMessage(response, goodGitPractice, logger),
     );
   }
 

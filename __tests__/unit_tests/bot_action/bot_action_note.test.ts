@@ -1,4 +1,9 @@
 import { BotActionNote } from "../../../src/bot_actions";
+import {
+  FailedResponse,
+  NoRequestNeeded,
+  SuccessfulGetResponse,
+} from "../../../src/gitlab";
 
 describe("conditionallyAddHashtag(message, hashtag) function", (hashtag = "#MyCoolBotAction") => {
   describe("when message === noActionMessage", (message = BotActionNote.noActionMessage) => {
@@ -34,33 +39,32 @@ describe("conditionallyAddHashtag(message, hashtag) function", (hashtag = "#MyCo
   });
 });
 
-describe("standardCaseForCheckPermissionsMessage(gitLabRequestSuccess) function", () => {
-  describe("when gitLabRequestSuccess is false", (gitLabRequestSuccess = false) => {
+describe("standardCaseForCheckPermissionsMessage(apiResponse) function", () => {
+  describe("when apiResponse is FailedResponse", (apiResponse = new FailedResponse(
+    401,
+  )) => {
     test("RETURNS BOOLEAN: true", () => {
       expect(
-        BotActionNote.standardCaseForCheckPermissionsMessage(
-          gitLabRequestSuccess,
-        ),
+        BotActionNote.standardCaseForCheckPermissionsMessage(apiResponse),
       ).toBe(true);
     });
   });
 
-  describe("when gitLabRequestSuccess is undefined", (gitLabRequestSuccess = undefined) => {
+  describe("when apiResponse is NoResponseNeeded", (apiResponse = new NoRequestNeeded()) => {
     test("RETURNS BOOLEAN: false", () => {
       expect(
-        BotActionNote.standardCaseForCheckPermissionsMessage(
-          gitLabRequestSuccess,
-        ),
+        BotActionNote.standardCaseForCheckPermissionsMessage(apiResponse),
       ).toBe(false);
     });
   });
 
-  describe("when gitLabRequestSuccess is true", (gitLabRequestSuccess = true) => {
+  describe("when apiResponse is SuccessfulGetResponse", (apiResponse = new SuccessfulGetResponse(
+    200,
+    {},
+  )) => {
     test("RETURNS BOOLEAN: false", () => {
       expect(
-        BotActionNote.standardCaseForCheckPermissionsMessage(
-          gitLabRequestSuccess,
-        ),
+        BotActionNote.standardCaseForCheckPermissionsMessage(apiResponse),
       ).toBe(false);
     });
   });

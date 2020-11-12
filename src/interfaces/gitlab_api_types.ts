@@ -2,7 +2,6 @@
 export interface Note {
   id: number;
   body: string;
-  attachment: string;
   author: User;
   created_at: string;
   updated_at: string;

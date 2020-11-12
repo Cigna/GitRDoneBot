@@ -1,23 +1,22 @@
 import { BotAction } from "../bot_action";
 import * as winston from "winston";
 import {
-  GitLabAPIRequest,
+  FailedResponse,
   MergeRequestApi,
-  GitLabGetResponse,
+  SuccessfulGetResponse,
 } from "../../gitlab";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { BranchAgeNote } from "./branch_age_note";
 import { GitLabCommit } from "../../interfaces";
 
 /**
- * This class extends the `BotAction` class by analyzing the age of the commits contained in the GitLab Merge Request.
- * In addition to the standard `BotAction` properties, each instance
- * of this class also contains the property:
+ * This class analyzes the age of the commits contained in the GitLab Merge Request.
+ * This class implements the `BotAction` interface and also contains the property:
  * 1. `oldestCommit`: `GitLabCommit` with the oldest created_at date contained in the Merge Request
  */
 export class BranchAge implements BotAction {
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly oldestCommit: GitLabCommit,
@@ -44,14 +43,14 @@ export class BranchAge implements BotAction {
     let goodGitPractice!: boolean;
     let oldestCommit!: GitLabCommit;
 
-    const apiResponse: GitLabGetResponse = await api.getSingleMRCommits();
+    const response = await api.getSingleMRCommits();
 
-    if (apiResponse.apiRequest.success) {
-      if (apiResponse.result.length === 0) {
+    if (response instanceof SuccessfulGetResponse) {
+      if (response.result.length === 0) {
         // When result array is empty, we are assuming there are no commits on this branch (ie, opened from an Issue).
         goodGitPractice = true;
       } else {
-        oldestCommit = this.getOldestCommit(apiResponse.result);
+        oldestCommit = this.getOldestCommit(response.result);
         goodGitPractice = this.isBranchYoungerThanThreshold(
           oldestCommit,
           customConfig.threshold,
@@ -60,11 +59,11 @@ export class BranchAge implements BotAction {
     }
 
     return new BranchAge(
-      apiResponse.apiRequest,
+      response,
       goodGitPractice,
       BranchAgeNote.buildMessage(
         customConfig,
-        apiResponse.apiRequest.success,
+        response,
         goodGitPractice,
         state,
         logger,
@@ -92,7 +91,7 @@ export class BranchAge implements BotAction {
     // this gives us the number of milliseconds between the oldest commit and current time
     const oldestCommitAge =
       Date.now() - new Date(oldestCommit.created_at).getTime();
-    // multiply threshold by milliseconds/day because of how Date class calculates
-    return oldestCommitAge <= threshold * 8.64e7;
+    // divide oldestCommitAge by milliseconds/day to compare int num of days with threshold
+    return Math.floor(oldestCommitAge / 8.64e7) <= threshold;
   }
 }
