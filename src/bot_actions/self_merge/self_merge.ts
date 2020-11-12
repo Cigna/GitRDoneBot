@@ -2,23 +2,26 @@ import { BotAction } from "../bot_action";
 
 import * as winston from "winston";
 import {
-  GitLabAPIRequest,
+  FailedResponse,
   MergeRequestApi,
-  GitLabGetResponse,
+  NoRequestNeeded,
+  SuccessfulGetResponse,
 } from "../../gitlab";
 import { SelfMergeNote } from "./self_merge_note";
 import { User } from "../../interfaces/gitlab_api_types";
 
 /**
- * This class extends the `BotAction` class by analyzing the assignee or the approvers and the user who merged the GitLab Merge Request.
- * In addition to the standard `BotAction` properties, each instance
- * of this class also contains the property:
+ * This class analyzes the assignee or the approvers and the user who merged the GitLab Merge Request.
+ * This class implements the `BotAction` interface and also contains the property:
  * 1. `approversNeeded`: `boolean` If true, Merge Request is merged with approvers. If false, Merge Request is merged without approvers.
  * If undefined, Merge Request is not merged.
  */
 export class SelfMerge implements BotAction {
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
+    readonly apiResponse:
+      | SuccessfulGetResponse
+      | NoRequestNeeded
+      | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly approversNeeded: boolean | undefined,
@@ -45,34 +48,33 @@ export class SelfMerge implements BotAction {
   ): Promise<SelfMerge> {
     let goodGitPractice!: boolean;
     let approversNeeded!: boolean;
-    let apiResponse!: GitLabGetResponse;
+    let response: SuccessfulGetResponse | NoRequestNeeded | FailedResponse;
 
     if (state !== "merge") {
-      apiResponse = GitLabGetResponse.noRequestNeeded();
+      response = new NoRequestNeeded();
       goodGitPractice = this.mrIsNotSelfAssignedOrMerged(assigneeId, authorId);
     } else {
       // Make API call for merge state only
       const whoApproved = await api.getMRApprovalConfig();
 
-      apiResponse = whoApproved;
-
-      if (
-        whoApproved.apiRequest.success &&
-        whoApproved.result.hasOwnProperty("approved_by")
-      ) {
-        if (whoApproved.result.approved_by.length) {
+      if (whoApproved instanceof SuccessfulGetResponse) {
+        if (
+          whoApproved.result.hasOwnProperty("approved_by") &&
+          whoApproved.result.approved_by.length
+        ) {
+          approversNeeded = false;
+          response = whoApproved;
           goodGitPractice = this.mrIsNotSelfApproved(
             whoApproved.result.approved_by,
             authorId,
           );
-          approversNeeded = false;
         } else {
-          // if approval array is empty, plan B is to see who merged the MR
+          // if approval array is empty, second api call required to see who merged the MR
           approversNeeded = true;
           const whoMerged = await api.getSingleMR();
-          apiResponse = whoMerged;
+          response = whoMerged;
           if (
-            whoMerged.apiRequest.success &&
+            whoMerged instanceof SuccessfulGetResponse &&
             whoMerged.result.hasOwnProperty("merged_by")
           ) {
             goodGitPractice = this.mrIsNotSelfAssignedOrMerged(
@@ -81,14 +83,16 @@ export class SelfMerge implements BotAction {
             );
           }
         }
+      } else {
+        response = whoApproved;
       }
     }
 
     return new SelfMerge(
-      apiResponse.apiRequest,
+      response,
       goodGitPractice,
       SelfMergeNote.buildMessage(
-        apiResponse.apiRequest.success,
+        response,
         state,
         goodGitPractice,
         approversNeeded,

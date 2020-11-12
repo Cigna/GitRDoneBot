@@ -1,10 +1,16 @@
 import * as HttpStatus from "http-status-codes";
 import {
-  GitLabGetResponse,
-  GitLabPostResponse,
   MergeRequestApi,
+  NoRequestNeeded,
+  SuccessfulGetResponse,
+  SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
-import { mockNote, createNNotes } from "../helpers";
+import {
+  mockNote,
+  createNNotes,
+  unauthorized_401,
+  fetch_network_error,
+} from "../helpers";
 import { winlog, getBotUsername } from "../../src/util";
 import { BotComment } from "../../src/merge_request";
 
@@ -21,38 +27,41 @@ const sampleNoActionMessageArray = ["NA", "NA", "NA", "NA"];
 const GRDB_NOTE_NUMBER = 42;
 const botName = getBotUsername(process.env.GITLAB_BOT_ACCOUNT_NAME);
 
-const emptyNote = GitLabGetResponse.from(HttpStatus.OK, []);
+const emptyNote = new SuccessfulGetResponse(HttpStatus.OK, []);
 
-const lessThanOneHundredNotesWithGRDB = GitLabGetResponse.from(HttpStatus.OK, [
-  mockNote(0, "river_tam"),
-  mockNote(GRDB_NOTE_NUMBER, botName),
-  mockNote(2, "hoban_washburne"),
-]);
+const lessThanOneHundredNotesWithGRDB = new SuccessfulGetResponse(
+  HttpStatus.OK,
+  [
+    mockNote(0, "river_tam"),
+    mockNote(GRDB_NOTE_NUMBER, botName),
+    mockNote(2, "hoban_washburne"),
+  ],
+);
 
-const lessThanOneHundredNotesNoGRDB = GitLabGetResponse.from(HttpStatus.OK, [
+const lessThanOneHundredNotesNoGRDB = new SuccessfulGetResponse(HttpStatus.OK, [
   mockNote(0, "river_tam"),
   mockNote(1, "malcolm_reynolds"),
   mockNote(2, "zoe_washburne"),
 ]);
 
-const oneHundredNotesNoGRDB = GitLabGetResponse.from(
+const oneHundredNotesNoGRDB = new SuccessfulGetResponse(
   HttpStatus.OK,
   createNNotes(100, "shepherd_book"),
 );
 
-const singleGRDBNoteGet = GitLabGetResponse.from(HttpStatus.OK, [
+const singleGRDBNoteGet = new SuccessfulGetResponse(HttpStatus.OK, [
   mockNote(GRDB_NOTE_NUMBER, botName),
 ]);
 
-const singleGRDBNotePost = GitLabPostResponse.from(HttpStatus.CREATED, {
-  id: GRDB_NOTE_NUMBER,
-});
+const singleGRDBNotePost = new SuccessfulPostORPutResponse(
+  HttpStatus.CREATED,
+  GRDB_NOTE_NUMBER,
+);
 
-const singleGRDBNotePut = GitLabPostResponse.from(HttpStatus.OK, {
-  id: GRDB_NOTE_NUMBER,
-});
-
-const noRequestNeeded = GitLabPostResponse.noRequestNeeded();
+const singleGRDBNotePut = new SuccessfulPostORPutResponse(
+  HttpStatus.OK,
+  GRDB_NOTE_NUMBER,
+);
 
 // TESTS
 jest.mock("../../src/gitlab/merge_request_api");
@@ -79,12 +88,9 @@ describe("Mock API Test: Comment Class", () => {
           sampleFullMessageArray,
         );
 
-        expect(postResponse.id).toBe(singleGRDBNotePost.id);
-        expect(postResponse.apiRequest.success).toBe(true);
-        expect(postResponse.apiRequest.status).toEqual({
-          code: HttpStatus.CREATED,
-          message: HttpStatus.getStatusText(HttpStatus.CREATED),
-        });
+        expect(postResponse.apiResponse).toBeInstanceOf(
+          SuccessfulPostORPutResponse,
+        );
         expect(api.newMRNote).toHaveBeenCalledTimes(1);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -99,8 +105,7 @@ describe("Mock API Test: Comment Class", () => {
           sampleNoActionMessageArray,
         );
 
-        expect(postResponse.id).toBe(undefined);
-        expect(postResponse.apiRequest).toEqual(noRequestNeeded.apiRequest);
+        expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
         expect(api.newMRNote).toHaveBeenCalledTimes(0);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -121,12 +126,9 @@ describe("Mock API Test: Comment Class", () => {
           sampleFullMessageArray,
         );
 
-        expect(postResponse.id).toBe(singleGRDBNotePost.id);
-        expect(postResponse.apiRequest.success).toBe(true);
-        expect(postResponse.apiRequest.status).toEqual({
-          code: HttpStatus.CREATED,
-          message: HttpStatus.getStatusText(HttpStatus.CREATED),
-        });
+        expect(postResponse.apiResponse).toBeInstanceOf(
+          SuccessfulPostORPutResponse,
+        );
         expect(api.newMRNote).toHaveBeenCalledTimes(1);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -146,12 +148,9 @@ describe("Mock API Test: Comment Class", () => {
           updateToggle,
           sampleFullMessageArray,
         );
-        expect(postResponse.id).toBe(GRDB_NOTE_NUMBER);
-        expect(postResponse.apiRequest.success).toBe(true);
-        expect(postResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+        expect(postResponse.apiResponse).toBeInstanceOf(
+          SuccessfulPostORPutResponse,
+        );
         expect(api.newMRNote).toHaveBeenCalledTimes(0);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
         expect(api.editMRNote).toHaveBeenCalledTimes(1);
@@ -165,8 +164,7 @@ describe("Mock API Test: Comment Class", () => {
           updateToggle,
           sampleNoActionMessageArray,
         );
-        expect(postResponse.id).toBe(undefined);
-        expect(postResponse.apiRequest).toEqual(noRequestNeeded.apiRequest);
+        expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
         expect(api.newMRNote).toHaveBeenCalledTimes(0);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -187,12 +185,9 @@ describe("Mock API Test: Comment Class", () => {
             updateToggle,
             sampleFullMessageArray,
           );
-          expect(postResponse.id).toBe(singleGRDBNotePost.id);
-          expect(postResponse.apiRequest.success).toBe(true);
-          expect(postResponse.apiRequest.status).toEqual({
-            code: HttpStatus.CREATED,
-            message: HttpStatus.getStatusText(HttpStatus.CREATED),
-          });
+          expect(postResponse.apiResponse).toBeInstanceOf(
+            SuccessfulPostORPutResponse,
+          );
           expect(api.newMRNote).toHaveBeenCalledTimes(1);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -212,12 +207,9 @@ describe("Mock API Test: Comment Class", () => {
             updateToggle,
             sampleFullMessageArray,
           );
-          expect(postResponse.id).toBe(GRDB_NOTE_NUMBER);
-          expect(postResponse.apiRequest.success).toBe(true);
-          expect(postResponse.apiRequest.status).toEqual({
-            code: HttpStatus.OK,
-            message: HttpStatus.getStatusText(HttpStatus.OK),
-          });
+          expect(postResponse.apiResponse).toBeInstanceOf(
+            SuccessfulPostORPutResponse,
+          );
           expect(api.newMRNote).toHaveBeenCalledTimes(0);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
           expect(api.editMRNote).toHaveBeenCalledTimes(1);
@@ -231,8 +223,7 @@ describe("Mock API Test: Comment Class", () => {
             updateToggle,
             sampleNoActionMessageArray,
           );
-          expect(postResponse.id).toBe(undefined);
-          expect(postResponse.apiRequest).toEqual(noRequestNeeded.apiRequest);
+          expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
           expect(api.newMRNote).toHaveBeenCalledTimes(0);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -250,12 +241,9 @@ describe("Mock API Test: Comment Class", () => {
             updateToggle,
             sampleFullMessageArray,
           );
-          expect(postResponse.id).toBe(singleGRDBNotePost.id);
-          expect(postResponse.apiRequest.success).toBe(true);
-          expect(postResponse.apiRequest.status).toEqual({
-            code: HttpStatus.CREATED,
-            message: HttpStatus.getStatusText(HttpStatus.CREATED),
-          });
+          expect(postResponse.apiResponse).toBeInstanceOf(
+            SuccessfulPostORPutResponse,
+          );
           expect(api.newMRNote).toHaveBeenCalledTimes(1);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -311,9 +299,7 @@ describe("Mock API Test: Comment Class", () => {
 
     test("returns -1 when 3XX-5XX response from GitLab", async () => {
       // @ts-ignore
-      api.getAllMRNotes.mockResolvedValueOnce(
-        GitLabGetResponse.from(HttpStatus.UNAUTHORIZED, {}),
-      );
+      api.getAllMRNotes.mockResolvedValueOnce(unauthorized_401);
       const noteIdResponse = await BotComment.getMRNoteId(api);
       expect(noteIdResponse).toBe(-1);
       expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
@@ -321,9 +307,7 @@ describe("Mock API Test: Comment Class", () => {
 
     test("returns -1 when error returned from fetch", async () => {
       // @ts-ignore
-      api.getAllMRNotes.mockResolvedValueOnce(
-        GitLabGetResponse.from(HttpStatus.BAD_GATEWAY, {}),
-      );
+      api.getAllMRNotes.mockResolvedValueOnce(fetch_network_error);
       const noteIdResponse = await BotComment.getMRNoteId(api);
       expect(noteIdResponse).toBe(-1);
       expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);

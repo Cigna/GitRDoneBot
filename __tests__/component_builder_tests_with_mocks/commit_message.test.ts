@@ -1,6 +1,14 @@
 import * as HttpStatus from "http-status-codes";
-import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";
-import { mockGitLabCommit, createNGitLabCommits } from "../helpers";
+import {
+  FailedResponse,
+  MergeRequestApi,
+  SuccessfulGetResponse,
+} from "../../src/gitlab";
+import {
+  mockGitLabCommit,
+  createNGitLabCommits,
+  internal_error_500,
+} from "../helpers";
 import { winlog } from "../../src/util";
 import { CommitMessages } from "../../src/bot_actions";
 import { CommitMessagesNote } from "../../src/bot_actions/commit_messages/commit_message_note";
@@ -12,11 +20,11 @@ const DYNAMIC_CALCULATED_THRESHOLD = Math.floor(DYNAMIC_TOTAL_COMMITS * 0.2);
 
 const DEFAULT_THRESHOLD = 2;
 
-const single_commit = GitLabGetResponse.from(HttpStatus.OK, [
+const single_commit = new SuccessfulGetResponse(HttpStatus.OK, [
   mockGitLabCommit("Sample", Date.now().toString()),
 ]);
 
-const less_than_dynamic_threshold_commits = GitLabGetResponse.from(
+const less_than_dynamic_threshold_commits = new SuccessfulGetResponse(
   HttpStatus.OK,
   [
     mockGitLabCommit("", Date.now().toString()),
@@ -26,31 +34,23 @@ const less_than_dynamic_threshold_commits = GitLabGetResponse.from(
   ],
 );
 
-const more_than_dynamic_threshold_commits = GitLabGetResponse.from(
+const more_than_dynamic_threshold_commits = new SuccessfulGetResponse(
   HttpStatus.OK,
   createNGitLabCommits(DYNAMIC_TOTAL_COMMITS),
 );
 
-const api_request_failure = GitLabGetResponse.from(
-  HttpStatus.INTERNAL_SERVER_ERROR,
-  undefined,
-);
-
-const zero_commits = GitLabGetResponse.from(
+const zero_commits = new SuccessfulGetResponse(
   HttpStatus.OK,
   createNGitLabCommits(0),
 );
 
-const too_many_one_word_commits: GitLabGetResponse = GitLabGetResponse.from(
-  HttpStatus.OK,
-  [
-    mockGitLabCommit("add", Date.now().toString()),
-    mockGitLabCommit("Delete three-failures.txt", Date.now().toString()),
-    mockGitLabCommit("Update", Date.now().toString()),
-    mockGitLabCommit("bug fix", Date.now().toString()),
-    mockGitLabCommit("bug::fix", Date.now().toString()),
-  ],
-);
+const too_many_one_word_commits = new SuccessfulGetResponse(HttpStatus.OK, [
+  mockGitLabCommit("add", Date.now().toString()),
+  mockGitLabCommit("Delete three-failures.txt", Date.now().toString()),
+  mockGitLabCommit("Update", Date.now().toString()),
+  mockGitLabCommit("bug fix", Date.now().toString()),
+  mockGitLabCommit("bug::fix", Date.now().toString()),
+]);
 
 jest.mock("../../src/gitlab/merge_request_api");
 
@@ -72,12 +72,10 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect successful API call", () => {
-        expect(commitMessageResponse.apiRequest.success).toBe(true);
-        expect(commitMessageResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
 
       test("calculated threshold is correctly calculated to be default threshold", () => {
@@ -113,12 +111,10 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect successful API call", async () => {
-        expect(commitMessageResponse.apiRequest.success).toBe(true);
-        expect(commitMessageResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+      test("should return apiResponse state of SuccessfulGetResponse", async () => {
+        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
 
       test("calculated threshold is correctly calculated to be default threshold", () => {
@@ -156,12 +152,10 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect successful API call", async () => {
-        expect(commitMessageResponse.apiRequest.success).toBe(true);
-        expect(commitMessageResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+      test("should return apiResponse state of SuccessfulGetResponse", async () => {
+        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
 
       test("calculated threshold is correctly calculated to be 20% of total commits", () => {
@@ -188,7 +182,7 @@ describe("Mock API Test: CommitMessages Class", () => {
       beforeAll(async () => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getSingleMRCommits.mockResolvedValueOnce(api_request_failure);
+        api.getSingleMRCommits.mockResolvedValueOnce(internal_error_500);
         commitMessageResponse = await CommitMessages.from(
           state,
           api,
@@ -197,12 +191,10 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect failed API call", () => {
-        expect(commitMessageResponse.apiRequest.success).toBe(false);
-        expect(commitMessageResponse.apiRequest.status).toEqual({
-          code: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR),
-        });
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
+          FailedResponse,
+        );
       });
 
       test("calculated threshold is correctly left to be the default threshold", () => {
@@ -237,12 +229,10 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect a successful API call", () => {
-        expect(commitMessageResponse.apiRequest.success).toBe(true);
-        expect(commitMessageResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
 
       test("calculated threshold is correctly left to be the default threshold", () => {
@@ -262,7 +252,7 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
     });
-    
+
     describe("when there are too many one word commits", (constructiveFeedbackOnlyToggle = false) => {
       let commitMessageResponse: CommitMessages;
       beforeAll(async () => {
@@ -277,9 +267,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         );
       });
 
-      test("apiRequest values reflect successful api call", () => {
-        expect(commitMessageResponse.apiRequest).toEqual(
-          too_many_one_word_commits.apiRequest,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 

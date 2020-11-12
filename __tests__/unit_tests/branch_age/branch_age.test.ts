@@ -12,9 +12,9 @@ const old_commits: Array<GitLabCommit> = [
   mockGitLabCommit("3rd Oldest commit", new Date().toString()),
 ];
 
-const thresholdDate = new Date()
-thresholdDate.setDate(thresholdDate.getDate() - 7)
-thresholdDate.setHours(thresholdDate.getHours() + 1)
+const thresholdDate = new Date();
+thresholdDate.setDate(thresholdDate.getDate() - defaultConfig.threshold);
+thresholdDate.setHours(thresholdDate.getHours() + 1);
 
 describe("getOldestCommit function", () => {
   test("should return the oldest commit", () => {

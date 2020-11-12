@@ -1,6 +1,7 @@
 import * as winston from "winston";
 import { BotActionNote } from "../bot_action_note";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
+import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Diff Size action.
@@ -73,7 +74,7 @@ export class DiffSizeNote extends BotActionNote {
    * */
   static buildMessage(
     customConfig: BotActionConfig,
-    gitLabRequestSuccess: boolean | undefined,
+    apiResponse: SuccessfulGetResponse | FailedResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     totalDiffs: number,
@@ -82,7 +83,7 @@ export class DiffSizeNote extends BotActionNote {
     let note: DiffSizeNote;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiResponse): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }

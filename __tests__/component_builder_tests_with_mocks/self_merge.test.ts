@@ -1,10 +1,11 @@
 import * as HttpStatus from "http-status-codes";
-import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";
 import {
-  mockUser,
-  get_response_not_found_404,
-  get_response_fetch_network_error,
-} from "../helpers";
+  FailedResponse,
+  MergeRequestApi,
+  NoRequestNeeded,
+  SuccessfulGetResponse,
+} from "../../src/gitlab";
+import { mockUser, not_found_404, fetch_network_error } from "../helpers";
 import { winlog } from "../../src/util";
 import { SelfMerge, BotActionNote } from "../../src/bot_actions";
 import { SelfMergeNote } from "../../src/bot_actions/self_merge/self_merge_note";
@@ -14,7 +15,7 @@ import { SelfMergeNote } from "../../src/bot_actions/self_merge/self_merge_note"
 const SELF_APPROVED_ID = 123;
 const ASSIGNEE_ID = 1;
 const AUTHOR_ID = 2;
-const get_mr_approval_multiple_approvals = GitLabGetResponse.from(
+const get_mr_approval_multiple_approvals = new SuccessfulGetResponse(
   HttpStatus.OK,
   {
     approved_by: [
@@ -23,20 +24,18 @@ const get_mr_approval_multiple_approvals = GitLabGetResponse.from(
     ],
   },
 );
-const get_mr_approval_no_approvals = GitLabGetResponse.from(HttpStatus.OK, {
+const get_mr_approval_no_approvals = new SuccessfulGetResponse(HttpStatus.OK, {
   approved_by: [],
 });
-const get_mr_approval_self_approved = GitLabGetResponse.from(HttpStatus.OK, {
+const get_mr_approval_self_approved = new SuccessfulGetResponse(HttpStatus.OK, {
   approved_by: [{ user: mockUser(SELF_APPROVED_ID) }],
 });
-const get_single_mr_self_merged = GitLabGetResponse.from(HttpStatus.OK, {
+const get_single_mr_self_merged = new SuccessfulGetResponse(HttpStatus.OK, {
   merged_by: mockUser(SELF_APPROVED_ID),
 });
-const get_single_mr_not_self_merged = GitLabGetResponse.from(HttpStatus.OK, {
+const get_single_mr_not_self_merged = new SuccessfulGetResponse(HttpStatus.OK, {
   merged_by: mockUser(ASSIGNEE_ID),
 });
-
-const noRequestNeededResponse = GitLabGetResponse.noRequestNeeded();
 
 // TESTS
 
@@ -69,10 +68,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for API call not needed", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          noRequestNeededResponse.apiRequest,
-        );
+      test("should return apiResponse state of NoRequestNeeded", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
       });
 
       test("should call API methods correct number of times", () => {
@@ -110,10 +107,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for API call not needed", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          noRequestNeededResponse.apiRequest,
-        );
+      test("should return apiResponse state of NoRequestNeeded", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
       });
 
       test("should call API methods correct number of times", () => {
@@ -155,9 +150,9 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          get_mr_approval_multiple_approvals.apiRequest,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -200,9 +195,9 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          get_mr_approval_self_approved.apiRequest,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -247,9 +242,9 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          get_mr_approval_no_approvals.apiRequest,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -294,9 +289,9 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for successful API call", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          get_mr_approval_no_approvals.apiRequest,
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
         );
       });
 
@@ -329,7 +324,7 @@ describe("Mock API Test: SelfMerge Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getMRApprovalConfig.mockResolvedValue(get_response_not_found_404);
+        api.getMRApprovalConfig.mockResolvedValue(not_found_404);
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
@@ -340,10 +335,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for failed API call", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          get_response_not_found_404.apiRequest,
-        );
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
 
       test("should call API methods correct number of times", () => {
@@ -373,7 +366,7 @@ describe("Mock API Test: SelfMerge Class", () => {
         // @ts-ignore
         api.getMRApprovalConfig.mockResolvedValue(get_mr_approval_no_approvals);
         // @ts-ignore
-        api.getSingleMR.mockResolvedValue(get_response_not_found_404);
+        api.getSingleMR.mockResolvedValue(not_found_404);
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
@@ -384,10 +377,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for failed API call", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          get_response_not_found_404.apiRequest,
-        );
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
 
       test("should call API methods correct number of times", () => {
@@ -415,9 +406,7 @@ describe("Mock API Test: SelfMerge Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getMRApprovalConfig.mockResolvedValue(
-          get_response_fetch_network_error,
-        );
+        api.getMRApprovalConfig.mockResolvedValue(fetch_network_error);
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
@@ -428,10 +417,8 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return correct apiRequest values for failed API call due to unknown network error", () => {
-        expect(selfMergeResponse.apiRequest).toEqual(
-          get_response_fetch_network_error.apiRequest,
-        );
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(selfMergeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
 
       test("should call API methods correct number of times", () => {

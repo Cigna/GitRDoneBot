@@ -1,10 +1,14 @@
 import * as HttpStatus from "http-status-codes";
-import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";
+import {
+  FailedResponse,
+  MergeRequestApi,
+  SuccessfulGetResponse,
+} from "../../src/gitlab";
 import {
   mockGitLabCommit,
-  get_response_fetch_network_error,
-  get_response_unauthorized_401,
-  get_response_not_found_404,
+  fetch_network_error,
+  unauthorized_401,
+  not_found_404,
 } from "../helpers";
 import { winlog } from "../../src/util";
 import { BranchAge, BotActionNote } from "../../src/bot_actions";
@@ -15,23 +19,24 @@ import { BranchAgeNote } from "../../src/bot_actions/branch_age/branch_age_note"
 // TEST FIXTURES
 const customConfig = BotActionConfig.from(BranchAgeDefaults, {});
 
-const thresholdDate = new Date()
-thresholdDate.setDate(thresholdDate.getDate() - 7)
-thresholdDate.setHours(thresholdDate.getHours() + 1)
+const thresholdDate = new Date();
+thresholdDate.setDate(thresholdDate.getDate() - 7);
+thresholdDate.setHours(thresholdDate.getHours() + 1);
 
-const old_commits_gitlab_response = GitLabGetResponse.from(HttpStatus.OK, [
+const old_commits_gitlab_response = new SuccessfulGetResponse(HttpStatus.OK, [
   mockGitLabCommit("2nd Oldest commit", "2012-09-20T11:50:22+03:00"),
   mockGitLabCommit("Oldest commit", "2011-09-20T11:50:22+03:00"),
   mockGitLabCommit("3rd Oldest commit", new Date().toString()),
 ]);
 
-const new_commits_gitlab_response = GitLabGetResponse.from(HttpStatus.OK, [
+const new_commits_gitlab_response = new SuccessfulGetResponse(HttpStatus.OK, [
   mockGitLabCommit("Oldest commit", new Date().toString()),
 ]);
 
-const threshold_commits_gitlab_response = GitLabGetResponse.from(HttpStatus.OK, [
-  mockGitLabCommit("Oldest commit", thresholdDate.toString()),
-]);
+const threshold_commits_gitlab_response = new SuccessfulGetResponse(
+  HttpStatus.OK,
+  [mockGitLabCommit("Oldest commit", thresholdDate.toString())],
+);
 
 // TESTS
 jest.mock("../../src/gitlab/merge_request_api");
@@ -56,12 +61,10 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect successful API call", () => {
-        expect(branchAgeResponse.apiRequest.success).toBe(true);
-        expect(branchAgeResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(branchAgeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
 
       test("goodGitPractice is false", () => {
@@ -95,12 +98,10 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect successful API call", () => {
-        expect(branchAgeResponse.apiRequest.success).toBe(true);
-        expect(branchAgeResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(branchAgeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
 
       test("oldestCommit title is 'Oldest Commit'", () => {
@@ -124,7 +125,9 @@ describe("Mock API Test: BranchAge Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getSingleMRCommits.mockResolvedValue(threshold_commits_gitlab_response);
+        api.getSingleMRCommits.mockResolvedValue(
+          threshold_commits_gitlab_response,
+        );
         branchAgeResponse = await BranchAge.from(
           state,
           api,
@@ -134,12 +137,10 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect successful API call", () => {
-        expect(branchAgeResponse.apiRequest.success).toBe(true);
-        expect(branchAgeResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(branchAgeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
 
       test("oldestCommit title is 'Oldest Commit'", () => {
@@ -164,7 +165,7 @@ describe("Mock API Test: BranchAge Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(
-          GitLabGetResponse.from(200, []),
+          new SuccessfulGetResponse(200, []),
         );
         branchAgeResponse = await BranchAge.from(
           state,
@@ -175,12 +176,10 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect successful API call", () => {
-        expect(branchAgeResponse.apiRequest.success).toBe(true);
-        expect(branchAgeResponse.apiRequest.status).toEqual({
-          code: HttpStatus.OK,
-          message: HttpStatus.getStatusText(HttpStatus.OK),
-        });
+      test("should return apiResponse state of SuccessfulGetResponse", () => {
+        expect(branchAgeResponse.apiResponse).toBeInstanceOf(
+          SuccessfulGetResponse,
+        );
       });
 
       test("oldestCommit is undefined", () => {
@@ -204,9 +203,7 @@ describe("Mock API Test: BranchAge Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getSingleMRCommits.mockResolvedValue(
-          get_response_fetch_network_error,
-        );
+        api.getSingleMRCommits.mockResolvedValue(fetch_network_error);
         branchAgeResponse = await BranchAge.from(
           state,
           api,
@@ -216,12 +213,8 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect unknown network error", () => {
-        expect(branchAgeResponse.apiRequest.success).toBe(false);
-        expect(branchAgeResponse.apiRequest.status).toEqual({
-          code: HttpStatus.BAD_GATEWAY,
-          message: HttpStatus.getStatusText(HttpStatus.BAD_GATEWAY),
-        });
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
     });
   });
@@ -233,7 +226,7 @@ describe("Mock API Test: BranchAge Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getSingleMRCommits.mockResolvedValue(get_response_unauthorized_401);
+        api.getSingleMRCommits.mockResolvedValue(unauthorized_401);
         branchAgeResponse = await BranchAge.from(
           state,
           api,
@@ -243,12 +236,8 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect not found API call", () => {
-        expect(branchAgeResponse.apiRequest.success).toBe(false);
-        expect(branchAgeResponse.apiRequest.status).toEqual({
-          code: HttpStatus.UNAUTHORIZED,
-          message: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED),
-        });
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
 
       test("oldestCommit is undefined", () => {
@@ -272,7 +261,7 @@ describe("Mock API Test: BranchAge Class", () => {
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getSingleMRCommits.mockResolvedValue(get_response_not_found_404);
+        api.getSingleMRCommits.mockResolvedValue(not_found_404);
         branchAgeResponse = await BranchAge.from(
           state,
           api,
@@ -282,12 +271,8 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("apiRequest values reflect not found API call", () => {
-        expect(branchAgeResponse.apiRequest.success).toBe(false);
-        expect(branchAgeResponse.apiRequest.status).toEqual({
-          code: HttpStatus.NOT_FOUND,
-          message: HttpStatus.getStatusText(HttpStatus.NOT_FOUND),
-        });
+      test("should return apiResponse state of FailedResponse", () => {
+        expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
       });
 
       test("oldestCommit is undefined", () => {

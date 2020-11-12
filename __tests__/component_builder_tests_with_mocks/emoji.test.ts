@@ -1,18 +1,16 @@
 // TEST FIXTURES
 
-import { GitLabPostResponse, MergeRequestApi } from "../../src/gitlab";
+import {
+  FailedResponse,
+  MergeRequestApi,
+  NoRequestNeeded,
+  SuccessfulPostORPutResponse,
+} from "../../src/gitlab";
 import { winlog } from "../../src/util";
 import { BotEmoji } from "../../src/merge_request";
-import {
-  post_response_unauthorized_401,
-  get_response_fetch_network_error,
-} from "../helpers";
+import { unauthorized_401, fetch_network_error } from "../helpers";
 
-const newEmoji = GitLabPostResponse.from(201, {
-  id: 42,
-});
-
-const noRequest = GitLabPostResponse.noRequestNeeded();
+const newEmoji = new SuccessfulPostORPutResponse(201, 42);
 
 // TESTS
 
@@ -31,37 +29,31 @@ describe("Mock API Test: Emoji Class", () => {
       // @ts-ignore
       api.postEmoji.mockResolvedValueOnce(newEmoji);
       const postResponse = await BotEmoji.post(api, [true]);
-      expect(postResponse.id).toBe(newEmoji.id);
-      expect(postResponse.apiRequest).toEqual(newEmoji.apiRequest);
+      expect(postResponse.apiResponse).toBeInstanceOf(
+        SuccessfulPostORPutResponse,
+      );
       expect(api.postEmoji).toHaveBeenCalledTimes(1);
     });
 
     test("posts no emoji when no content exists", async () => {
       const postResponse = await BotEmoji.post(api, [undefined]);
-      expect(postResponse.id).toBe(undefined);
-      expect(postResponse.apiRequest).toEqual(noRequest.apiRequest);
+      expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
       expect(api.postEmoji).toHaveBeenCalledTimes(0);
     });
 
     test("properly handles 3XX-5XX response from GitLab", async () => {
       // @ts-ignore
-      api.postEmoji.mockResolvedValueOnce(post_response_unauthorized_401);
+      api.postEmoji.mockResolvedValueOnce(unauthorized_401);
       const postResponse = await BotEmoji.post(api, [true]);
-      expect(postResponse.id).toBe(-1);
-      expect(postResponse.apiRequest).toEqual(
-        post_response_unauthorized_401.apiRequest,
-      );
+      expect(postResponse.apiResponse).toBeInstanceOf(FailedResponse);
       expect(api.postEmoji).toHaveBeenCalledTimes(1);
     });
 
     test("properly handles error returned from fetch", async () => {
       // @ts-ignore
-      api.postEmoji.mockResolvedValueOnce(get_response_fetch_network_error);
+      api.postEmoji.mockResolvedValueOnce(fetch_network_error);
       const postResponse = await BotEmoji.post(api, [true]);
-      expect(postResponse.id).toBe(undefined);
-      expect(postResponse.apiRequest).toEqual(
-        get_response_fetch_network_error.apiRequest,
-      );
+      expect(postResponse.apiResponse).toBeInstanceOf(FailedResponse);
       expect(api.postEmoji).toHaveBeenCalledTimes(1);
     });
   });

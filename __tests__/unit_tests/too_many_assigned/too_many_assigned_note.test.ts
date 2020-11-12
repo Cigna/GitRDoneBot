@@ -1,5 +1,9 @@
 import { winlog } from "../../../src/util";
 import { TooManyAssignedNote } from "../../../src/bot_actions/too_many_assigned/too_many_assigned_note";
+import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
+
+const successfulResponse = new SuccessfulGetResponse(200, {});
+const failedResponse = new FailedResponse(401);
 
 describe("TooManyAssignedNote.fromMessage(message)", () => {
   describe("any message string", (message = "Helpful reminder from your friendly neighborhood GitRDoneBot.") => {
@@ -10,14 +14,14 @@ describe("TooManyAssignedNote.fromMessage(message)", () => {
   });
 });
 
-describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequestSuccess, state, assigneeId)", () => {
-  describe("gitLabRequestSuccess === true", (gitLabRequestSuccess = true) => {
+describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(apiResponse, state, assigneeId)", () => {
+  describe("apiResponse === SuccessfulGetResponse", (apiResponse = successfulResponse) => {
     describe("'open' state", (state = "open") => {
       describe("assigneeId === null", (assigneeId = null) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -29,7 +33,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -43,7 +47,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -55,7 +59,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -69,7 +73,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -80,7 +84,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -90,13 +94,13 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
     });
   });
 
-  describe("gitLabRequestSuccess === false", (gitLabRequestSuccess = false) => {
+  describe("apiResponse === FailedResponse", (apiResponse = failedResponse) => {
     describe("'open' state", (state = "open") => {
       describe("assigneeId === null", (assigneeId = null) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -107,7 +111,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: true", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -121,7 +125,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -132,7 +136,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: true", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -146,7 +150,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -157,7 +161,7 @@ describe("TooManyAssignedNote.customCaseForCheckPermissionsMessage(gitLabRequest
         test("RETURNS BOOLEAN: false", () => {
           expect(
             TooManyAssignedNote.customCaseForCheckPermissionsMessage(
-              gitLabRequestSuccess,
+              apiResponse,
               state,
               assigneeId,
             ),
@@ -652,15 +656,15 @@ describe("TooManyAssignedNote.caseForNoActions(state, goodGitPractice, assigneeI
   });
 });
 
-describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitPractice, assigneeId, logger)", () => {
-  describe("gitLabRequestSuccess === true", (gitLabRequestSuccess = true) => {
+describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, assigneeId, logger)", () => {
+  describe("apiResponse === SuccessfulGetResponse", (apiResponse = successfulResponse) => {
     describe("'open' state", (state = "open") => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         describe("assigneeId === null", (assigneeId = null) => {
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -674,7 +678,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -690,7 +694,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -704,7 +708,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: bad + hashtag", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -720,7 +724,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -734,7 +738,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: unknownState", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -752,7 +756,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -766,7 +770,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -782,7 +786,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -796,7 +800,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: bad + hashtag", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -812,7 +816,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -826,7 +830,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: unknownState", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -844,7 +848,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -858,7 +862,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -874,7 +878,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -888,7 +892,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -904,7 +908,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -918,7 +922,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noAction", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -931,14 +935,14 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
     });
   });
 
-  describe("gitLabRequestSuccess === false", (gitLabRequestSuccess = false) => {
+  describe("apiResponse === FailedResponse", (apiResponse = failedResponse) => {
     describe("'open' state", (state = "open") => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         describe("assigneeId === null", (assigneeId = null) => {
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -952,7 +956,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: checkPermissions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -968,7 +972,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -982,7 +986,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: checkPermissions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -998,7 +1002,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1012,7 +1016,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: checkPermissions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1030,7 +1034,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1044,7 +1048,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: checkPermissions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1060,7 +1064,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1074,7 +1078,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: checkPermissions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1090,7 +1094,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1104,7 +1108,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: checkPermissions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1122,7 +1126,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1136,7 +1140,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1152,7 +1156,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1166,7 +1170,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1182,7 +1186,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,
@@ -1196,7 +1200,7 @@ describe("TooManyAssignedNote.buildMessage(gitLabRequestSuccess, state, goodGitP
           test("RETURNS STRING: noActions", () => {
             expect(
               TooManyAssignedNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 assigneeId,

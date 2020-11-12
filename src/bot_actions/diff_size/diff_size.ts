@@ -1,24 +1,22 @@
 import { BotAction } from "../bot_action";
 import {
-  GitLabAPIRequest,
-  GitLabGetResponse,
+  FailedResponse,
   MergeRequestApi,
+  SuccessfulGetResponse,
 } from "../../gitlab";
 import * as winston from "winston";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { DiffSizeNote } from "./diff_size_note";
 import { Change } from "../../interfaces";
-// import * as parse from "parse-diff";
 
 /**
- * This class extends the `BotAction` class by analyzing how many lines of diff are contained in the GitLab Merge Request.
- * In addition to the standard `BotAction` properties, each instance
- * of this class also contains the property:
+ * This class analyzes how many lines of diff are contained in the GitLab Merge Request.
+ * This class implements the `BotAction` interface and also contains the property:
  * 1. `totalDiffs`: `number` lines of diff contained in the Merge Request
- */
+ * */
 export class DiffSize implements BotAction {
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly totalDiffs: number,
@@ -45,27 +43,27 @@ export class DiffSize implements BotAction {
     let totalDiffs: number;
     let goodGitPractice!: boolean;
 
-    const apiResponse: GitLabGetResponse = await api.getSingleMRChanges();
+    const response = await api.getSingleMRChanges();
 
     // the changes property should contain an array of diffs that can be parsed to calculate
     // the total lines of diff contained in a Merge Request
     // if this property is missing, assign a value of -1 to totalDiffs to indicate that
     if (
-      apiResponse.apiRequest.success &&
-      apiResponse.result.hasOwnProperty("changes")
+      response instanceof SuccessfulGetResponse &&
+      response.result.hasOwnProperty("changes")
     ) {
-      totalDiffs = this.calculateDiffs(apiResponse.result.changes);
+      totalDiffs = this.calculateDiffs(response.result.changes);
       goodGitPractice = totalDiffs <= customConfig.threshold;
     } else {
       totalDiffs = -1;
     }
 
     return new DiffSize(
-      apiResponse.apiRequest,
+      response,
       goodGitPractice,
       DiffSizeNote.buildMessage(
         customConfig,
-        apiResponse.apiRequest.success,
+        response,
         state,
         goodGitPractice,
         totalDiffs,

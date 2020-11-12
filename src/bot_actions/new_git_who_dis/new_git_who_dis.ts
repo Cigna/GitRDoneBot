@@ -1,17 +1,28 @@
 import * as winston from "winston";
 import { BotAction } from "../bot_action";
-import { GitLabGetResponse, GitLabAPIRequest } from "../../gitlab";
+import {
+  FailedResponse,
+  NoRequestNeeded,
+  SuccessfulGetResponse,
+} from "../../gitlab";
 import { NewGitWhoDisNote } from "./new_git_who_dis_note";
 
 /**
- * This class extends the `BotAction` class by analyzing the name of the author of the GitLab Merge Request.
- */
+ * This class analyzes the name of the author of the GitLab Merge Request.
+ * This class implements the `BotAction` interface.
+ * */
 export class NewGitWhoDis implements BotAction {
+  readonly apiResponse:
+    | SuccessfulGetResponse
+    | FailedResponse
+    | NoRequestNeeded;
+
   private constructor(
-    readonly apiRequest: GitLabAPIRequest,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
-  ) {}
+  ) {
+    this.apiResponse = new NoRequestNeeded();
+  }
 
   /**
    * Constructs a complete Bot Action object by analyzing the author name.
@@ -24,11 +35,9 @@ export class NewGitWhoDis implements BotAction {
     logger: winston.Logger,
     authorName: string,
   ): Promise<BotAction> {
-    const goodGitPractice: boolean = this.authorNameIsNotLanId(authorName);
-    const apiResponse: GitLabGetResponse = GitLabGetResponse.noRequestNeeded();
+    const goodGitPractice = this.authorNameIsNotLanId(authorName);
 
     return new NewGitWhoDis(
-      apiResponse.apiRequest,
       goodGitPractice,
       NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, logger),
     );

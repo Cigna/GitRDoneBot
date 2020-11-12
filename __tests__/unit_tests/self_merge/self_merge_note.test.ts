@@ -1,5 +1,9 @@
 import { winlog } from "../../../src/util";
 import { SelfMergeNote } from "../../../src/bot_actions/self_merge/self_merge_note";
+import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
+
+const successfulResponse = new SuccessfulGetResponse(200, {});
+const failedResponse = new FailedResponse(401);
 
 describe("SelfMergeNote.caseForGoodMessage(state, goodGitPractice)", () => {
   describe("'open' state", (state = "open") => {
@@ -1498,15 +1502,15 @@ describe("SelfMergeNote.fromMessage(message)", () => {
   });
 });
 
-describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractice, approversNeeded, logger)", () => {
-  describe("gitLabRequestSuccess !== false", (gitLabRequestSuccess = undefined) => {
+describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approversNeeded, logger)", () => {
+  describe("apiResponse !== FailedResponse", (apiResponse = successfulResponse) => {
     describe("'open' state", (state = "open") => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         describe("approversNeeded === true", (approversNeeded = true) => {
           test("RETURNS STRING: good + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1519,7 +1523,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: good + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1532,7 +1536,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: good + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1548,7 +1552,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: badAssigned + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1561,7 +1565,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: badAssigned + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1574,7 +1578,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: badAssigned + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1590,7 +1594,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1603,7 +1607,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1616,7 +1620,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1634,7 +1638,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: good + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1647,7 +1651,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: good + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1660,7 +1664,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: good + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1676,7 +1680,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: badAssigned + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1689,7 +1693,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: badAssigned + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1702,7 +1706,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: badAssigned + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1718,7 +1722,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1731,7 +1735,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1744,7 +1748,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1762,7 +1766,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: noApprovals + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1775,7 +1779,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: noAction", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1788,7 +1792,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1804,7 +1808,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: badMerged + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1817,7 +1821,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: badApproved + hashtag", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1830,7 +1834,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1846,7 +1850,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1859,7 +1863,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1872,7 +1876,7 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
           test("RETURNS STRING: unknownState", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,
@@ -1885,15 +1889,15 @@ describe("SelfMergeNote.buildMessage(gitLabRequestSuccess, state, goodGitPractic
     });
   });
 
-  // if gitLabRequestSuccess === false, all other params are ignored
-  describe("gitLabRequestSuccess === false", (gitLabRequestSuccess = false) => {
+  // if apiResponse === false, all other params are ignored
+  describe("apiResponse === false", (apiResponse = failedResponse) => {
     describe("state === undefined", (state = undefined) => {
       describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
         describe("approversNeeded === undefined", (approversNeeded = undefined) => {
           test("RETURNS STRING: checkPermissions", () => {
             expect(
               SelfMergeNote.buildMessage(
-                gitLabRequestSuccess,
+                apiResponse,
                 state,
                 goodGitPractice,
                 approversNeeded,

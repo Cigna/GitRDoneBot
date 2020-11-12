@@ -1,5 +1,9 @@
 import { winlog } from "../../../src/util";
 import { GitOuttaHereNote } from "../../../src/bot_actions/git_outta_here/git_outta_here_note";
+import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
+
+const successfulResponse = new SuccessfulGetResponse(200, {});
+const failedResponse = new FailedResponse(401);
 
 describe("GitOuttaHereNote.caseForBadMessage(goodGitPractice)", () => {
   describe("goodGitPractice === true", (goodGitPractice = true) => {
@@ -38,16 +42,12 @@ describe("GitOuttaHereNote.fromMessage(message)", () => {
   });
 });
 
-describe("GitOuttaHereNote.buildMessage(gitLabRequestSuccess, goodGitPractice, logger)", () => {
-  describe("gitLabRequestSuccess !== false", (gitLabRequestSuccess = undefined) => {
+describe("GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, logger)", () => {
+  describe("apiResponse !== FailedResponse", (apiResponse = successfulResponse) => {
     describe("goodGitPractice === true", (goodGitPractice = true) => {
       test("RETURNS STRING: noAction", () => {
         expect(
-          GitOuttaHereNote.buildMessage(
-            gitLabRequestSuccess,
-            goodGitPractice,
-            winlog,
-          ),
+          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, winlog),
         ).toBe(GitOuttaHereNote.noActionMessage);
       });
     });
@@ -55,11 +55,7 @@ describe("GitOuttaHereNote.buildMessage(gitLabRequestSuccess, goodGitPractice, l
     describe("goodGitPractice === false", (goodGitPractice = false) => {
       test("RETURNS STRING: bad + hashtag", () => {
         expect(
-          GitOuttaHereNote.buildMessage(
-            gitLabRequestSuccess,
-            goodGitPractice,
-            winlog,
-          ),
+          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, winlog),
         ).toBe(`${GitOuttaHereNote.bad} ${GitOuttaHereNote.hashtag}`);
       });
     });
@@ -67,26 +63,18 @@ describe("GitOuttaHereNote.buildMessage(gitLabRequestSuccess, goodGitPractice, l
     describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
       test("RETURNS STRING: unknownState", () => {
         expect(
-          GitOuttaHereNote.buildMessage(
-            gitLabRequestSuccess,
-            goodGitPractice,
-            winlog,
-          ),
+          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, winlog),
         ).toBe(GitOuttaHereNote.unknownState);
       });
     });
   });
 
-  // if gitLabRequestSuccess === false, all other params are ignored
-  describe("gitLabRequestSuccess === false", (gitLabRequestSuccess = false) => {
+  // if apiResponse === FailedResponse, all other params are ignored
+  describe("apiResponse === FailedResponse", (apiResponse = failedResponse) => {
     describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
       test("RETURNS STRING: checkPermissions", () => {
         expect(
-          GitOuttaHereNote.buildMessage(
-            gitLabRequestSuccess,
-            goodGitPractice,
-            winlog,
-          ),
+          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, winlog),
         ).toBe(GitOuttaHereNote.checkPermissionsMessage);
       });
     });

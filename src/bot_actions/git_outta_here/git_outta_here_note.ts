@@ -1,4 +1,5 @@
 import * as winston from "winston";
+import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
 import { BotActionNote } from "../bot_action_note";
 
 /**
@@ -35,14 +36,14 @@ export class GitOuttaHereNote extends BotActionNote {
    * @returns `message` of the `GitOuttaHereNote` object
    * */
   static buildMessage(
-    gitLabRequestSuccess: boolean | undefined,
+    apiResponse: SuccessfulGetResponse | FailedResponse,
     goodGitPractice: boolean | undefined,
     logger: winston.Logger,
   ): string {
     let note: GitOuttaHereNote;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {
+      case this.standardCaseForCheckPermissionsMessage(apiResponse): {
         note = this.fromMessage(this.checkPermissionsMessage);
         break;
       }
