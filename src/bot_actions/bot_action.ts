@@ -14,3 +14,9 @@ export interface BotAction {
   goodGitPractice: boolean;
   mrNote: string;
 }
+
+export interface SuccessfulBotAction {
+  // apiResponse: ApiResponse;
+  // goodGitPractice: boolean;
+  mrNote: string;
+}
