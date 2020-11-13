@@ -1,6 +1,6 @@
 import * as winston from "winston";
 import { BotActionNote } from "..";
-import { ApiResponse } from "../../gitlab";
+import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Commit Messages Action.
@@ -57,7 +57,7 @@ export class CommitMessagesNote extends BotActionNote {
    * @returns `message` of the `CommitMessagesNote` object
    * */
   static buildMessage(
-    apiResponse: ApiResponse,
+    apiResponse: SuccessfulGetResponse | FailedResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     constructiveFeedbackOnlyToggle: boolean,

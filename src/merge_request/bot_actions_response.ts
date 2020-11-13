@@ -1,12 +1,16 @@
 import * as HttpStatus from "http-status-codes";
 import * as winston from "winston";
 import {
+  BotActionInfo,
   BranchAge,
   CommitMessages,
   DiffSize,
+  FailedBotAction,
   GitOuttaHere,
   NewGitWhoDis,
+  NoAction,
   SelfMerge,
+  SuccessfulBotAction,
   TooManyAssigned,
 } from "../bot_actions";
 import { MergeRequestApi } from "../gitlab";
@@ -18,6 +22,10 @@ import {
 } from "../merge_request";
 import { CustomConfig } from "../custom_config/custom_config";
 
+export interface BotActionResponse {
+  action: SuccessfulBotAction | FailedBotAction | NoAction;
+  info: BotActionInfo;
+}
 /**
  * This class contains the aggregation logic for invoking Bot Actions and using their responses to post a comment and emoji on the Merge Request.
  * Each instance of this class contains information on the incoming Merge Request event, Custom configuration information (if it exists), response info returned from individual Bot Actions, and what (if any) comment and emoji were posted.
@@ -26,7 +34,7 @@ import { CustomConfig } from "../custom_config/custom_config";
  * However, GitLab does nothing with this data - the core purpose of instances of this class is to log information for analysis & debugging.
  */
 export class BotActionsResponse implements LambdaResponse {
-  private constructor(readonly statusCode: number, readonly body: string) {}
+  private constructor(readonly statusCode: number, readonly body: string) { }
 
   /**
    * Uses information from Merge Request webhook event to invoke Bot Actions. Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request.
@@ -47,11 +55,12 @@ export class BotActionsResponse implements LambdaResponse {
     const mergeRequestEvent: MergeRequestEvent = getMergeRequestEventData(
       gitLabEvent,
     );
+    const successfulBotActions: Array<SuccessfulBotAction> = [];
 
     // variables declared here so they will be in scope for response constructor
     // only status is guaranteed to be set regardless of error
     let statusCode: number,
-      branchAge!: BranchAge,
+      // branchAge!: BotActionResponse,
       commitMessage!: CommitMessages,
       diffSize!: DiffSize,
       gitOuttaHere!: GitOuttaHere,
@@ -61,151 +70,120 @@ export class BotActionsResponse implements LambdaResponse {
       comment!: BotComment,
       emoji!: BotEmoji;
 
-    try {
-      const branchAgePromise: Promise<BranchAge> = BranchAge.from(
-        state,
-        api,
-        customConfig.branchAge,
-        logger,
+    // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
+    // correct customConfig functionality can be implemented
+    const commitMessageConstructiveFeedbackOnlyToggle = false;
+    const commitMessagePromise: Promise<CommitMessages> = CommitMessages.from(
+      state,
+      api,
+      commitMessageConstructiveFeedbackOnlyToggle,
+      logger,
+    );
+
+    const diffPromise: Promise<DiffSize> = DiffSize.from(
+      state,
+      api,
+      customConfig.diffSize,
+      logger,
+    );
+
+    const gitOuttaHerePromise: Promise<GitOuttaHere> = GitOuttaHere.from(
+      api,
+      logger,
+    );
+
+    const newGitWhoDisPromise: Promise<NewGitWhoDis> = NewGitWhoDis.from(
+      logger,
+      mergeRequestEvent.authorName,
+    );
+
+    const selfMergePromise: Promise<SelfMerge> = SelfMerge.from(
+      state,
+      api,
+      logger,
+      mergeRequestEvent.assigneeId,
+      mergeRequestEvent.authorGitId,
+    );
+
+    const tooManyAssignedPromise: Promise<TooManyAssigned> = TooManyAssigned.from(
+      state,
+      api,
+      customConfig.tooManyMergeRequests,
+      logger,
+      mergeRequestEvent.assigneeId,
+    );
+
+    // fire all Bot Actions in parallel - order does not matter
+    const botActionResponses = await Promise.all([
+      await BranchAge.analyze(state, api, customConfig.branchAge, logger),
+      // await commitMessagePromise,
+      // await diffPromise,
+      // await gitOuttaHerePromise,
+      // await newGitWhoDisPromise,
+      // await selfMergePromise,
+      // await tooManyAssignedPromise,
+    ]);
+
+    botActionResponses.forEach(function (botActionResponse) {
+      if (botActionResponse.action instanceof SuccessfulBotAction) {
+        successfulBotActions.push(botActionResponse.action);
+      }
+    });
+
+    const totalActions = botActionResponses.length;
+    const successfulActions = successfulBotActions.length;
+
+    if (successfulActions === 0) {
+      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+    } else {
+      if (successfulActions === totalActions) {
+        statusCode = HttpStatus.OK;
+      } else {
+        statusCode = HttpStatus.MULTI_STATUS;
+      }
+
+      const note = successfulBotActions.reduce(
+        (note: string, action: SuccessfulBotAction) =>
+          note.concat(`${action.mrNote}<br /><br />`),
+        "",
       );
 
-      // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
-      // correct customConfig functionality can be implemented
-      const commitMessageConstructiveFeedbackOnlyToggle = false;
-      const commitMessagePromise: Promise<CommitMessages> = CommitMessages.from(
-        state,
-        api,
-        commitMessageConstructiveFeedbackOnlyToggle,
-        logger,
+      const allGoodGitPractice = successfulBotActions.every(
+        (action) => action.goodGitPractice === true,
       );
-
-      const diffPromise: Promise<DiffSize> = DiffSize.from(
-        state,
-        api,
-        customConfig.diffSize,
-        logger,
-      );
-
-      const gitOuttaHerePromise: Promise<GitOuttaHere> = GitOuttaHere.from(
-        api,
-        logger,
-      );
-
-      const newGitWhoDisPromise: Promise<NewGitWhoDis> = NewGitWhoDis.from(
-        logger,
-        mergeRequestEvent.authorName,
-      );
-
-      const selfMergePromise: Promise<SelfMerge> = SelfMerge.from(
-        state,
-        api,
-        logger,
-        mergeRequestEvent.assigneeId,
-        mergeRequestEvent.authorGitId,
-      );
-
-      const tooManyAssignedPromise: Promise<TooManyAssigned> = TooManyAssigned.from(
-        state,
-        api,
-        customConfig.tooManyMergeRequests,
-        logger,
-        mergeRequestEvent.assigneeId,
-      );
-
-      // fire all Bot Actions in parallel - order does not matter
-      [
-        branchAge,
-        commitMessage,
-        diffSize,
-        gitOuttaHere,
-        newGitWhoDis,
-        selfMerge,
-        tooManyAssigned,
-      ] = [
-        await branchAgePromise,
-        await commitMessagePromise,
-        await diffPromise,
-        await gitOuttaHerePromise,
-        await newGitWhoDisPromise,
-        await selfMergePromise,
-        await tooManyAssignedPromise,
-      ];
 
       const postCommentPromise: Promise<BotComment> = BotComment.post(
         api,
         state,
         logger,
         customConfig.updateMergeRequestComment,
-        [
-          branchAge.mrNote,
-          commitMessage.mrNote,
-          diffSize.mrNote,
-          gitOuttaHere.mrNote,
-          newGitWhoDis.mrNote,
-          selfMerge.mrNote,
-          tooManyAssigned.mrNote,
-        ],
+        note,
       );
 
-      const postEmojiPromise: Promise<BotEmoji> = BotEmoji.post(api, [
-        branchAge.goodGitPractice,
-        commitMessage.goodGitPractice,
-        diffSize.goodGitPractice,
-        gitOuttaHere.goodGitPractice,
-        newGitWhoDis.goodGitPractice,
-        selfMerge.goodGitPractice,
-        tooManyAssigned.goodGitPractice,
-      ]);
+      const postEmojiPromise: Promise<BotEmoji> = BotEmoji.post(
+        api,
+        allGoodGitPractice,
+      );
 
       // fire POST logic in parallel - must be performed only after all Bot Action promises have resolved
       [comment, emoji] = [await postCommentPromise, await postEmojiPromise];
-
-      // gets overall status from statuses returned by individual Bot Action API calls
-      statusCode = this.fromCodes([
-        branchAge.apiResponse.statusCode,
-        commitMessage.apiResponse.statusCode,
-        diffSize.apiResponse.statusCode,
-        gitOuttaHere.apiResponse.statusCode,
-        selfMerge.apiResponse.statusCode,
-        tooManyAssigned.apiResponse.statusCode,
-      ]);
-    } catch (err) {
-      logger.error(`BotActionsResponse Error: ${err.message}`);
-      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
-    const responseBody = JSON.stringify({
-      mergeRequestEvent,
-      customConfig,
-      branchAge,
-      commitMessage,
-      diffSize,
-      gitOuttaHere,
-      newGitWhoDis,
-      selfMerge,
-      tooManyAssigned,
-      comment,
-      emoji,
-    });
+    // const responseBody = JSON.stringify({
+    //   mergeRequestEvent,
+    //   customConfig,
+    //   commitMessage,
+    //   diffSize,
+    //   gitOuttaHere,
+    //   newGitWhoDis,
+    //   selfMerge,
+    //   tooManyAssigned,
+    //   comment,
+    //   emoji,
+    // });
+    // NOTE STATUS DOESNT TAKE INTO ACCOUNT EMOJI AND COMMENT....
 
-    return new BotActionsResponse(statusCode, responseBody);
-  }
-
-  /**
-   * Provides an overall status from a set of status codes
-   *
-   * @param allCodes Array of status codes
-   *
-   * @returns
-   * 1. 200 when none of the elements of allCodes are a `4XX` or `5XX`.
-   * 1. 207 when at least one element of allCodes is a `4XX` or `5XX`.
-   */
-  static fromCodes(allCodes: Array<number>): number {
-    const statusCode: number = allCodes.some((code) => {
-      return code >= 400;
-    })
-      ? 207
-      : 200;
-    return statusCode;
+    logger.info(botActionResponses);
+    return new BotActionsResponse(statusCode, "What should we put here?");
   }
 }

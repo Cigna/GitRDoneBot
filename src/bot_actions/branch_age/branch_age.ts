@@ -1,109 +1,84 @@
-import { BotAction, SuccessfulBotAction } from "../bot_action";
 import * as winston from "winston";
+import { BotActionConfig } from "../../custom_config/bot_action_config";
 import {
   ApiResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
-import { BotActionConfig } from "../../custom_config/bot_action_config";
+import { GitLabCommit } from "../../interfaces/gitlab_api_types";
+import { BotActionResponse } from "../../merge_request";
+import { FailedBotAction, NoAction, SuccessfulBotAction } from "../bot_action";
 import { BranchAgeNote } from "./branch_age_note";
-import { GitLabCommit } from "../../interfaces";
 
 /**
- * This class analyzes the age of the commits contained in the GitLab Merge Request.
- * This class implements the `BotAction` interface and also contains the property:
- * 1. `oldestCommit`: `GitLabCommit` with the oldest created_at date contained in the Merge Request
+ * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
+ * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
  */
-export class GoodNote {
-  private constructor(readonly mrNote: string) {}
-}
-export class BadNote {
-  private constructor(readonly mrNote: string) {}
-}
-export class FailedNote {
-  readonly mrNote = "Check Permissions Message";
+
+export class BotActionInfo {
+  constructor(readonly response: ApiResponse, readonly computedValues: {}) {}
 }
 
-export class BotActionLogger {
-  private constructor(
-    readonly apiResponse: ApiResponse,
-    readonly goodGitPractice: boolean,
-    readonly mrNote: string,
-    readonly oldestCommit: GitLabCommit,
-  ) {}
-}
-
-function getOldestCommit(commits: Array<GitLabCommit>): GitLabCommit {
-  const oldestCommit: GitLabCommit = commits.reduce(
-    (prevCommit, currCommit) => {
-      return new Date(prevCommit.created_at).getTime() <
-        new Date(currCommit.created_at).getTime()
-        ? prevCommit
-        : currCommit;
-    },
-  );
-  return oldestCommit;
-}
-
-function isBranchYoungerThanThreshold(
-  oldestCommit: GitLabCommit,
-  threshold: number,
-): boolean {
-  // this gives us the number of milliseconds between the oldest commit and current time
-  const oldestCommitAge =
-    Date.now() - new Date(oldestCommit.created_at).getTime();
-  // divide oldestCommitAge by milliseconds/day to compare int num of days with threshold
-  return Math.floor(oldestCommitAge / 8.64e7) <= threshold;
-}
-
-/**
- * Constructs a complete Branch Age object by making an HTTP call and analyzing response.
- *
- * @param state the state of the incoming Merge Request event from GitLab
- * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
- * @param customConfig an instance of the BotActionConfig class that defines branch age threshold
- * @param logger an instance of winston logger
- *
- * @returns BranchAge object constructed after calculating the age of oldest commit, determining goodGitPractice based on that value, and instantiating a new note object.
- *
- * @remarks If api call fails, returns BranchAge where `goodGitPractice` and `oldestCommit` are undefined.
- * */
-export async function from(
-  state: string,
-  api: MergeRequestApi,
-  customConfig: BotActionConfig,
-  logger: winston.Logger,
-): Promise<GoodNote | BadNote | FailedNote> {
-  let goodGitPractice!: boolean;
-  let oldestCommit!: GitLabCommit;
-  let note!: GoodNote | BadNote | FailedNote;
-
-  const response: ApiResponse = await api.getSingleMRCommits();
-
-  if (response instanceof SuccessfulGetResponse) {
-    if (response.result.length === 0) {
-      // When result array is empty, we are assuming there are no commits on this branch (ie, opened from an Issue).
-      goodGitPractice = true;
-    } else {
-      oldestCommit = getOldestCommit(response.result);
-      goodGitPractice = isBranchYoungerThanThreshold(
-        oldestCommit,
-        customConfig.threshold,
-      );
-    }
+export abstract class BranchAge {
+  static getOldestCommit(commits: Array<GitLabCommit>): GitLabCommit {
+    const oldestCommit: GitLabCommit = commits.reduce(
+      (prevCommit, currCommit) => {
+        return new Date(prevCommit.created_at).getTime() <
+          new Date(currCommit.created_at).getTime()
+          ? prevCommit
+          : currCommit;
+      },
+    );
+    return oldestCommit;
   }
 
-  // return new BranchAge(
-  //   response,
-  //   goodGitPractice,
-  //   BranchAgeNote.buildMessage(
-  //     customConfig,
-  //     response,
-  //     goodGitPractice,
-  //     state,
-  //     logger,
-  //   ),
-  //   oldestCommit,
-  // );
-  return note;
+  static isBranchYoungerThanThreshold(
+    oldestCommit: GitLabCommit,
+    threshold: number,
+  ): boolean {
+    // this gives us the number of milliseconds between the oldest commit and current time
+    const oldestCommitAge =
+      Date.now() - new Date(oldestCommit.created_at).getTime();
+    // divide oldestCommitAge by milliseconds/day to compare int num of days with threshold
+    return Math.floor(oldestCommitAge / 8.64e7) <= threshold;
+  }
+
+  static async analyze(
+    state: string,
+    api: MergeRequestApi,
+    customConfig: BotActionConfig,
+    logger: winston.Logger,
+  ): Promise<BotActionResponse> {
+    let goodGitPractice!: boolean;
+    let oldestCommit!: GitLabCommit;
+
+    const response = await api.getSingleMRCommits();
+
+    if (response instanceof SuccessfulGetResponse) {
+      if (response.result.length === 0) {
+        // When result array is empty, we are assuming there are no commits on this branch (ie, opened from an Issue).
+        goodGitPractice = true;
+      } else {
+        oldestCommit = this.getOldestCommit(response.result);
+        goodGitPractice = this.isBranchYoungerThanThreshold(
+          oldestCommit,
+          customConfig.threshold,
+        );
+      }
+    }
+
+    const action = BranchAgeNote.buildAction(
+      customConfig,
+      response,
+      goodGitPractice,
+      state,
+      logger,
+    );
+
+    const log = new BotActionInfo(response, {
+      oldestCommit: oldestCommit,
+    });
+
+    return [action, log];
+  }
 }

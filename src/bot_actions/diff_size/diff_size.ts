@@ -1,6 +1,6 @@
 import { BotAction } from "../bot_action";
 import {
-  ApiResponse,
+  FailedResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
@@ -16,7 +16,7 @@ import { Change } from "../../interfaces";
  * */
 export class DiffSize implements BotAction {
   private constructor(
-    readonly apiResponse: ApiResponse,
+    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly totalDiffs: number,
@@ -43,7 +43,7 @@ export class DiffSize implements BotAction {
     let totalDiffs: number;
     let goodGitPractice!: boolean;
 
-    const response: ApiResponse = await api.getSingleMRChanges();
+    const response = await api.getSingleMRChanges();
 
     // the changes property should contain an array of diffs that can be parsed to calculate
     // the total lines of diff contained in a Merge Request

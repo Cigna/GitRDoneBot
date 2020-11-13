@@ -7,7 +7,7 @@ import * as HttpStatus from "http-status-codes";
  *
  * Subclasses contain different information relevant to their state, such as a response body
  */
-export class ApiResponse {
+export abstract class ApiResponse {
   readonly message: string;
   constructor(readonly statusCode: number) {
     this.message = HttpStatus.getStatusText(statusCode);
@@ -45,6 +45,9 @@ export class SuccessfulGetResponse extends ApiResponse {
  * Subclass of ApiResponse. Used for all API requests that respond with codes other than 200 or 201.
  */
 export class FailedResponse extends ApiResponse {
+  // unique property to ensure safe static type-checking
+  // required due to how TS implements structural subtyping
+  private _failed = true;
   constructor(readonly statusCode: number) {
     super(statusCode);
   }
@@ -54,6 +57,9 @@ export class FailedResponse extends ApiResponse {
  * Subclass of ApiResponse. Always contains status code 204.
  */
 export class NoRequestNeeded extends ApiResponse {
+  // unique property to ensure safe static type-checking
+  // required due to how TS implements structural subtyping
+  private _noRequest = true;
   constructor() {
     super(HttpStatus.NO_CONTENT);
   }
@@ -76,8 +82,8 @@ export class SuccessfulPostORPutResponse extends ApiResponse {
 export function BuildGetResponse<T>(
   statusCode: number,
   body: T[] | T | undefined,
-): ApiResponse {
-  let response: ApiResponse;
+): SuccessfulGetResponse | FailedResponse {
+  let response;
 
   if (ApiResponse.computeSuccess(statusCode) && body !== undefined) {
     response = new SuccessfulGetResponse(statusCode, body);
@@ -95,8 +101,8 @@ export function BuildGetResponse<T>(
 export function BuildPostORPutResponse(
   statusCode: number,
   body?: any,
-): ApiResponse {
-  let response: ApiResponse;
+): SuccessfulPostORPutResponse | FailedResponse {
+  let response;
 
   if (
     ApiResponse.computeSuccess(statusCode) === true &&

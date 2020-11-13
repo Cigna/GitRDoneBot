@@ -125,7 +125,7 @@ const webhook: Handler = async (
     containerId = context.awsRequestId;
   }
 
-  const response: LambdaResponse = event.hasOwnProperty("body")
+  const response = event.hasOwnProperty("body")
     ? await handleGitLabWebhook(event)
     : new HealthCheckResponse();
 

@@ -1,5 +1,3 @@
-import { ApiResponse } from "../gitlab";
-
 /**
  * This interface defines the core properties that are dynamically
  * calculated by each distinct Bot Action:
@@ -9,14 +7,18 @@ import { ApiResponse } from "../gitlab";
  * @remarks 'goodGitPractice' will be undefined when Bot Action logic couldn't be performed due to api
  * failure in order to distinguish from when its value is explicitly set to false after performing some logic.
  * */
-export interface BotAction {
-  apiResponse: ApiResponse;
-  goodGitPractice: boolean;
+export class SuccessfulBotAction {
   mrNote: string;
+  constructor(
+    readonly goodGitPractice: boolean,
+    message: string,
+    hashtag: string,
+  ) {
+    this.mrNote = `${message} ${hashtag}`;
+  }
+}
+export class FailedBotAction {
+  constructor(readonly mrNote: string) {}
 }
 
-export interface SuccessfulBotAction {
-  // apiResponse: ApiResponse;
-  // goodGitPractice: boolean;
-  mrNote: string;
-}
+export class NoAction {}

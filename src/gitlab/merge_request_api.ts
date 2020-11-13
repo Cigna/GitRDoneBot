@@ -1,5 +1,10 @@
 import * as winston from "winston";
-import { ApiResponse, SuccessfulGetResponse, URI } from ".";
+import { URI } from "./uri";
+import {
+  FailedResponse,
+  SuccessfulGetResponse,
+  SuccessfulPostORPutResponse,
+} from "./api_responses";
 import { FetchWrapper } from "./fetch_wrapper";
 
 /**
@@ -29,7 +34,9 @@ export class MergeRequestApi {
 
   // EMOJIS
 
-  public postEmoji(qs: any): Promise<ApiResponse> {
+  public postEmoji(
+    qs: any,
+  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makePostRequest(uri, {
       name: qs,
@@ -37,13 +44,15 @@ export class MergeRequestApi {
   }
 
   /** HELPER METHOD FOR TESTS ONLY */
-  public deleteEmoji(awardId: number): Promise<ApiResponse> {
+  public deleteEmoji(
+    awardId: number,
+  ): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forSingleEmoji(awardId);
     return this.fetchWrapper.makeDeleteRequest(uri);
   }
 
   /** HELPER METHOD FOR TESTS ONLY */
-  public getAllEmojis(): Promise<ApiResponse> {
+  public getAllEmojis(): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makeGetRequest(uri);
   }
@@ -55,17 +64,24 @@ export class MergeRequestApi {
    * If api returns a page with less than 100 notes, that is the last page available.
    * This method should never use cached responses, as it may be called multiple times to get additional pages of results.
    * */
-  public getAllMRNotes(page: number): Promise<ApiResponse> {
+  public getAllMRNotes(
+    page: number,
+  ): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forNotesFilterByPage(page);
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
-  public editMRNote(noteId: number, qs: any): Promise<ApiResponse> {
+  public editMRNote(
+    noteId: number,
+    qs: any,
+  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.makePutRequest(uri, { body: qs });
   }
 
-  public newMRNote(qs: any): Promise<ApiResponse> {
+  public newMRNote(
+    qs: any,
+  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forNotes();
     return this.fetchWrapper.makePostRequest(uri, { body: qs });
   }
@@ -76,7 +92,9 @@ export class MergeRequestApi {
    * This will only delete comments directly posted on the MR -
    * it will NOT delete comments that are listed on MR that come from commits or other sources -
    * if it's tried, a 403 Forbidden status will be returned :) */
-  public deleteMRNote(noteId: number): Promise<ApiResponse> {
+  public deleteMRNote(
+    noteId: number,
+  ): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.makeDeleteRequest(uri);
   }
@@ -86,7 +104,7 @@ export class MergeRequestApi {
   public getMergeRequestsByAssigneeId(
     assigneeId: number,
     threshold: number,
-  ): Promise<ApiResponse> {
+  ): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forMRsFilterByAssigneeId(
       assigneeId,
       threshold,
@@ -94,16 +112,20 @@ export class MergeRequestApi {
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
-  public getMRApprovalConfig(): Promise<ApiResponse> {
+  public getMRApprovalConfig(): Promise<
+    SuccessfulGetResponse | FailedResponse
+  > {
     const uri: string = this.uriBuilder.forMRApprovals();
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
   // this method is used by multiple Bot Actions, so the first successful response is cached
-  public async getSingleMRChanges(): Promise<ApiResponse> {
+  public async getSingleMRChanges(): Promise<
+    SuccessfulGetResponse | FailedResponse
+  > {
     const uri: string = this.uriBuilder.forMRChanges();
 
-    const response: ApiResponse =
+    const response =
       this.MRChanges || (await this.fetchWrapper.makeGetRequest(uri));
     if (!this.MRChanges && response instanceof SuccessfulGetResponse) {
       this.MRChanges = response;
@@ -112,10 +134,12 @@ export class MergeRequestApi {
   }
 
   // this method is used by multiple Bot Actions, so the first successful response is cached
-  public async getSingleMRCommits(): Promise<ApiResponse> {
+  public async getSingleMRCommits(): Promise<
+    SuccessfulGetResponse | FailedResponse
+  > {
     const uri: string = this.uriBuilder.forSingleMRCommits();
 
-    const response: ApiResponse =
+    const response =
       this.MRCommits || (await this.fetchWrapper.makeGetRequest(uri));
     if (!this.MRCommits && response instanceof SuccessfulGetResponse) {
       this.MRCommits = response;
@@ -123,14 +147,16 @@ export class MergeRequestApi {
     return response;
   }
 
-  public getSingleMR(): Promise<ApiResponse> {
+  public getSingleMR(): Promise<SuccessfulGetResponse | FailedResponse> {
     const uri: string = this.uriBuilder.forSingleMR();
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
   // REPOSITORY FILES
 
-  public getConfigurationFile(): Promise<ApiResponse> {
+  public getConfigurationFile(): Promise<
+    SuccessfulGetResponse | FailedResponse
+  > {
     const uri: string = this.uriBuilder.forSingleProjectRepoRawConfigFile();
     return this.fetchWrapper.makeGetRequest(uri);
   }

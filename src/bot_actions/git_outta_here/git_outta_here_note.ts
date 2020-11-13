@@ -1,5 +1,5 @@
 import * as winston from "winston";
-import { ApiResponse } from "../../gitlab";
+import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
 import { BotActionNote } from "../bot_action_note";
 
 /**
@@ -36,7 +36,7 @@ export class GitOuttaHereNote extends BotActionNote {
    * @returns `message` of the `GitOuttaHereNote` object
    * */
   static buildMessage(
-    apiResponse: ApiResponse,
+    apiResponse: SuccessfulGetResponse | FailedResponse,
     goodGitPractice: boolean | undefined,
     logger: winston.Logger,
   ): string {

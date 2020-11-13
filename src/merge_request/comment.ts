@@ -3,7 +3,7 @@ import {
   SuccessfulGetResponse,
   FailedResponse,
   NoRequestNeeded,
-  ApiResponse,
+  SuccessfulPostORPutResponse,
 } from "../gitlab";
 import winston = require("winston");
 import { Note } from "../interfaces";
@@ -14,39 +14,40 @@ import { getBotUsername } from "../util/env_var_loader";
  * Each instance of this class contains the final message posted to a Merge Request, as well as HTTP status information about the POST request.
  */
 export class BotComment {
-  static readonly noActionContent: string = "No BotComment action required.";
-
   private constructor(
-    readonly apiResponse: ApiResponse,
+    readonly apiResponse:
+      | SuccessfulPostORPutResponse
+      | NoRequestNeeded
+      | FailedResponse,
     readonly text: string,
   ) {}
 
-  /**
-   * Composes single comment by aggregating all Bot Action `mrNote` properties. Filters out empty strings, no action strings ("NA"), and error message strings.
-   * @param messages Array of `mrNote` strings
-   * @returns Properly formatted GitLab MR note
-   * */
-  static compose(messages: Array<string>): string {
-    let comment: string = messages
-      .filter((msg) => {
-        return msg.match(
-          new RegExp(
-            /^((?!Unknown state encountered while composing note:)(?!NA).)+/,
-          ),
-        );
-      })
-      .join("<br /><br />");
+  // /**
+  //  * Composes single comment by aggregating all Bot Action `mrNote` properties. Filters out empty strings, no action strings ("NA"), and error message strings.
+  //  * @param messages Array of `mrNote` strings
+  //  * @returns Properly formatted GitLab MR note
+  //  * */
+  // static compose(messages: Array<string>): string {
+  //   let comment: string = messages
+  //     .filter((msg) => {
+  //       return msg.match(
+  //         new RegExp(
+  //           /^((?!Unknown state encountered while composing note:)(?!NA).)+/,
+  //         ),
+  //       );
+  //     })
+  //     .join("<br /><br />");
 
-    if (comment === "") {
-      comment = this.noActionContent;
-    }
-    return comment;
-  }
+  //   if (comment === "") {
+  //     comment = this.noActionContent;
+  //   }
+  //   return comment;
+  // }
 
-  /** This case MUST be listed first in the switch statement */
-  static caseForNoActions(comment: string): boolean {
-    return comment === this.noActionContent;
-  }
+  // /** This case MUST be listed first in the switch statement */
+  // static caseForNoActions(comment: string): boolean {
+  //   return comment === this.noActionContent;
+  // }
 
   static caseForNewNote(state: string, updateToggle: boolean): boolean {
     return state === "open" || (state === "merge" && updateToggle === false);
@@ -77,16 +78,14 @@ export class BotComment {
     state: string,
     logger: winston.Logger,
     updateToggle: boolean,
-    messages: Array<string>,
+    comment: string,
   ): Promise<BotComment> {
-    let response: ApiResponse;
-    const comment = this.compose(messages);
+    let response:
+      | SuccessfulPostORPutResponse
+      | NoRequestNeeded
+      | FailedResponse;
 
     switch (true) {
-      case this.caseForNoActions(comment): {
-        response = new NoRequestNeeded();
-        break;
-      }
       case this.caseForNewNote(state, updateToggle): {
         response = await api.newMRNote(comment);
         break;
@@ -122,7 +121,7 @@ export class BotComment {
 
     // Grab the next page of notes until the first note authored by GRDBot is found or the last page is reached.
     while (noteCount === 100) {
-      const response: ApiResponse = await api.getAllMRNotes(currentPage);
+      const response = await api.getAllMRNotes(currentPage);
       if (
         response instanceof SuccessfulGetResponse &&
         response.result.length !== 0

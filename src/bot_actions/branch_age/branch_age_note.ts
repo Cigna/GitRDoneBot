@@ -1,13 +1,14 @@
 import * as winston from "winston";
 import { BotActionNote } from "../bot_action_note";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
-import { ApiResponse } from "../../gitlab";
+import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
+import { FailedBotAction, NoAction, SuccessfulBotAction } from "../bot_action";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
  */
-export class BranchAgeNote extends BotActionNote {
+export abstract class BranchAgeNote {
   static readonly good =
     `:star: It’s great that you’re committing and merging code frequently` +
     ` - the commits on this branch aren’t old or stale. Good job!`;
@@ -15,15 +16,6 @@ export class BranchAgeNote extends BotActionNote {
     `:loudspeaker: This merge request has a pretty old commit. ` +
     `You should try and merge more frequently to keep your commits on branches fresh.`;
   static readonly hashtag = `[#BranchAgeAnalysis](https://github.com/Cigna/GitRDoneBot#2-branch-age)`;
-  private constructor(message: string) {
-    super(message);
-  }
-
-  static fromMessage(message: string): BranchAgeNote {
-    return new BranchAgeNote(
-      this.conditionallyAddHashtag(message, this.hashtag),
-    );
-  }
 
   static caseForNoActions(
     state: string,
@@ -51,29 +43,28 @@ export class BranchAgeNote extends BotActionNote {
       !constructiveFeedbackOnlyToggle
     );
   }
-
   /**
    * Constructs a `BranchAgeNote` object by identifying one of five cases: standard case for permissions check,
    * case for bad message, case for good message, case for no actions, or case for unknown state.
    *
    * @returns `message` of the `BranchAgeNote` object
    * */
-  static buildMessage(
+  static buildAction(
     customConfig: BotActionConfig,
-    apiResponse: ApiResponse,
+    apiResponse: SuccessfulGetResponse | FailedResponse,
     goodGitPractice: boolean | undefined,
     state: string,
     logger: winston.Logger,
-  ): string {
-    let note: BranchAgeNote;
+  ): SuccessfulBotAction | FailedBotAction | NoAction {
+    let action: SuccessfulBotAction | FailedBotAction | NoAction;
 
     switch (true) {
-      case this.standardCaseForCheckPermissionsMessage(apiResponse): {
-        note = this.fromMessage(this.checkPermissionsMessage);
+      case BotActionNote.standardCaseForCheckPermissionsMessage(apiResponse): {
+        action = new FailedBotAction(BotActionNote.checkPermissionsMessage);
         break;
       }
       case this.caseForBadMessage(goodGitPractice): {
-        note = this.fromMessage(this.bad);
+        action = new SuccessfulBotAction(false, this.bad, this.hashtag);
         break;
       }
       case this.caseForGoodMessage(
@@ -81,7 +72,7 @@ export class BranchAgeNote extends BotActionNote {
         customConfig.constructiveFeedbackOnlyToggle,
         goodGitPractice,
       ): {
-        note = this.fromMessage(this.good);
+        action = new SuccessfulBotAction(true, this.good, this.hashtag);
         break;
       }
       case this.caseForNoActions(
@@ -89,15 +80,14 @@ export class BranchAgeNote extends BotActionNote {
         customConfig.constructiveFeedbackOnlyToggle,
         goodGitPractice,
       ): {
-        note = this.fromMessage(this.noActionMessage);
+        action = new NoAction();
         break;
       }
       default: {
-        note = this.fromMessage(this.unknownState);
-        logger.error(`${note.message} BranchAgeAnalysis`);
+        action = new FailedBotAction(BotActionNote.unknownState);
+        logger.error(`BranchAge unknown state encountered`);
       }
     }
-
-    return note.message;
+    return action;
   }
 }
