@@ -17,7 +17,6 @@ import {
   getMergeRequestEventData,
 } from "../merge_request";
 import { CustomConfig } from "../custom_config/custom_config";
-import { winlog } from "../util";
 
 /**
  * This class contains the aggregation logic for invoking Bot Actions and using their responses to post a comment and emoji on the Merge Request.
@@ -189,7 +188,7 @@ export class BotActionsResponse implements LambdaResponse {
       emoji,
     };
 
-    winlog.info({
+    logger.info({
       statusCode: statusCode,
       body: responseBody,
     });
