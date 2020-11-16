@@ -1,23 +1,14 @@
 import * as winston from "winston";
+import { BotActionInfo, BotActionResponse } from "..";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
-import {
-  ApiResponse,
-  MergeRequestApi,
-  SuccessfulGetResponse,
-} from "../../gitlab";
+import { MergeRequestApi, SuccessfulGetResponse } from "../../gitlab";
 import { GitLabCommit } from "../../interfaces/gitlab_api_types";
-import { BotActionResponse } from "../../merge_request";
-import { FailedBotAction, NoAction, SuccessfulBotAction } from "../bot_action";
 import { BranchAgeNote } from "./branch_age_note";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
  */
-
-export class BotActionInfo {
-  constructor(readonly response: ApiResponse, readonly computedValues: {}) {}
-}
 
 export abstract class BranchAge {
   static getOldestCommit(commits: Array<GitLabCommit>): GitLabCommit {
@@ -75,10 +66,10 @@ export abstract class BranchAge {
       logger,
     );
 
-    const log = new BotActionInfo(response, {
+    const info = new BotActionInfo(response, {
       oldestCommit: oldestCommit,
     });
 
-    return [action, log];
+    return { action, info };
   }
 }

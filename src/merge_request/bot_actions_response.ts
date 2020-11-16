@@ -1,14 +1,11 @@
 import * as HttpStatus from "http-status-codes";
 import * as winston from "winston";
 import {
-  BotActionInfo,
   BranchAge,
   CommitMessages,
   DiffSize,
-  FailedBotAction,
   GitOuttaHere,
   NewGitWhoDis,
-  NoAction,
   SelfMerge,
   SuccessfulBotAction,
   TooManyAssigned,
@@ -22,10 +19,6 @@ import {
 } from "../merge_request";
 import { CustomConfig } from "../custom_config/custom_config";
 
-export interface BotActionResponse {
-  action: SuccessfulBotAction | FailedBotAction | NoAction;
-  info: BotActionInfo;
-}
 /**
  * This class contains the aggregation logic for invoking Bot Actions and using their responses to post a comment and emoji on the Merge Request.
  * Each instance of this class contains information on the incoming Merge Request event, Custom configuration information (if it exists), response info returned from individual Bot Actions, and what (if any) comment and emoji were posted.
@@ -34,7 +27,7 @@ export interface BotActionResponse {
  * However, GitLab does nothing with this data - the core purpose of instances of this class is to log information for analysis & debugging.
  */
 export class BotActionsResponse implements LambdaResponse {
-  private constructor(readonly statusCode: number, readonly body: string) { }
+  private constructor(readonly statusCode: number, readonly body: string) {}
 
   /**
    * Uses information from Merge Request webhook event to invoke Bot Actions. Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request.
@@ -59,16 +52,7 @@ export class BotActionsResponse implements LambdaResponse {
 
     // variables declared here so they will be in scope for response constructor
     // only status is guaranteed to be set regardless of error
-    let statusCode: number,
-      // branchAge!: BotActionResponse,
-      commitMessage!: CommitMessages,
-      diffSize!: DiffSize,
-      gitOuttaHere!: GitOuttaHere,
-      newGitWhoDis!: NewGitWhoDis,
-      selfMerge!: SelfMerge,
-      tooManyAssigned!: TooManyAssigned,
-      comment!: BotComment,
-      emoji!: BotEmoji;
+    let statusCode: number;
 
     // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
     // correct customConfig functionality can be implemented
@@ -166,7 +150,10 @@ export class BotActionsResponse implements LambdaResponse {
       );
 
       // fire POST logic in parallel - must be performed only after all Bot Action promises have resolved
-      [comment, emoji] = [await postCommentPromise, await postEmojiPromise];
+      const [comment, emoji] = [
+        await postCommentPromise,
+        await postEmojiPromise,
+      ];
     }
 
     // const responseBody = JSON.stringify({
@@ -181,7 +168,7 @@ export class BotActionsResponse implements LambdaResponse {
     //   comment,
     //   emoji,
     // });
-    // NOTE STATUS DOESNT TAKE INTO ACCOUNT EMOJI AND COMMENT....
+    // NOTE STATUS DOESN'T TAKE INTO ACCOUNT EMOJI AND COMMENT....
 
     logger.info(botActionResponses);
     return new BotActionsResponse(statusCode, "What should we put here?");

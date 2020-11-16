@@ -7,6 +7,17 @@
  * @remarks 'goodGitPractice' will be undefined when Bot Action logic couldn't be performed due to api
  * failure in order to distinguish from when its value is explicitly set to false after performing some logic.
  * */
+
+import { ApiResponse } from "../gitlab";
+
+export interface BotActionResponse {
+  action: SuccessfulBotAction | FailedBotAction | NoAction;
+  info: BotActionInfo;
+}
+
+export class BotActionInfo {
+  constructor(readonly response: ApiResponse, readonly computedValues: {}) {}
+}
 export class SuccessfulBotAction {
   mrNote: string;
   constructor(
