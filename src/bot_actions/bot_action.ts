@@ -11,12 +11,20 @@
 import { ApiResponse } from "../gitlab";
 
 export interface BotActionResponse {
-  action: SuccessfulBotAction | FailedBotAction | NoAction;
+  action:
+    | SuccessfulBotAction
+    | FailedBotAction
+    | SuccessfulBotActionWithNothingToSay;
   info: BotActionInfo;
 }
 
 export class BotActionInfo {
-  constructor(readonly response: ApiResponse, readonly computedValues: {}) {}
+  // Note, not all bot actions have additional computed values.
+  constructor(
+    readonly name: string,
+    readonly response: ApiResponse,
+    readonly computedValues: {},
+  ) {}
 }
 export class SuccessfulBotAction {
   mrNote: string;
@@ -32,4 +40,4 @@ export class FailedBotAction {
   constructor(readonly mrNote: string) {}
 }
 
-export class NoAction {}
+export class SuccessfulBotActionWithNothingToSay {}

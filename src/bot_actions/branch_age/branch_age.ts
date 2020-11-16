@@ -66,7 +66,7 @@ export abstract class BranchAge {
       logger,
     );
 
-    const info = new BotActionInfo(response, {
+    const info = new BotActionInfo("BranchAge", response, {
       oldestCommit: oldestCommit,
     });
 

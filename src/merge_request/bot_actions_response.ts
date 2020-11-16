@@ -168,7 +168,9 @@ export class BotActionsResponse implements LambdaResponse {
     //   comment,
     //   emoji,
     // });
+
     // NOTE STATUS DOESN'T TAKE INTO ACCOUNT EMOJI AND COMMENT....
+    // Emoji returns a 404 if it already exists so we probably don't care about it.
 
     logger.info(botActionResponses);
     return new BotActionsResponse(statusCode, "What should we put here?");

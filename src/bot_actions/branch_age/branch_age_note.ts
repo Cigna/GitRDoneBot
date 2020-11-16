@@ -2,7 +2,11 @@ import * as winston from "winston";
 import { BotActionNote } from "../bot_action_note";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
-import { FailedBotAction, NoAction, SuccessfulBotAction } from "../bot_action";
+import {
+  FailedBotAction,
+  SuccessfulBotActionWithNothingToSay,
+  SuccessfulBotAction,
+} from "../bot_action";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
@@ -55,8 +59,14 @@ export abstract class BranchAgeNote {
     goodGitPractice: boolean | undefined,
     state: string,
     logger: winston.Logger,
-  ): SuccessfulBotAction | FailedBotAction | NoAction {
-    let action: SuccessfulBotAction | FailedBotAction | NoAction;
+  ):
+    | SuccessfulBotAction
+    | FailedBotAction
+    | SuccessfulBotActionWithNothingToSay {
+    let action:
+      | SuccessfulBotAction
+      | FailedBotAction
+      | SuccessfulBotActionWithNothingToSay;
 
     switch (true) {
       case BotActionNote.standardCaseForCheckPermissionsMessage(apiResponse): {
@@ -80,7 +90,7 @@ export abstract class BranchAgeNote {
         customConfig.constructiveFeedbackOnlyToggle,
         goodGitPractice,
       ): {
-        action = new NoAction();
+        action = new SuccessfulBotActionWithNothingToSay();
         break;
       }
       default: {
