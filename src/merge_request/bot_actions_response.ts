@@ -17,6 +17,7 @@ import {
   getMergeRequestEventData,
 } from "../merge_request";
 import { CustomConfig } from "../custom_config/custom_config";
+import { winlog } from "../util";
 
 /**
  * This class contains the aggregation logic for invoking Bot Actions and using their responses to post a comment and emoji on the Merge Request.
@@ -174,7 +175,7 @@ export class BotActionsResponse implements LambdaResponse {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
-    const responseBody = JSON.stringify({
+    const responseBody = {
       mergeRequestEvent,
       customConfig,
       branchAge,
@@ -186,9 +187,14 @@ export class BotActionsResponse implements LambdaResponse {
       tooManyAssigned,
       comment,
       emoji,
+    };
+
+    winlog.info({
+      statusCode: statusCode,
+      body: responseBody,
     });
 
-    return new BotActionsResponse(statusCode, responseBody);
+    return new BotActionsResponse(statusCode, JSON.stringify(responseBody));
   }
 
   /**
