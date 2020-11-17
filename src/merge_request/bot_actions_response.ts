@@ -174,18 +174,52 @@ export class BotActionsResponse implements LambdaResponse {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
+    // ============= TODO: Fix the design =================
+    // We don't actually need to send any of this back to GitLab, this is really just for logging
     const responseBody = {
-      mergeRequestEvent,
-      customConfig,
-      branchAge,
-      commitMessage,
-      diffSize,
-      gitOuttaHere,
-      newGitWhoDis,
-      selfMerge,
-      tooManyAssigned,
-      comment,
-      emoji,
+      mergeRequestEvent: mergeRequestEvent,
+      comment: comment,
+      emoji: emoji,
+      customConfig: customConfig,
+      branchAge: {
+        apiResponse: branchAge.apiResponse.statusCode,
+        goodGitPractice: branchAge.goodGitPractice,
+        mrNote: branchAge.mrNote,
+        oldestCommit: branchAge.oldestCommit,
+      },
+      commitMessage: {
+        apiResponse: commitMessage.apiResponse.statusCode,
+        goodGitPractice: commitMessage.goodGitPractice,
+        mrNote: commitMessage.mrNote,
+        calculatedThreshold: commitMessage.calculatedThreshold,
+      },
+      diffSize: {
+        apiResponse: diffSize.apiResponse.statusCode,
+        goodGitPractice: diffSize.goodGitPractice,
+        mrNote: diffSize.mrNote,
+        totalDiffs: diffSize.totalDiffs,
+      },
+      gitOuttaHere: {
+        apiResponse: gitOuttaHere.apiResponse.statusCode,
+        goodGitPractice: gitOuttaHere.goodGitPractice,
+        mrNote: gitOuttaHere.mrNote,
+      },
+      newGitWhoDis: {
+        apiResponse: newGitWhoDis.apiResponse.statusCode,
+        goodGitPractice: newGitWhoDis.goodGitPractice,
+        mrNote: newGitWhoDis.mrNote,
+      },
+      selfMerge: {
+        apiResponse: selfMerge.apiResponse.statusCode,
+        goodGitPractice: selfMerge.goodGitPractice,
+        mrNote: selfMerge.mrNote,
+        approversNeeded: selfMerge.approversNeeded,
+      },
+      tooManyAssigned: {
+        apiResponse: tooManyAssigned.apiResponse.statusCode,
+        goodGitPractice: tooManyAssigned.goodGitPractice,
+        mrNote: tooManyAssigned.mrNote,
+      },
     };
 
     logger.info({
