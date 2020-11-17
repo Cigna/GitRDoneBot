@@ -106,6 +106,12 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   return response;
 };
 
+const handleHealthCheck = (containerId: string, event: any): LambdaResponse => {
+  winlog.info(`CloudWatch timer healthcheck. Container ID: ${containerId}`);
+  winlog.info(event);
+  return new HealthCheckResponse();
+};
+
 /**
  * Lambda function that processes incoming events.
  * @param event GitLab webhook or CloudWatch Rule that triggers lambda. The `body` property
@@ -127,9 +133,7 @@ const webhook: Handler = async (
 
   const response = event.hasOwnProperty("body")
     ? await handleGitLabWebhook(event)
-    : new HealthCheckResponse();
-
-  winlog.info(response);
+    : handleHealthCheck(containerId, event);
 
   return response;
 };
