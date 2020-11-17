@@ -1,5 +1,5 @@
 import * as winston from "winston";
-import { BotActionNote } from "../bot_action_note";
+import { CommonMessages } from "../bot_action_note";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
 
@@ -7,7 +7,7 @@ import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Diff Size action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the number of lines of diff contained in the GitLab Merge Request.
  */
-export class DiffSizeNote extends BotActionNote {
+export class DiffSizeNote extends CommonMessages {
   static readonly zeroLine: string = `:star: Great idea creating a MR right away from a branch/issue!`;
   static readonly good = `:star: Great job keeping your merge requests manageable!`;
   static readonly bad =

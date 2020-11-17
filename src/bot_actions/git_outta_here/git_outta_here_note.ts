@@ -1,12 +1,12 @@
 import * as winston from "winston";
 import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
-import { BotActionNote } from "../bot_action_note";
+import { CommonMessages } from "../bot_action_note";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Git Outta Here action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the existence of log files in the changes contained in the GitLab Merge Request.
  */
-export class GitOuttaHereNote extends BotActionNote {
+export class GitOuttaHereNote extends CommonMessages {
   static readonly bad =
     ":loudspeaker: It looks like you've got log files in your repo. You should remove them from the repo and store them somewhere else. Make sure you update your [`.gitignore` file](https://help.github.com/en/github/using-git/ignoring-files)! ";
   static readonly hashtag = `[#GitOuttaHere](https://github.com/Cigna/GitRDoneBot#7-git-outta-here)`;

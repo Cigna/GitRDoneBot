@@ -23,7 +23,7 @@ export class BotActionInfo {
   constructor(
     readonly name: string,
     readonly response: ApiResponse,
-    readonly computedValues: {},
+    readonly computedValues?: {},
   ) {}
 }
 export class SuccessfulBotAction {

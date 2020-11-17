@@ -1,11 +1,11 @@
 import * as winston from "winston";
-import { BotActionNote } from "../bot_action_note";
+import { CommonMessages } from "../bot_action_note";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the New Git Who Dis action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the name of the author of the GitLab Merge Request.
  */
-export class NewGitWhoDisNote extends BotActionNote {
+export class NewGitWhoDisNote extends CommonMessages {
   static readonly bad = `it's really hard to see who you are! Would you please make your Git account names human readable?`;
   static readonly badIcon = `:loudspeaker:`;
   static readonly hashtag = `[#NewGitWhoDis](https://github.com/Cigna/GitRDoneBot#6-new-git-who-dis)`;
