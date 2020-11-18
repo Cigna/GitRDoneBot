@@ -10,7 +10,6 @@ import {
   unauthorized_401,
   not_found_404,
 } from "../helpers";
-import { winlog } from "../../src/util";
 import { BranchAge, BotActionNote } from "../../src/bot_actions";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { BranchAgeDefaults } from "../../src/custom_config/action_config_defaults";
@@ -42,7 +41,7 @@ const threshold_commits_gitlab_response = new SuccessfulGetResponse(
 jest.mock("../../src/gitlab/merge_request_api");
 
 describe("Mock API Test: BranchAge Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri", winlog);
+  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
 
   describe("open state", (state = "open") => {
     describe("when oldest commit is greater than threshold", () => {
@@ -52,12 +51,7 @@ describe("Mock API Test: BranchAge Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(old_commits_gitlab_response);
-        branchAgeResponse = await BranchAge.from(
-          state,
-          api,
-          customConfig,
-          winlog,
-        );
+        branchAgeResponse = await BranchAge.from(state, api, customConfig);
         done();
       });
 
@@ -89,12 +83,7 @@ describe("Mock API Test: BranchAge Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(new_commits_gitlab_response);
-        branchAgeResponse = await BranchAge.from(
-          state,
-          api,
-          customConfig,
-          winlog,
-        );
+        branchAgeResponse = await BranchAge.from(state, api, customConfig);
         done();
       });
 
@@ -128,12 +117,7 @@ describe("Mock API Test: BranchAge Class", () => {
         api.getSingleMRCommits.mockResolvedValue(
           threshold_commits_gitlab_response,
         );
-        branchAgeResponse = await BranchAge.from(
-          state,
-          api,
-          customConfig,
-          winlog,
-        );
+        branchAgeResponse = await BranchAge.from(state, api, customConfig);
         done();
       });
 
@@ -167,12 +151,7 @@ describe("Mock API Test: BranchAge Class", () => {
         api.getSingleMRCommits.mockResolvedValue(
           new SuccessfulGetResponse(200, []),
         );
-        branchAgeResponse = await BranchAge.from(
-          state,
-          api,
-          customConfig,
-          winlog,
-        );
+        branchAgeResponse = await BranchAge.from(state, api, customConfig);
         done();
       });
 
@@ -204,12 +183,7 @@ describe("Mock API Test: BranchAge Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(fetch_network_error);
-        branchAgeResponse = await BranchAge.from(
-          state,
-          api,
-          customConfig,
-          winlog,
-        );
+        branchAgeResponse = await BranchAge.from(state, api, customConfig);
         done();
       });
 
@@ -219,7 +193,7 @@ describe("Mock API Test: BranchAge Class", () => {
     });
   });
 
-  describe("any state", (state = undefined) => {
+  describe("any state", (state = "any") => {
     describe("when 401 response received from GitLab", () => {
       let branchAgeResponse: BranchAge;
 
@@ -227,12 +201,7 @@ describe("Mock API Test: BranchAge Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(unauthorized_401);
-        branchAgeResponse = await BranchAge.from(
-          state,
-          api,
-          customConfig,
-          winlog,
-        );
+        branchAgeResponse = await BranchAge.from(state, api, customConfig);
         done();
       });
 
@@ -262,12 +231,7 @@ describe("Mock API Test: BranchAge Class", () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(not_found_404);
-        branchAgeResponse = await BranchAge.from(
-          state,
-          api,
-          customConfig,
-          winlog,
-        );
+        branchAgeResponse = await BranchAge.from(state, api, customConfig);
         done();
       });
 

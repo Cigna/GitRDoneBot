@@ -1,4 +1,4 @@
-import { winlog } from "../../../src/util";
+import {} from "../../../src/util";
 import { SelfMergeNote } from "../../../src/bot_actions/self_merge/self_merge_note";
 import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
 
@@ -1514,7 +1514,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.good} ${SelfMergeNote.hashtag}`);
           });
@@ -1527,7 +1526,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.good} ${SelfMergeNote.hashtag}`);
           });
@@ -1540,7 +1538,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.good} ${SelfMergeNote.hashtag}`);
           });
@@ -1556,7 +1553,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.badAssigned} ${SelfMergeNote.hashtag}`);
           });
@@ -1569,7 +1565,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.badAssigned} ${SelfMergeNote.hashtag}`);
           });
@@ -1582,7 +1577,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.badAssigned} ${SelfMergeNote.hashtag}`);
           });
@@ -1598,7 +1592,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1611,7 +1604,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1624,7 +1616,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1642,7 +1633,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.good} ${SelfMergeNote.hashtag}`);
           });
@@ -1655,7 +1645,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.good} ${SelfMergeNote.hashtag}`);
           });
@@ -1668,7 +1657,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.good} ${SelfMergeNote.hashtag}`);
           });
@@ -1684,7 +1672,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.badAssigned} ${SelfMergeNote.hashtag}`);
           });
@@ -1697,7 +1684,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.badAssigned} ${SelfMergeNote.hashtag}`);
           });
@@ -1710,7 +1696,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.badAssigned} ${SelfMergeNote.hashtag}`);
           });
@@ -1726,7 +1711,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1739,7 +1723,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1752,7 +1735,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1770,7 +1752,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.noApprovals} ${SelfMergeNote.hashtag}`);
           });
@@ -1783,7 +1764,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.noActionMessage}`);
           });
@@ -1796,7 +1776,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1812,7 +1791,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.badMerged} ${SelfMergeNote.hashtag}`);
           });
@@ -1825,7 +1803,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.badApproved} ${SelfMergeNote.hashtag}`);
           });
@@ -1838,7 +1815,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1854,7 +1830,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1867,7 +1842,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1880,7 +1854,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(`${SelfMergeNote.unknownState}`);
           });
@@ -1901,7 +1874,6 @@ describe("SelfMergeNote.buildMessage(apiResponse, state, goodGitPractice, approv
                 state,
                 goodGitPractice,
                 approversNeeded,
-                winlog,
               ),
             ).toBe(SelfMergeNote.checkPermissionsMessage);
           });

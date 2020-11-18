@@ -1,5 +1,4 @@
 import { BotAction } from "../bot_action";
-import * as winston from "winston";
 import {
   FailedResponse,
   MergeRequestApi,
@@ -28,7 +27,6 @@ export class BranchAge implements BotAction {
    * @param state the state of the incoming Merge Request event from GitLab
    * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
    * @param customConfig an instance of the BotActionConfig class that defines branch age threshold
-   * @param logger an instance of winston logger
    *
    * @returns BranchAge object constructed after calculating the age of oldest commit, determining goodGitPractice based on that value, and instantiating a new note object.
    *
@@ -38,7 +36,6 @@ export class BranchAge implements BotAction {
     state: string,
     api: MergeRequestApi,
     customConfig: BotActionConfig,
-    logger: winston.Logger,
   ): Promise<BranchAge> {
     let goodGitPractice!: boolean;
     let oldestCommit!: GitLabCommit;
@@ -66,7 +63,6 @@ export class BranchAge implements BotAction {
         response,
         goodGitPractice,
         state,
-        logger,
       ),
       oldestCommit,
     );

@@ -4,7 +4,6 @@ import {
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
-import * as winston from "winston";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { DiffSizeNote } from "./diff_size_note";
 import { Change } from "../../interfaces";
@@ -28,7 +27,6 @@ export class DiffSize implements BotAction {
    * @param state the state of the incoming Merge Request event from GitLab
    * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
    * @param customConfig an instance of the BotActionConfig class that defines diff size threshold
-   * @param logger an instance of winston logger
    *
    * @returns DiffSize object constructed after calculating lines of diff, determining goodGitPractice based on that value, and instantiating a new note object.
    *
@@ -38,7 +36,6 @@ export class DiffSize implements BotAction {
     state: string,
     api: MergeRequestApi,
     customConfig: BotActionConfig,
-    logger: winston.Logger,
   ): Promise<DiffSize> {
     let totalDiffs: number;
     let goodGitPractice!: boolean;
@@ -67,7 +64,6 @@ export class DiffSize implements BotAction {
         state,
         goodGitPractice,
         totalDiffs,
-        logger,
       ),
       totalDiffs,
     );

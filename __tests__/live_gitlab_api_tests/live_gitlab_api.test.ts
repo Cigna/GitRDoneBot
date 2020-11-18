@@ -26,7 +26,6 @@ import {
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
-import { winlog } from "../../src/util";
 import { handleGitLabWebhook } from "../../handler";
 import { BotActionsResponse } from "../../src/merge_request";
 import * as mod from "../../handler";
@@ -110,7 +109,6 @@ beforeAll(async (done) => {
     PROJECT_ID,
     MERGE_REQ_ID,
     BASE_URI as string,
-    winlog,
   );
   await cleanUpEmojis(api);
   await cleanUpMRNotes(api);

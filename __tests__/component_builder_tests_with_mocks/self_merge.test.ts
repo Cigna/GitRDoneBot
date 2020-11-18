@@ -6,7 +6,6 @@ import {
   SuccessfulGetResponse,
 } from "../../src/gitlab";
 import { mockUser, not_found_404, fetch_network_error } from "../helpers";
-import { winlog } from "../../src/util";
 import { SelfMerge, BotActionNote } from "../../src/bot_actions";
 import { SelfMergeNote } from "../../src/bot_actions/self_merge/self_merge_note";
 
@@ -47,7 +46,6 @@ describe("Mock API Test: SelfMerge Class", () => {
     0,
     1,
     "fake-uri",
-    winlog,
   );
 
   describe("Open State", (state = "open") => {
@@ -61,7 +59,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );
@@ -100,7 +97,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );
@@ -143,7 +139,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );
@@ -188,7 +183,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );
@@ -235,7 +229,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );
@@ -282,7 +275,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );
@@ -328,7 +320,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );
@@ -370,7 +361,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );
@@ -410,7 +400,6 @@ describe("Mock API Test: SelfMerge Class", () => {
         selfMergeResponse = await SelfMerge.from(
           state,
           api,
-          winlog,
           assigneeId,
           authorId,
         );

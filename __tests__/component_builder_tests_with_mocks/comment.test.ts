@@ -11,7 +11,7 @@ import {
   unauthorized_401,
   fetch_network_error,
 } from "../helpers";
-import { winlog, getBotUsername } from "../../src/util";
+import { getBotUsername } from "../../src/util";
 import { BotComment } from "../../src/merge_request";
 
 // TEST FIXTURES
@@ -67,7 +67,7 @@ const singleGRDBNotePut = new SuccessfulPostORPutResponse(
 jest.mock("../../src/gitlab/merge_request_api");
 
 describe("Mock API Test: Comment Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri", winlog);
+  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
 
   beforeEach((done) => {
     jest.clearAllMocks();
@@ -83,7 +83,6 @@ describe("Mock API Test: Comment Class", () => {
         const postResponse = await BotComment.post(
           api,
           state,
-          winlog,
           updateToggle,
           sampleFullMessageArray,
         );
@@ -100,7 +99,6 @@ describe("Mock API Test: Comment Class", () => {
         const postResponse = await BotComment.post(
           api,
           state,
-          winlog,
           updateToggle,
           sampleNoActionMessageArray,
         );
@@ -121,7 +119,6 @@ describe("Mock API Test: Comment Class", () => {
         const postResponse = await BotComment.post(
           api,
           state,
-          winlog,
           updateToggle,
           sampleFullMessageArray,
         );
@@ -144,7 +141,6 @@ describe("Mock API Test: Comment Class", () => {
         const postResponse = await BotComment.post(
           api,
           state,
-          winlog,
           updateToggle,
           sampleFullMessageArray,
         );
@@ -160,7 +156,6 @@ describe("Mock API Test: Comment Class", () => {
         const postResponse = await BotComment.post(
           api,
           state,
-          winlog,
           updateToggle,
           sampleNoActionMessageArray,
         );
@@ -181,7 +176,6 @@ describe("Mock API Test: Comment Class", () => {
           const postResponse = await BotComment.post(
             api,
             state,
-            winlog,
             updateToggle,
             sampleFullMessageArray,
           );
@@ -203,7 +197,6 @@ describe("Mock API Test: Comment Class", () => {
           const postResponse = await BotComment.post(
             api,
             state,
-            winlog,
             updateToggle,
             sampleFullMessageArray,
           );
@@ -219,7 +212,6 @@ describe("Mock API Test: Comment Class", () => {
           const postResponse = await BotComment.post(
             api,
             state,
-            winlog,
             updateToggle,
             sampleNoActionMessageArray,
           );
@@ -237,7 +229,6 @@ describe("Mock API Test: Comment Class", () => {
           const postResponse = await BotComment.post(
             api,
             state,
-            winlog,
             updateToggle,
             sampleFullMessageArray,
           );

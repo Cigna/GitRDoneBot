@@ -1,5 +1,3 @@
-import * as HttpStatus from "http-status-codes";
-import * as winston from "winston";
 import {
   BranchAge,
   CommitMessages,
@@ -10,14 +8,20 @@ import {
   TooManyAssigned,
 } from "../bot_actions";
 import { MergeRequestApi } from "../gitlab";
-import { LambdaResponse, MergeRequestEvent } from "../interfaces";
+import {
+  ErrorResponse,
+  LambdaResponse,
+  MergeRequestEvent,
+} from "../interfaces";
 import {
   BotComment,
   BotEmoji,
   getMergeRequestEventData,
 } from "../merge_request";
 import { CustomConfig } from "../custom_config/custom_config";
+import { LoggerFactory } from "../util/bot_logger";
 
+const logger = LoggerFactory.getInstance();
 /**
  * This class contains the aggregation logic for invoking Bot Actions and using their responses to post a comment and emoji on the Merge Request.
  * Each instance of this class contains information on the incoming Merge Request event, Custom configuration information (if it exists), response info returned from individual Bot Actions, and what (if any) comment and emoji were posted.
@@ -26,7 +30,12 @@ import { CustomConfig } from "../custom_config/custom_config";
  * However, GitLab does nothing with this data - the core purpose of instances of this class is to log information for analysis & debugging.
  */
 export class BotActionsResponse implements LambdaResponse {
-  private constructor(readonly statusCode: number, readonly body: string) {}
+  private constructor(readonly statusCode: number, readonly body: string) {
+    logger.info({
+      statusCode: this.statusCode,
+      body: JSON.parse(this.body),
+    });
+  }
 
   /**
    * Uses information from Merge Request webhook event to invoke Bot Actions. Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request.
@@ -34,7 +43,6 @@ export class BotActionsResponse implements LambdaResponse {
    * @param customConfig defines threshold values for each of the Bot Actions
    * @param gitLabEvent GitLab webhook body
    * @param state the state of the incoming Merge Request event from GitLab
-   * @param logger an instance of winston logger
    * @returns `BotActionsResponse` object
    * */
   static async from(
@@ -42,15 +50,14 @@ export class BotActionsResponse implements LambdaResponse {
     customConfig: CustomConfig,
     gitLabEvent: any,
     state: string,
-    logger: winston.Logger,
-  ): Promise<BotActionsResponse> {
+  ): Promise<BotActionsResponse | ErrorResponse> {
     const mergeRequestEvent: MergeRequestEvent = getMergeRequestEventData(
       gitLabEvent,
     );
 
     // variables declared here so they will be in scope for response constructor
-    // only status is guaranteed to be set regardless of error
-    let statusCode: number,
+    // only lambdaResponse is guaranteed to be set regardless of error
+    let lambdaResponse: BotActionsResponse | LambdaResponse,
       branchAge!: BranchAge,
       commitMessage!: CommitMessages,
       diffSize!: DiffSize,
@@ -66,7 +73,6 @@ export class BotActionsResponse implements LambdaResponse {
         state,
         api,
         customConfig.branchAge,
-        logger,
       );
 
       // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
@@ -76,30 +82,23 @@ export class BotActionsResponse implements LambdaResponse {
         state,
         api,
         commitMessageConstructiveFeedbackOnlyToggle,
-        logger,
       );
 
       const diffPromise: Promise<DiffSize> = DiffSize.from(
         state,
         api,
         customConfig.diffSize,
-        logger,
       );
 
-      const gitOuttaHerePromise: Promise<GitOuttaHere> = GitOuttaHere.from(
-        api,
-        logger,
-      );
+      const gitOuttaHerePromise: Promise<GitOuttaHere> = GitOuttaHere.from(api);
 
       const newGitWhoDisPromise: Promise<NewGitWhoDis> = NewGitWhoDis.from(
-        logger,
         mergeRequestEvent.authorName,
       );
 
       const selfMergePromise: Promise<SelfMerge> = SelfMerge.from(
         state,
         api,
-        logger,
         mergeRequestEvent.assigneeId,
         mergeRequestEvent.authorGitId,
       );
@@ -108,7 +107,6 @@ export class BotActionsResponse implements LambdaResponse {
         state,
         api,
         customConfig.tooManyMergeRequests,
-        logger,
         mergeRequestEvent.assigneeId,
       );
 
@@ -134,7 +132,6 @@ export class BotActionsResponse implements LambdaResponse {
       const postCommentPromise: Promise<BotComment> = BotComment.post(
         api,
         state,
-        logger,
         customConfig.updateMergeRequestComment,
         [
           branchAge.mrNote,
@@ -161,7 +158,7 @@ export class BotActionsResponse implements LambdaResponse {
       [comment, emoji] = [await postCommentPromise, await postEmojiPromise];
 
       // gets overall status from statuses returned by individual Bot Action API calls
-      statusCode = this.fromCodes([
+      const statusCode = this.fromCodes([
         branchAge.apiResponse.statusCode,
         commitMessage.apiResponse.statusCode,
         diffSize.apiResponse.statusCode,
@@ -169,65 +166,66 @@ export class BotActionsResponse implements LambdaResponse {
         selfMerge.apiResponse.statusCode,
         tooManyAssigned.apiResponse.statusCode,
       ]);
+
+      // ============= TODO: Fix the design =================
+      // We don't actually need to send any of this back to GitLab, this is really just for logging
+      const responseBody = {
+        mergeRequestEvent: mergeRequestEvent,
+        comment: comment,
+        emoji: emoji,
+        customConfig: customConfig,
+        branchAge: {
+          apiResponse: branchAge.apiResponse.statusCode,
+          goodGitPractice: branchAge.goodGitPractice,
+          mrNote: branchAge.mrNote,
+          oldestCommit: branchAge.oldestCommit,
+        },
+        commitMessage: {
+          apiResponse: commitMessage.apiResponse.statusCode,
+          goodGitPractice: commitMessage.goodGitPractice,
+          mrNote: commitMessage.mrNote,
+          calculatedThreshold: commitMessage.calculatedThreshold,
+        },
+        diffSize: {
+          apiResponse: diffSize.apiResponse.statusCode,
+          goodGitPractice: diffSize.goodGitPractice,
+          mrNote: diffSize.mrNote,
+          totalDiffs: diffSize.totalDiffs,
+        },
+        gitOuttaHere: {
+          apiResponse: gitOuttaHere.apiResponse.statusCode,
+          goodGitPractice: gitOuttaHere.goodGitPractice,
+          mrNote: gitOuttaHere.mrNote,
+        },
+        newGitWhoDis: {
+          apiResponse: newGitWhoDis.apiResponse.statusCode,
+          goodGitPractice: newGitWhoDis.goodGitPractice,
+          mrNote: newGitWhoDis.mrNote,
+        },
+        selfMerge: {
+          apiResponse: selfMerge.apiResponse.statusCode,
+          goodGitPractice: selfMerge.goodGitPractice,
+          mrNote: selfMerge.mrNote,
+          approversNeeded: selfMerge.approversNeeded,
+        },
+        tooManyAssigned: {
+          apiResponse: tooManyAssigned.apiResponse.statusCode,
+          goodGitPractice: tooManyAssigned.goodGitPractice,
+          mrNote: tooManyAssigned.mrNote,
+        },
+      };
+
+      lambdaResponse = new BotActionsResponse(
+        statusCode,
+        JSON.stringify(responseBody),
+      );
     } catch (err) {
-      logger.error(`BotActionsResponse Error: ${err.message}`);
-      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+      lambdaResponse = new ErrorResponse(
+        `BotActionsResponse Error: ${err.message}`,
+      );
     }
 
-    // ============= TODO: Fix the design =================
-    // We don't actually need to send any of this back to GitLab, this is really just for logging
-    const responseBody = {
-      mergeRequestEvent: mergeRequestEvent,
-      comment: comment,
-      emoji: emoji,
-      customConfig: customConfig,
-      branchAge: {
-        apiResponse: branchAge.apiResponse.statusCode,
-        goodGitPractice: branchAge.goodGitPractice,
-        mrNote: branchAge.mrNote,
-        oldestCommit: branchAge.oldestCommit,
-      },
-      commitMessage: {
-        apiResponse: commitMessage.apiResponse.statusCode,
-        goodGitPractice: commitMessage.goodGitPractice,
-        mrNote: commitMessage.mrNote,
-        calculatedThreshold: commitMessage.calculatedThreshold,
-      },
-      diffSize: {
-        apiResponse: diffSize.apiResponse.statusCode,
-        goodGitPractice: diffSize.goodGitPractice,
-        mrNote: diffSize.mrNote,
-        totalDiffs: diffSize.totalDiffs,
-      },
-      gitOuttaHere: {
-        apiResponse: gitOuttaHere.apiResponse.statusCode,
-        goodGitPractice: gitOuttaHere.goodGitPractice,
-        mrNote: gitOuttaHere.mrNote,
-      },
-      newGitWhoDis: {
-        apiResponse: newGitWhoDis.apiResponse.statusCode,
-        goodGitPractice: newGitWhoDis.goodGitPractice,
-        mrNote: newGitWhoDis.mrNote,
-      },
-      selfMerge: {
-        apiResponse: selfMerge.apiResponse.statusCode,
-        goodGitPractice: selfMerge.goodGitPractice,
-        mrNote: selfMerge.mrNote,
-        approversNeeded: selfMerge.approversNeeded,
-      },
-      tooManyAssigned: {
-        apiResponse: tooManyAssigned.apiResponse.statusCode,
-        goodGitPractice: tooManyAssigned.goodGitPractice,
-        mrNote: tooManyAssigned.mrNote,
-      },
-    };
-
-    logger.info({
-      statusCode: statusCode,
-      body: responseBody,
-    });
-
-    return new BotActionsResponse(statusCode, JSON.stringify(responseBody));
+    return lambdaResponse;
   }
 
   /**

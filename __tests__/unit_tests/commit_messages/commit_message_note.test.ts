@@ -1,4 +1,3 @@
-import { winlog } from "../../../src/util";
 import { CommitMessagesNote } from "../../../src/bot_actions/commit_messages/commit_message_note";
 import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
 
@@ -820,7 +819,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -835,7 +833,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -852,7 +849,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -867,7 +863,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(
                 `${CommitMessagesNote.good} ${CommitMessagesNote.hashtag}`,
@@ -888,7 +883,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -903,7 +897,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.bad} ${CommitMessagesNote.hashtag}`);
             });
@@ -920,7 +913,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -935,7 +927,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.bad} ${CommitMessagesNote.hashtag}`);
             });
@@ -954,7 +945,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -969,7 +959,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.unknownState}`);
             });
@@ -986,7 +975,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1001,7 +989,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.unknownState}`);
             });
@@ -1022,7 +1009,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1037,7 +1023,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1054,7 +1039,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1069,7 +1053,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(
                 `${CommitMessagesNote.good} ${CommitMessagesNote.hashtag}`,
@@ -1090,7 +1073,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1105,7 +1087,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.bad} ${CommitMessagesNote.hashtag}`);
             });
@@ -1122,7 +1103,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1137,7 +1117,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.bad} ${CommitMessagesNote.hashtag}`);
             });
@@ -1156,7 +1135,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1171,7 +1149,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.unknownState}`);
             });
@@ -1188,7 +1165,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1203,7 +1179,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.unknownState}`);
             });
@@ -1224,7 +1199,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1239,7 +1213,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1256,7 +1229,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1271,7 +1243,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1290,7 +1261,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1305,7 +1275,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.bad} ${CommitMessagesNote.hashtag}`);
             });
@@ -1322,7 +1291,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1337,7 +1305,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.bad} ${CommitMessagesNote.hashtag}`);
             });
@@ -1356,7 +1323,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1371,7 +1337,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.unknownState}`);
             });
@@ -1388,7 +1353,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.noActionMessage}`);
             });
@@ -1403,7 +1367,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(`${CommitMessagesNote.unknownState}`);
             });
@@ -1426,7 +1389,6 @@ describe("CommitMessagesNote.buildMessage(apiResponse, state, goodGitPractice, t
                   goodGitPractice,
                   constructiveFeedbackOnlyToggle,
                   totalCommits,
-                  winlog,
                 ),
               ).toBe(CommitMessagesNote.checkPermissionsMessage);
             });

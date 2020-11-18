@@ -5,7 +5,6 @@ import {
   FailedResponse,
 } from "../../gitlab";
 import { GitLabCommit } from "../../interfaces";
-import * as winston from "winston";
 import { CommitMessagesNote } from "./commit_message_note";
 
 /**
@@ -29,7 +28,6 @@ export class CommitMessages implements BotAction {
    * @param state the state of the incoming Merge Request event from GitLab
    * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
    * @param constructiveFeedbackOnlyToggle if true, commit message note will reflect no action when CommitMessage.goodGitPractice is true
-   * @param logger an instance of winston logger
    *
    * @returns CommitMessage object constructed after testing the number of failing commit titles against calculated threshold for each good practice criteria,
    * determining overall goodGitPractice based on individual tests, and instantiating a new note object.
@@ -40,7 +38,6 @@ export class CommitMessages implements BotAction {
     state: string,
     api: MergeRequestApi,
     constructiveFeedbackOnlyToggle: boolean,
-    logger: winston.Logger,
   ): Promise<CommitMessages> {
     let goodGitPractice!: boolean;
     let totalCommits: number;
@@ -72,7 +69,6 @@ export class CommitMessages implements BotAction {
         goodGitPractice,
         constructiveFeedbackOnlyToggle,
         totalCommits,
-        logger,
       ),
       threshold,
     );

@@ -1,12 +1,12 @@
 import { NewGitWhoDis, BotActionNote } from "../../../src/bot_actions";
-import { winlog } from "../../../src/util";
+import {  } from "../../../src/util";
 import { NewGitWhoDisNote } from "../../../src/bot_actions/new_git_who_dis/new_git_who_dis_note";
 
 describe("New Git Who Dis Action: (Any state) authorName !== LAN ID", () => {
   const authorName: string = "Eleanor Shellstrop";
   let botActionResponse: NewGitWhoDis;
   beforeEach(async () => {
-    botActionResponse = await NewGitWhoDis.from(winlog, authorName);
+    botActionResponse = await NewGitWhoDis.from(, authorName);
   });
 
   test("Should return goodGitPractice === true", () => {
@@ -22,7 +22,7 @@ describe("New Git Who Dis Action: (Any state) authorName === LAN ID", () => {
   const authorName: string = "C01234";
   let botActionResponse: NewGitWhoDis;
   beforeEach(async () => {
-    botActionResponse = await NewGitWhoDis.from(winlog, authorName);
+    botActionResponse = await NewGitWhoDis.from(, authorName);
   });
   test("Should return goodGitPractice === false", () => {
     expect(botActionResponse.goodGitPractice).toBe(false);

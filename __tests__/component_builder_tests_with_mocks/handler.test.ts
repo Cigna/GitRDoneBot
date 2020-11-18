@@ -10,8 +10,8 @@ import { BotActionsResponse } from "../../src/merge_request";
 import { CustomConfig } from "../../src/custom_config/custom_config";
 import { SuccessfulGetResponse } from "../../src/gitlab";
 import {
+  ErrorResponse,
   HealthCheckResponse,
-  LambdaResponse,
   NoActionResponse,
   NotSupportedResponse,
 } from "../../src/interfaces";
@@ -138,58 +138,50 @@ const lambdaWrapper = jestPlugin.lambdaWrapper;
 const wrapped = lambdaWrapper.wrap(mod, { handler: "webhook" });
 
 const noActionResponseBody = new NoActionResponse().body;
-const notSupportedResponseBody = new NotSupportedResponse().body;
-const healthCheckResponseBody = new HealthCheckResponse().body;
 
 describe("Mock API Integration Tests: Lambda Handler webhook function", () => {
-  test("handleGitLabWebhook() is invoked when GitLab event received", () => {
+  test("webhook returns a NoActionResponse when closed GitLab event received", () => {
     return wrapped.runHandler(closedEvent, context, null).then((response) => {
       expect(response).toBeDefined();
-      expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.body).toBe(noActionResponseBody);
+      expect(response).toBeInstanceOf(NoActionResponse);
     });
   });
 
-  test("handleHealthCheck() is invoked when CloudWatch Rule event received", () => {
+  test("webhook returns a HealthCheckResponse when CloudWatch Rule event received", () => {
     return wrapped
       .runHandler(cloudWatchRuleEvent, context, null)
       .then((response) => {
         expect(response).toBeDefined();
-        expect(response.statusCode).toBe(HttpStatus.IM_A_TEAPOT);
-        expect(response.body).toBe(healthCheckResponseBody);
+        expect(response).toBeInstanceOf(HealthCheckResponse);
       });
   });
 });
 
 describe("Mock API Integration Tests: Lamda Handler handleGitLabWebhook function", () => {
-  test("Non-MR GitLab Event: returns 'not MR' response", async () => {
+  test("Non-MR GitLab Event: returns NotSupportedResponse", async () => {
     const response = await handleGitLabWebhook(nonMREvent);
-    expect(response).not.toBeInstanceOf(BotActionsResponse);
-    expect(response.body).toBe(notSupportedResponseBody);
-    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response).toBeDefined();
+    expect(response).toBeInstanceOf(NotSupportedResponse);
   });
 
-  test("Reopened State: returns 'no action' response", async () => {
+  test("Reopened State: returns NoActionResponse", async () => {
     const response = await handleGitLabWebhook(reopenedEvent);
-    expect(response).not.toBeInstanceOf(BotActionsResponse);
-    expect(response.body).toBe(noActionResponseBody);
-    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response).toBeDefined();
+    expect(response).toBeInstanceOf(NoActionResponse);
   });
 
-  test("Closed State: returns 'no action' response", async () => {
+  test("Closed State: returns NoActionResponse", async () => {
     const response = await handleGitLabWebhook(closedEvent);
-    expect(response).not.toBeInstanceOf(BotActionsResponse);
-    expect(response.body).toBe(noActionResponseBody);
-    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response).toBeDefined();
+    expect(response).toBeInstanceOf(NoActionResponse);
   });
 
-  test("Updated State: returns 'no action' response when toggle is false", async () => {
+  test("Updated State: returns NoActionResponse when toggle is false", async () => {
     // @ts-ignore
     CustomConfig.from.mockResolvedValue(customConfigUpdateToggleFalse);
     const response = await handleGitLabWebhook(updateEvent);
-    expect(response).not.toBeInstanceOf(BotActionsResponse);
-    expect(response.body).toBe(noActionResponseBody);
-    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response).toBeDefined();
+    expect(response).toBeInstanceOf(NoActionResponse);
   });
 });
 
@@ -209,10 +201,10 @@ describe("Mock API Integration Tests: lambda handler response (Error Cases)", ()
     done();
   });
 
-  test("Missing GitLab API token: returns 500 status from handler", () => {
+  test("Missing GitLab API token: returns ErrorResponse handler", () => {
     return wrapped.runHandler(openEvent, context, null).then((response) => {
       expect(response).toBeDefined();
-      expect(response.statusCode).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(response).toBeInstanceOf(ErrorResponse);
       expect(getToken).toThrowError(
         new Error("GITLAB_BOT_ACCOUNT_API_TOKEN missing from environment"),
       );
