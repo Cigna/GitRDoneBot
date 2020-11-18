@@ -188,13 +188,13 @@ describe("Unit Test: TooManyAssignedAnalysisConfig.getCustomConfig", () => {
       );
 
       expect(config.threshold).toBe(
-        validConfigAllPropertiesThresholdEqualsLimit.tooManyMergeRequestsAnalysis
-          .thresholdNumberOfMergeRequests,
+        validConfigAllPropertiesThresholdEqualsLimit
+          .tooManyMergeRequestsAnalysis.thresholdNumberOfMergeRequests,
       );
 
       expect(config.constructiveFeedbackOnlyToggle).toBe(
-        validConfigAllPropertiesThresholdEqualsLimit.tooManyMergeRequestsAnalysis
-          .constructiveFeedbackOnlyToggle,
+        validConfigAllPropertiesThresholdEqualsLimit
+          .tooManyMergeRequestsAnalysis.constructiveFeedbackOnlyToggle,
       );
     });
 
