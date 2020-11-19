@@ -180,7 +180,8 @@ describe("Unit Test: BranchAgeAnalysisConfig.getCustomConfig", () => {
         validConfigAllPropertiesThresholdEqualsLimit,
       );
       expect(config.threshold).toBe(
-        validConfigAllPropertiesThresholdEqualsLimit.branchAgeAnalysis.thresholdInDays,
+        validConfigAllPropertiesThresholdEqualsLimit.branchAgeAnalysis
+          .thresholdInDays,
       );
 
       expect(config.constructiveFeedbackOnlyToggle).toBe(

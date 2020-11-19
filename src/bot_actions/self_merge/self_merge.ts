@@ -1,6 +1,4 @@
 import { BotAction } from "../bot_action";
-
-import * as winston from "winston";
 import {
   FailedResponse,
   MergeRequestApi,
@@ -32,7 +30,6 @@ export class SelfMerge implements BotAction {
    *
    * @param state the state of the incoming Merge Request event from GitLab
    * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
-   * @param logger an instance of winston logger
    * @param assigneeId GitLab user id of the Merge Request assignee
    * @param authorId GitLab user id of the Merge Request author
    *
@@ -42,7 +39,6 @@ export class SelfMerge implements BotAction {
   static async from(
     state: string,
     api: MergeRequestApi,
-    logger: winston.Logger,
     assigneeId: number,
     authorId: number,
   ): Promise<SelfMerge> {
@@ -96,7 +92,6 @@ export class SelfMerge implements BotAction {
         state,
         goodGitPractice,
         approversNeeded,
-        logger,
       ),
       approversNeeded,
     );

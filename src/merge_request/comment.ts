@@ -5,9 +5,11 @@ import {
   NoRequestNeeded,
   SuccessfulPostORPutResponse,
 } from "../gitlab";
-import winston = require("winston");
 import { Note } from "../interfaces";
 import { getBotUsername } from "../util/env_var_loader";
+import { LoggerFactory } from "../util";
+
+const logger = LoggerFactory.getInstance();
 
 /**
  * This class handles the logic for aggregating messages from individual Bot Actions into a single comment to be posted to end-user's Merge Request.
@@ -61,7 +63,6 @@ export class BotComment {
    * Evaluates parameters to one of three outcomes: posts new note from GRDBot to GitLab Merge Request, updates existing GRDBot note, or takes no action.
    * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
    * @param state the state of the incoming Merge Request event from GitLab
-   * @param logger an instance of winston logger
    * @param updateToggle `true` updates previous GRDBot comment if exists; `false` always posts new comment
    * @param messages Array of `mrNote` strings
    * @returns
@@ -76,7 +77,6 @@ export class BotComment {
   static async post(
     api: MergeRequestApi,
     state: string,
-    logger: winston.Logger,
     updateToggle: boolean,
     comment: string,
   ): Promise<BotComment> {
@@ -101,7 +101,7 @@ export class BotComment {
       }
       default: {
         response = new FailedResponse(500);
-        logger.error(`Encountered Unknown State`);
+        logger.error(`comment.post: Encountered Unknown State`);
       }
     }
 

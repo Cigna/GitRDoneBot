@@ -6,7 +6,6 @@ import {
   NoRequestNeeded,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
-import { winlog } from "../../src/util";
 import { BotEmoji } from "../../src/merge_request";
 import { unauthorized_401, fetch_network_error } from "../helpers";
 
@@ -18,7 +17,7 @@ jest.mock("../../src/gitlab/merge_request_api");
 
 describe("Mock API Test: Emoji Class", () => {
   describe("post function", () => {
-    const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri", winlog);
+    const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
 
     beforeEach((done) => {
       jest.clearAllMocks();

@@ -1,4 +1,3 @@
-import * as winston from "winston";
 import { BotActionInfo, CommonMessages, BotActionResponse } from "..";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { MergeRequestApi, SuccessfulGetResponse } from "../../gitlab";
@@ -9,7 +8,9 @@ import {
   SuccessfulBotActionWithNothingToSay,
 } from "../bot_action";
 import { BranchAgeMessage } from "./branch_age_note";
+import { LoggerFactory } from "../../util";
 
+const logger = LoggerFactory.getInstance();
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
@@ -45,7 +46,6 @@ export abstract class BranchAge {
     state: string,
     api: MergeRequestApi,
     customConfig: BotActionConfig,
-    logger: winston.Logger,
   ): Promise<BotActionResponse> {
     let action:
       | FailedBotAction
@@ -76,7 +76,6 @@ export abstract class BranchAge {
       action = new FailedBotAction(CommonMessages.checkPermissionsMessage);
       info = new BotActionInfo(this.botActionName, response);
     }
-
     return { action, info };
   }
 
@@ -90,7 +89,6 @@ export abstract class BranchAge {
     customConfig: BotActionConfig,
     goodGitPractice: boolean,
     state: string,
-    logger: winston.Logger,
   ):
     | SuccessfulBotAction
     | FailedBotAction

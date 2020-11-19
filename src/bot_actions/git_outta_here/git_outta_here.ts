@@ -3,7 +3,6 @@ import {
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
-import * as winston from "winston";
 import { BotAction } from "../bot_action";
 import { GitOuttaHereNote } from "./git_outta_here_note";
 
@@ -22,17 +21,13 @@ export class GitOuttaHere implements BotAction {
    * Constructs a complete Bot Action object by making an HTTP call and analyzing response.
    *
    * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
-   * @param logger an instance of winston logger
    *
    * @returns BotAction object constructed after checking for log files in the Merge Request changes,
    * determining goodGitPractice based on that check, and instantiating a new note object.
    *
    * @remarks If api call fails, returns BotAction where `goodGitPractice` will be undefined.
    * */
-  static async from(
-    api: MergeRequestApi,
-    logger: winston.Logger,
-  ): Promise<GitOuttaHere> {
+  static async from(api: MergeRequestApi): Promise<GitOuttaHere> {
     let goodGitPractice!: boolean;
 
     const response = await api.getSingleMRChanges();
@@ -47,7 +42,7 @@ export class GitOuttaHere implements BotAction {
     return new GitOuttaHere(
       response,
       goodGitPractice,
-      GitOuttaHereNote.buildMessage(response, goodGitPractice, logger),
+      GitOuttaHereNote.buildMessage(response, goodGitPractice),
     );
   }
 

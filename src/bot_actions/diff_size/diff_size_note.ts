@@ -1,7 +1,10 @@
-import * as winston from "winston";
 import { CommonMessages } from "../bot_action_note";
+import { BotActionNote } from "../bot_action_note";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
+import { LoggerFactory } from "../../util";
+
+const logger = LoggerFactory.getInstance();
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Diff Size action.
@@ -78,7 +81,6 @@ export class DiffSizeNote extends CommonMessages {
     state: string,
     goodGitPractice: boolean | undefined,
     totalDiffs: number,
-    logger: winston.Logger,
   ): string {
     let note: DiffSizeNote;
 

@@ -14,10 +14,11 @@ import {
   getProjectId,
   getState,
 } from "./src/merge_request";
-import { winlog, getToken, getBaseURI } from "./src/util";
+import { getToken, getBaseURI, LoggerFactory } from "./src/util";
 import { CustomConfig } from "./src/custom_config/custom_config";
 
 let containerId: string;
+const logger = LoggerFactory.getInstance();
 
 /**
  * Processes incoming GitLab webhook events that have come through API Gateway.
@@ -39,19 +40,17 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   try {
     gitLabEvent = JSON.parse(event.body);
     objectKind = getObjectKind(gitLabEvent);
-    winlog.info(gitLabEvent);
+    logger.info(gitLabEvent);
   } catch (err) {
     objectKind = undefined;
-    winlog.error(`Error parsing event.body: ${err.message}`);
-    response = new ErrorResponse();
+    response = new ErrorResponse(`Error parsing event.body: ${err.message}`);
   }
 
   try {
     token = getToken(process.env.GITLAB_BOT_ACCOUNT_API_TOKEN);
     baseURI = getBaseURI(process.env.GITLAB_BASE_URI);
   } catch (err) {
-    winlog.error(`Env var loading Error: ${err.message}`);
-    response = new ErrorResponse();
+    response = new ErrorResponse(`Env var loading Error: ${err.message}`);
   }
 
   if (!(response instanceof ErrorResponse)) {
@@ -71,7 +70,6 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
             projectId,
             mrId,
             baseURI as string,
-            winlog,
           );
 
           const customConfig: CustomConfig = await CustomConfig.from(api);
@@ -89,7 +87,6 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
               customConfig,
               gitLabEvent,
               state,
-              winlog,
             );
           }
         } else {
@@ -99,7 +96,7 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
         break;
       default:
         /** No action required for any incoming GitLab event that is not a merge request */
-        response = new NotSupportedResponse();
+        response = new NotSupportedResponse(objectKind);
     }
   }
 
@@ -127,9 +124,7 @@ const webhook: Handler = async (
 
   const response = event.hasOwnProperty("body")
     ? await handleGitLabWebhook(event)
-    : new HealthCheckResponse();
-
-  winlog.info(response);
+    : new HealthCheckResponse(containerId, event);
 
   return response;
 };

@@ -10,7 +10,6 @@ import {
   not_found_404,
   fetch_network_error,
 } from "../helpers";
-import { winlog } from "../../src/util";
 import { TooManyAssigned, BotActionNote } from "../../src/bot_actions";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { TooManyAssignedDefaults } from "../../src/custom_config/action_config_defaults";
@@ -43,7 +42,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
     0,
     1,
     "fake-uri",
-    winlog,
   );
   describe("Open State", (state = "open") => {
     describe("When too many assigned === false", (assigneeId = 1) => {
@@ -58,7 +56,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -93,7 +90,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -128,7 +124,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -158,7 +153,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -191,7 +185,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -222,7 +215,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -248,7 +240,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -280,7 +271,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -307,7 +297,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -340,7 +329,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -371,7 +359,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();
@@ -392,7 +379,6 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
           state,
           api,
           customConfig,
-          winlog,
           assigneeId,
         );
         done();

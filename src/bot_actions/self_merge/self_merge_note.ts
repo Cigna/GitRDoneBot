@@ -1,11 +1,12 @@
 import { CommonMessages } from "../bot_action_note";
-import * as winston from "winston";
+import { BotActionNote } from "../bot_action_note";
 import {
   FailedResponse,
   NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../gitlab";
-
+import { LoggerFactory } from "../../util";
+const logger = LoggerFactory.getInstance();
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Self Merge action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the assignee, approvers, and the user who merged the GitLab Merge Request.
@@ -109,7 +110,6 @@ export class SelfMergeNote extends CommonMessages {
     state: string,
     goodGitPractice: boolean | undefined,
     approversNeeded: boolean | undefined,
-    logger: winston.Logger,
   ): string {
     let note: SelfMergeNote;
     switch (true) {
