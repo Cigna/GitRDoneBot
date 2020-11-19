@@ -1,4 +1,3 @@
-import * as winston from "winston";
 import { BotAction } from "../bot_action";
 import {
   FailedResponse,
@@ -27,19 +26,15 @@ export class NewGitWhoDis implements BotAction {
   /**
    * Constructs a complete Bot Action object by analyzing the author name.
    * @param authorName the name of the GitLab user who authored the Merge Request
-   * @param logger an instance of winston logger
    * @returns BotAction object constructed after checking that the author name is not a LAN ID,
    * determining goodGitPractice based on that check, and instantiating a new note object
    * */
-  static async from(
-    logger: winston.Logger,
-    authorName: string,
-  ): Promise<BotAction> {
+  static async from(authorName: string): Promise<BotAction> {
     const goodGitPractice = this.authorNameIsNotLanId(authorName);
 
     return new NewGitWhoDis(
       goodGitPractice,
-      NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, logger),
+      NewGitWhoDisNote.buildMessage(authorName, goodGitPractice),
     );
   }
 

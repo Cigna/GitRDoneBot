@@ -1,7 +1,7 @@
-import * as winston from "winston";
 import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
 import { BotActionNote } from "../bot_action_note";
-
+import { LoggerFactory } from "../../util";
+const logger = LoggerFactory.getInstance();
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Git Outta Here action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the existence of log files in the changes contained in the GitLab Merge Request.
@@ -38,7 +38,6 @@ export class GitOuttaHereNote extends BotActionNote {
   static buildMessage(
     apiResponse: SuccessfulGetResponse | FailedResponse,
     goodGitPractice: boolean | undefined,
-    logger: winston.Logger,
   ): string {
     let note: GitOuttaHereNote;
 

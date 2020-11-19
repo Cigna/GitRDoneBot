@@ -1,4 +1,3 @@
-import { winlog } from "../../../src/util";
 import { BotActionConfig } from "../../../src/custom_config/bot_action_config";
 import { DiffSizeDefaults } from "../../../src/custom_config/action_config_defaults";
 import { DiffSizeNote } from "../../../src/bot_actions/diff_size/diff_size_note";
@@ -1058,7 +1057,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.noActionMessage);
             });
@@ -1073,7 +1071,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.noActionMessage);
             });
@@ -1090,7 +1087,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.zeroLine} ${DiffSizeNote.hashtag}`);
             });
@@ -1105,7 +1101,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.good} ${DiffSizeNote.hashtag}`);
             });
@@ -1124,7 +1119,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1139,7 +1133,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1156,7 +1149,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1171,7 +1163,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1190,7 +1181,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1205,7 +1195,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1222,7 +1211,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1237,7 +1225,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1258,7 +1245,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.noActionMessage);
             });
@@ -1273,7 +1259,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.noActionMessage);
             });
@@ -1290,7 +1275,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.zeroLine} ${DiffSizeNote.hashtag}`);
             });
@@ -1305,7 +1289,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.good} ${DiffSizeNote.hashtag}`);
             });
@@ -1324,7 +1307,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1339,7 +1321,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1356,7 +1337,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1371,7 +1351,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1390,7 +1369,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1405,7 +1383,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1422,7 +1399,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1437,7 +1413,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1458,7 +1433,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.noActionMessage);
             });
@@ -1473,7 +1447,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.noActionMessage);
             });
@@ -1490,7 +1463,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.noActionMessage);
             });
@@ -1505,7 +1477,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.noActionMessage);
             });
@@ -1524,7 +1495,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1539,7 +1509,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1556,7 +1525,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1571,7 +1539,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(`${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`);
             });
@@ -1590,7 +1557,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1605,7 +1571,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1622,7 +1587,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1637,7 +1601,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.unknownState);
             });
@@ -1661,7 +1624,6 @@ describe("DiffSizeNote.buildMessage(customConfig, apiResponse, state, goodGitPra
                   state,
                   goodGitPractice,
                   totalDiffs,
-                  winlog,
                 ),
               ).toBe(DiffSizeNote.checkPermissionsMessage);
             });

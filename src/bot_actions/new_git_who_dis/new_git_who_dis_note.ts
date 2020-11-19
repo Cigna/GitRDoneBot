@@ -1,6 +1,6 @@
-import * as winston from "winston";
 import { BotActionNote } from "../bot_action_note";
-
+import { LoggerFactory } from "../../util";
+const logger = LoggerFactory.getInstance();
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the New Git Who Dis action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the name of the author of the GitLab Merge Request.
@@ -34,11 +34,7 @@ export class NewGitWhoDisNote extends BotActionNote {
    *
    * @returns `message` of the `NewGitWhoDisNote` object
    * */
-  static buildMessage(
-    authorName: string,
-    goodGitPractice: boolean,
-    logger: winston.Logger,
-  ): string {
+  static buildMessage(authorName: string, goodGitPractice: boolean): string {
     let note: NewGitWhoDisNote;
 
     switch (true) {

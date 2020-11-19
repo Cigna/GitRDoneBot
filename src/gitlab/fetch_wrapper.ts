@@ -1,4 +1,3 @@
-import * as winston from "winston";
 import fetch from "node-fetch";
 import * as HttpStatus from "http-status-codes";
 import { BuildGetResponse, BuildPostORPutResponse } from ".";
@@ -7,7 +6,8 @@ import {
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "./api_responses";
-
+import { LoggerFactory } from "../util";
+const logger = LoggerFactory.getInstance();
 interface RawFetchResponse {
   body: [] | {} | undefined | string;
   status: number;
@@ -24,7 +24,7 @@ export class FetchWrapper {
   private readonly deleteOptions: {};
   private readonly getOptions: {};
 
-  constructor(readonly token: string, readonly logger: winston.Logger) {
+  constructor(readonly token: string) {
     this.commonHeaders = {
       "Content-Type": "application/json",
       "Private-Token": this.token,
@@ -55,7 +55,7 @@ export class FetchWrapper {
       );
       response = BuildGetResponse(result.status, result.body);
     } catch (err) {
-      this.logger.error(`${err}`);
+      logger.error(`${err}`);
       response = BuildGetResponse(HttpStatus.BAD_GATEWAY, {});
     }
     return response;
@@ -82,7 +82,7 @@ export class FetchWrapper {
       const result: any = await this.handleFetch(uri, putOptions);
       response = BuildPostORPutResponse(result.status, result.body);
     } catch (err) {
-      this.logger.error(`${err}`);
+      logger.error(`${err}`);
       response = BuildPostORPutResponse(HttpStatus.BAD_GATEWAY);
     }
     return response;
@@ -109,7 +109,7 @@ export class FetchWrapper {
       const result: any = await this.handleFetch(uri, postOptions);
       response = BuildPostORPutResponse(result.status, result.body);
     } catch (err) {
-      this.logger.error(`${err}`);
+      logger.error(`${err}`);
       response = BuildPostORPutResponse(HttpStatus.BAD_GATEWAY);
     }
     return response;
@@ -119,7 +119,7 @@ export class FetchWrapper {
     return fetch(uri, options)
       .then((res) => res.json().then((body) => ({ body, status: res.status })))
       .catch((error) => {
-        this.logger.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
         return { body: {}, status: 500 };
       });
   }
@@ -140,7 +140,7 @@ export class FetchWrapper {
       );
       response = BuildGetResponse(statusCode, {});
     } catch (err) {
-      this.logger.error(`${err}`);
+      logger.error(`${err}`);
       response = BuildGetResponse(HttpStatus.BAD_GATEWAY, {});
     }
     return response;
@@ -156,7 +156,7 @@ export class FetchWrapper {
     return fetch(uri, options)
       .then((res) => res.status)
       .catch((error) => {
-        this.logger.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
         return 500;
       });
   }

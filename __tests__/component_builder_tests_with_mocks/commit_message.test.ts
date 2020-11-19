@@ -9,7 +9,6 @@ import {
   createNGitLabCommits,
   internal_error_500,
 } from "../helpers";
-import { winlog } from "../../src/util";
 import { CommitMessages } from "../../src/bot_actions";
 import { CommitMessagesNote } from "../../src/bot_actions/commit_messages/commit_message_note";
 
@@ -55,7 +54,7 @@ const too_many_one_word_commits = new SuccessfulGetResponse(HttpStatus.OK, [
 jest.mock("../../src/gitlab/merge_request_api");
 
 describe("Mock API Test: CommitMessages Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri", winlog);
+  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
 
   describe("open state", (state = "open") => {
     describe("when there is a single commit", (constructiveFeedbackOnlyToggle = false) => {
@@ -68,7 +67,6 @@ describe("Mock API Test: CommitMessages Class", () => {
           state,
           api,
           constructiveFeedbackOnlyToggle,
-          winlog,
         );
       });
 
@@ -107,7 +105,6 @@ describe("Mock API Test: CommitMessages Class", () => {
           state,
           api,
           constructiveFeedbackOnlyToggle,
-          winlog,
         );
       });
 
@@ -148,7 +145,6 @@ describe("Mock API Test: CommitMessages Class", () => {
           state,
           api,
           constructiveFeedbackOnlyToggle,
-          winlog,
         );
       });
 
@@ -187,7 +183,6 @@ describe("Mock API Test: CommitMessages Class", () => {
           state,
           api,
           constructiveFeedbackOnlyToggle,
-          winlog,
         );
       });
 
@@ -225,7 +220,6 @@ describe("Mock API Test: CommitMessages Class", () => {
           state,
           api,
           constructiveFeedbackOnlyToggle,
-          winlog,
         );
       });
 
@@ -263,7 +257,6 @@ describe("Mock API Test: CommitMessages Class", () => {
           state,
           api,
           constructiveFeedbackOnlyToggle,
-          winlog,
         );
       });
 

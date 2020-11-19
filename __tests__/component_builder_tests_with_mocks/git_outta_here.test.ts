@@ -4,7 +4,6 @@ import {
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
-import { winlog } from "../../src/util";
 import { GitOuttaHere, BotActionNote } from "../../src/bot_actions";
 import { not_found_404, fetch_network_error } from "../helpers";
 import { GitOuttaHereNote } from "../../src/bot_actions/git_outta_here/git_outta_here_note";
@@ -62,7 +61,7 @@ const changes_equal_zero = new SuccessfulGetResponse(200, {
 jest.mock("../../src/gitlab/merge_request_api");
 
 describe("Mock API Tests: GitOuttaHere Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri", winlog);
+  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
   describe("(Any state) when 3XX-5XX response from GitLab", () => {
     let gitOuttaHereResponse: GitOuttaHere;
 
@@ -70,7 +69,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(not_found_404);
-      gitOuttaHereResponse = await GitOuttaHere.from(api, winlog);
+      gitOuttaHereResponse = await GitOuttaHere.from(api);
       done();
     });
 
@@ -96,7 +95,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(log_files_exist);
-      gitOuttaHereResponse = await GitOuttaHere.from(api, winlog);
+      gitOuttaHereResponse = await GitOuttaHere.from(api);
       done();
     });
 
@@ -124,7 +123,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(no_log_files);
-      gitOuttaHereResponse = await GitOuttaHere.from(api, winlog);
+      gitOuttaHereResponse = await GitOuttaHere.from(api);
       done();
     });
 
@@ -152,7 +151,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_equal_zero);
-      gitOuttaHereResponse = await GitOuttaHere.from(api, winlog);
+      gitOuttaHereResponse = await GitOuttaHere.from(api);
       done();
     });
 
@@ -180,7 +179,7 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(fetch_network_error);
-      gitOuttaHereResponse = await GitOuttaHere.from(api, winlog);
+      gitOuttaHereResponse = await GitOuttaHere.from(api);
       done();
     });
 

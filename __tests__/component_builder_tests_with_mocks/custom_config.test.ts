@@ -3,7 +3,6 @@ import {
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
-import { winlog } from "../../src/util";
 import { not_found_404 } from "../helpers";
 import { CustomConfig } from "../../src/custom_config/custom_config";
 import {
@@ -53,7 +52,7 @@ const validKeysInvalidValues = new SuccessfulGetResponse(200, {
 jest.mock("../../src/gitlab/merge_request_api");
 
 describe("Mock API Test: CustomConfig Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri", winlog);
+  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
 
   describe("when a retrieved custom config has valid keys with valid values", () => {
     let customConfigResponse: CustomConfig;

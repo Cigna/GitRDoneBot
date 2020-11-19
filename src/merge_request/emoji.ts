@@ -30,7 +30,7 @@ export class BotEmoji {
    * 1. "trophy" if at least one element of `allChecks` is `true` and no elements are `false`
    * 1. "eyes" if at least one element in `allChecks` is `false`
    * */
-  static compose(allChecks: Array<boolean>): string {
+  static compose(allChecks: Array<boolean | undefined>): string {
     let emoji: string;
     const allUndefined = allChecks.every((bool) => bool === undefined);
 
@@ -56,7 +56,7 @@ export class BotEmoji {
    * */
   static async post(
     api: MergeRequestApi,
-    allChecks: Array<boolean>,
+    allChecks: Array<boolean | undefined>,
   ): Promise<BotEmoji> {
     let response:
       | SuccessfulPostORPutResponse
