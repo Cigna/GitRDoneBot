@@ -1,4 +1,3 @@
-import * as winston from "winston";
 import { URI } from "./uri";
 import {
   FailedResponse,
@@ -26,10 +25,9 @@ export class MergeRequestApi {
     readonly projectId: number,
     readonly mergeReqId: number,
     readonly baseURI: string,
-    readonly logger: winston.Logger,
   ) {
     this.uriBuilder = new URI(baseURI, projectId, mergeReqId);
-    this.fetchWrapper = new FetchWrapper(token, logger);
+    this.fetchWrapper = new FetchWrapper(token);
   }
 
   // EMOJIS

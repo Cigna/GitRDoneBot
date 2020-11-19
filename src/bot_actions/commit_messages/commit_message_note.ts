@@ -1,6 +1,8 @@
-import * as winston from "winston";
 import { BotActionNote } from "..";
 import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
+import { LoggerFactory } from "../../util";
+
+const logger = LoggerFactory.getInstance();
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Commit Messages Action.
@@ -62,7 +64,6 @@ export class CommitMessagesNote extends BotActionNote {
     goodGitPractice: boolean | undefined,
     constructiveFeedbackOnlyToggle: boolean,
     totalCommits: number,
-    logger: winston.Logger,
   ): string {
     let note: CommitMessagesNote;
 

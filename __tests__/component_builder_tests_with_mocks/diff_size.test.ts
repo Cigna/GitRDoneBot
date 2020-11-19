@@ -4,7 +4,6 @@ import {
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
-import { winlog } from "../../src/util";
 import { DiffSize, BotActionNote } from "../../src/bot_actions";
 import { not_found_404, fetch_network_error } from "../helpers";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
@@ -68,16 +67,16 @@ const changes_equal_zero = new SuccessfulGetResponse(200, {
 jest.mock("../../src/gitlab/merge_request_api");
 
 describe("Mock API Test: DiffSize Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri", winlog);
+  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
 
-  describe("(Any state) 3XX-5XX response from GitLab", (state = undefined) => {
+  describe("(Any state) 3XX-5XX response from GitLab", (state = "any") => {
     let diffSizeResponse;
 
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(not_found_404);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
+      diffSizeResponse = await DiffSize.from(state, api, customConfig);
       done();
     });
 
@@ -100,7 +99,6 @@ describe("Mock API Test: DiffSize Class", () => {
         state,
         api,
         customConfig,
-        winlog,
       );
       expect(diffAnalysisResponse.totalDiffs).toBe(-1);
     });
@@ -113,7 +111,7 @@ describe("Mock API Test: DiffSize Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_between_zero_and_500);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
+      diffSizeResponse = await DiffSize.from(state, api, customConfig);
       done();
     });
 
@@ -150,7 +148,6 @@ describe("Mock API Test: DiffSize Class", () => {
         state,
         api,
         customConfigThresholdOne,
-        winlog,
       );
       done();
     });
@@ -185,7 +182,7 @@ describe("Mock API Test: DiffSize Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_more_than_500);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
+      diffSizeResponse = await DiffSize.from(state, api, customConfig);
       done();
     });
     test("should return apiResponse state of SuccessfulGetResponse", async () => {
@@ -218,7 +215,7 @@ describe("Mock API Test: DiffSize Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_equal_zero);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
+      diffSizeResponse = await DiffSize.from(state, api, customConfig);
       done();
     });
 
@@ -250,7 +247,7 @@ describe("Mock API Test: DiffSize Class", () => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(fetch_network_error);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig, winlog);
+      diffSizeResponse = await DiffSize.from(state, api, customConfig);
       done();
     });
 

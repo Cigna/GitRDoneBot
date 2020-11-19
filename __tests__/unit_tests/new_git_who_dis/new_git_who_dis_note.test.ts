@@ -1,4 +1,4 @@
-import { winlog } from "../../../src/util";
+import {} from "../../../src/util";
 import { NewGitWhoDisNote } from "../../../src/bot_actions/new_git_who_dis/new_git_who_dis_note";
 
 describe("NewGitWhoDisNote.caseForBadMessage(goodGitPractice)", () => {
@@ -42,9 +42,9 @@ describe("NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, logger)", (
   describe("goodGitPractice === true", (goodGitPractice = true) => {
     describe("authorName === any string", (authorName = "Captain Mal") => {
       test("RETURNS STRING: noAction", () => {
-        expect(
-          NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, winlog),
-        ).toBe(NewGitWhoDisNote.noActionMessage);
+        expect(NewGitWhoDisNote.buildMessage(authorName, goodGitPractice)).toBe(
+          NewGitWhoDisNote.noActionMessage,
+        );
       });
     });
   });
@@ -52,9 +52,7 @@ describe("NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, logger)", (
   describe("goodGitPractice === false", (goodGitPractice = false) => {
     describe("authorName === any string", (authorName = "Captain Mal") => {
       test("RETURNS STRING: badIcon + authorName + bad + hashtag", () => {
-        expect(
-          NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, winlog),
-        ).toBe(
+        expect(NewGitWhoDisNote.buildMessage(authorName, goodGitPractice)).toBe(
           `${NewGitWhoDisNote.badIcon} Hi @${authorName}, ${NewGitWhoDisNote.bad} ${NewGitWhoDisNote.hashtag}`,
         );
       });
@@ -64,9 +62,9 @@ describe("NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, logger)", (
   describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
     describe("authorName === any string", (authorName = "Captain Mal") => {
       test("RETURNS STRING: unknownState", () => {
-        expect(
-          NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, winlog),
-        ).toBe(NewGitWhoDisNote.unknownState);
+        expect(NewGitWhoDisNote.buildMessage(authorName, goodGitPractice)).toBe(
+          NewGitWhoDisNote.unknownState,
+        );
       });
     });
   });

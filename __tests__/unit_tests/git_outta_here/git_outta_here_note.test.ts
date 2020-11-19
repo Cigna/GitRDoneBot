@@ -1,4 +1,4 @@
-import { winlog } from "../../../src/util";
+import {} from "../../../src/util";
 import { GitOuttaHereNote } from "../../../src/bot_actions/git_outta_here/git_outta_here_note";
 import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
 
@@ -47,7 +47,7 @@ describe("GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, logger)", 
     describe("goodGitPractice === true", (goodGitPractice = true) => {
       test("RETURNS STRING: noAction", () => {
         expect(
-          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, winlog),
+          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice),
         ).toBe(GitOuttaHereNote.noActionMessage);
       });
     });
@@ -55,7 +55,7 @@ describe("GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, logger)", 
     describe("goodGitPractice === false", (goodGitPractice = false) => {
       test("RETURNS STRING: bad + hashtag", () => {
         expect(
-          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, winlog),
+          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice),
         ).toBe(`${GitOuttaHereNote.bad} ${GitOuttaHereNote.hashtag}`);
       });
     });
@@ -63,7 +63,7 @@ describe("GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, logger)", 
     describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
       test("RETURNS STRING: unknownState", () => {
         expect(
-          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, winlog),
+          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice),
         ).toBe(GitOuttaHereNote.unknownState);
       });
     });
@@ -74,7 +74,7 @@ describe("GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, logger)", 
     describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
       test("RETURNS STRING: checkPermissions", () => {
         expect(
-          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice, winlog),
+          GitOuttaHereNote.buildMessage(apiResponse, goodGitPractice),
         ).toBe(GitOuttaHereNote.checkPermissionsMessage);
       });
     });

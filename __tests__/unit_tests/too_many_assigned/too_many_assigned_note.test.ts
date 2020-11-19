@@ -1,4 +1,4 @@
-import { winlog } from "../../../src/util";
+import {} from "../../../src/util";
 import { TooManyAssignedNote } from "../../../src/bot_actions/too_many_assigned/too_many_assigned_note";
 import { FailedResponse, SuccessfulGetResponse } from "../../../src/gitlab";
 
@@ -668,7 +668,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -682,7 +681,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -698,7 +696,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -712,7 +709,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.bad} ${TooManyAssignedNote.hashtag}`);
           });
@@ -728,7 +724,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -742,7 +737,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.unknownState}`);
           });
@@ -760,7 +754,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -774,7 +767,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -790,7 +782,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -804,7 +795,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.bad} ${TooManyAssignedNote.hashtag}`);
           });
@@ -820,7 +810,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -834,7 +823,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.unknownState}`);
           });
@@ -852,7 +840,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -866,7 +853,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -882,7 +868,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -896,7 +881,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -912,7 +896,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -926,7 +909,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -946,7 +928,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -960,7 +941,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.checkPermissionsMessage}`);
           });
@@ -976,7 +956,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -990,7 +969,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.checkPermissionsMessage}`);
           });
@@ -1006,7 +984,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1020,7 +997,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.checkPermissionsMessage}`);
           });
@@ -1038,7 +1014,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1052,7 +1027,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.checkPermissionsMessage}`);
           });
@@ -1068,7 +1042,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1082,7 +1055,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.checkPermissionsMessage}`);
           });
@@ -1098,7 +1070,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1112,7 +1083,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.checkPermissionsMessage}`);
           });
@@ -1130,7 +1100,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1144,7 +1113,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1160,7 +1128,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1174,7 +1141,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1190,7 +1156,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });
@@ -1204,7 +1169,6 @@ describe("TooManyAssignedNote.buildMessage(apiResponse, state, goodGitPractice, 
                 state,
                 goodGitPractice,
                 assigneeId,
-                winlog,
               ),
             ).toBe(`${TooManyAssignedNote.noActionMessage}`);
           });

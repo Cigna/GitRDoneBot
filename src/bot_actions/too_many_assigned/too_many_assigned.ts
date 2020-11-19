@@ -5,7 +5,6 @@ import {
   SuccessfulGetResponse,
 } from "../../gitlab";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
-import * as winston from "winston";
 import { BotAction } from "../bot_action";
 import { TooManyAssignedNote } from "./too_many_assigned_note";
 
@@ -29,7 +28,6 @@ export class TooManyAssigned implements BotAction {
    * @param state the state of the incoming Merge Request event from GitLab
    * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
    * @param customConfig an instance of the BotActionConfig class that defines too many assigned threshold
-   * @param logger an instance of winston logger
    * @param assigneeId GitLab user id of merge request assignee
    *
    * @returns BotAction object constructed after getting number of merge requests already assigned to assignee, determining goodGitPractice based on that value, and instantiating a new note object.
@@ -40,8 +38,7 @@ export class TooManyAssigned implements BotAction {
     state: string,
     api: MergeRequestApi,
     customConfig: BotActionConfig,
-    logger: winston.Logger,
-    assigneeId: number,
+    assigneeId: number | null,
   ): Promise<BotAction> {
     let response: SuccessfulGetResponse | NoRequestNeeded | FailedResponse;
     let goodGitPractice!: boolean;
@@ -67,7 +64,6 @@ export class TooManyAssigned implements BotAction {
         state,
         goodGitPractice,
         assigneeId,
-        logger,
       ),
     );
   }

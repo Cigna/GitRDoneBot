@@ -1,4 +1,3 @@
-import { winlog } from "../../../src/util";
 import { BotActionConfig } from "../../../src/custom_config/bot_action_config";
 import { BranchAgeDefaults } from "../../../src/custom_config/action_config_defaults";
 import { BranchAgeNote } from "../../../src/bot_actions/branch_age/branch_age_note";
@@ -525,7 +524,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.noActionMessage);
           });
@@ -539,7 +537,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
           });
@@ -553,7 +550,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.unknownState);
           });
@@ -569,7 +565,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(`${BranchAgeNote.good} ${BranchAgeNote.hashtag}`);
           });
@@ -583,7 +578,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
           });
@@ -597,7 +591,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.unknownState);
           });
@@ -615,7 +608,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.noActionMessage);
           });
@@ -629,7 +621,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
           });
@@ -643,7 +634,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.unknownState);
           });
@@ -659,7 +649,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(`${BranchAgeNote.good} ${BranchAgeNote.hashtag}`);
           });
@@ -673,7 +662,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
           });
@@ -687,7 +675,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.unknownState);
           });
@@ -705,7 +692,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.noActionMessage);
           });
@@ -719,7 +705,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
           });
@@ -733,7 +718,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.unknownState);
           });
@@ -749,7 +733,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.noActionMessage);
           });
@@ -763,7 +746,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
           });
@@ -777,7 +759,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.unknownState);
           });
@@ -798,7 +779,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
                 apiResponse,
                 goodGitPractice,
                 state,
-                winlog,
               ),
             ).toBe(BranchAgeNote.checkPermissionsMessage);
           });
