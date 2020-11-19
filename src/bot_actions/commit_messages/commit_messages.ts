@@ -7,10 +7,7 @@ import {
 } from "..";
 import { MergeRequestApi, SuccessfulGetResponse } from "../../gitlab";
 import { GitLabCommit } from "../../interfaces";
-import { CommitMessagesNote } from "./commit_message_note";
 import { LoggerFactory } from "../../util";
-
-const logger = LoggerFactory.getInstance();
 
 /**
  * This class analyzes the titles of the commits contained in the GitLab Merge Request.
@@ -20,6 +17,9 @@ const logger = LoggerFactory.getInstance();
 export class CommitMessages {
   private static minimumThreshold = 2;
   static botActionName = "CommitMessages";
+  static readonly good = `:star: Nice work following your team's commit message style conventions!`;
+  static readonly hashtag = `[#CommitMessage](https://github.com/Cigna/GitRDoneBot#5-commit-messages)`;
+  static readonly bad = `:loudspeaker: Keep commits descriptive and concise - more than one word and between 3 and 50 characters`;
 
   /**
    * Constructs a complete Commit Message object by making an HTTP call and analyzing response.
@@ -49,24 +49,27 @@ export class CommitMessages {
 
     if (response instanceof SuccessfulGetResponse) {
       let goodGitPractice!: boolean;
-
       const threshold = this.calculateThreshold(response.result.length);
       const totalCommits = response.result.length;
-      if (response.result.length === 0) {
-        goodGitPractice = true;
+
+      if (totalCommits === 0) {
+        action = new SuccessfulBotActionWithNothingToSay();
       } else {
         const validityOfCommits: Array<boolean> = response.result.map(
           (commit: GitLabCommit) =>
             this.lengthValid(commit.title) && !this.isOneWord(commit.title),
         );
         goodGitPractice = this.testThreshold(validityOfCommits, threshold);
+        action = CommonMessages.buildAction(
+          state,
+          goodGitPractice,
+          constructiveFeedbackOnlyToggle,
+          this.bad,
+          this.good,
+          this.hashtag,
+          this.botActionName,
+        );
       }
-      action = this.buildAction(
-        state,
-        goodGitPractice,
-        constructiveFeedbackOnlyToggle,
-        totalCommits,
-      );
       LoggerFactory.appendBotInfo(
         new BotActionInfo(this.botActionName, response, {
           totalCommits: totalCommits,
@@ -79,61 +82,6 @@ export class CommitMessages {
       );
     }
 
-    return action;
-  }
-
-  /**
-   * Constructs a `CommitMessagesNote` object by identifying one of five cases: standard case for permissions check,
-   * case for no actions, case for bad message, case for good message, or case for unknown state.
-   *
-   * @returns `message` of the `CommitMessagesNote` object
-   * */
-  static buildAction(
-    state: string,
-    goodGitPractice: boolean,
-    constructiveFeedbackOnlyToggle: boolean,
-    totalCommits: number,
-  ):
-    | SuccessfulBotAction
-    | FailedBotAction
-    | SuccessfulBotActionWithNothingToSay {
-    let action;
-
-    switch (true) {
-      // No Actions check MUST come second
-      case totalCommits === 0 ||
-        CommonMessages.caseForNoActions(
-          state,
-          goodGitPractice,
-          constructiveFeedbackOnlyToggle,
-        ): {
-        action = new SuccessfulBotActionWithNothingToSay();
-        break;
-      }
-      case CommonMessages.caseForBadMessage(goodGitPractice): {
-        action = new SuccessfulBotAction(
-          false,
-          CommitMessagesNote.bad,
-          CommitMessagesNote.hashtag,
-        );
-      }
-      case CommonMessages.caseForGoodMessage(
-        state,
-        goodGitPractice,
-        constructiveFeedbackOnlyToggle,
-      ): {
-        action = new SuccessfulBotAction(
-          true,
-          CommitMessagesNote.good,
-          CommitMessagesNote.hashtag,
-        );
-        break;
-      }
-      default: {
-        action = new FailedBotAction(CommonMessages.unknownState);
-        logger.error(`BranchAge unknown state encountered`);
-      }
-    }
     return action;
   }
 

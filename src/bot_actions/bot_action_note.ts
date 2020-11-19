@@ -1,3 +1,11 @@
+import {
+  SuccessfulBotAction,
+  FailedBotAction,
+  SuccessfulBotActionWithNothingToSay,
+} from ".";
+import { LoggerFactory } from "../util";
+
+const logger = LoggerFactory.getInstance();
 /**
  * This extensible class defines the core message property that is dynamically calculated by each distinct Bot Action Note:
  * 1. `message` is a message that will be included in the comment GitRDoneBot posts to the end-user's Merge Request
@@ -35,5 +43,54 @@ export abstract class CommonMessages {
       (state === "merge" || constructiveFeedbackOnlyToggle) &&
       goodGitPractice === true
     );
+  }
+
+  /**
+   * Constructs a `CommitMessagesNote` object by identifying one of five cases: standard case for permissions check,
+   * case for no actions, case for bad message, case for good message, or case for unknown state.
+   *
+   * @returns `message` of the `CommitMessagesNote` object
+   * */
+  static buildAction(
+    state: string,
+    goodGitPractice: boolean,
+    constructiveFeedbackOnlyToggle: boolean,
+    badNote: string,
+    goodNote: string,
+    hashtag: string,
+    botActionName: string,
+  ):
+    | SuccessfulBotAction
+    | FailedBotAction
+    | SuccessfulBotActionWithNothingToSay {
+    let action;
+
+    switch (true) {
+      // No Actions check MUST come second
+      case CommonMessages.caseForNoActions(
+        state,
+        goodGitPractice,
+        constructiveFeedbackOnlyToggle,
+      ): {
+        action = new SuccessfulBotActionWithNothingToSay();
+        break;
+      }
+      case CommonMessages.caseForBadMessage(goodGitPractice): {
+        action = new SuccessfulBotAction(goodGitPractice, badNote, hashtag);
+      }
+      case CommonMessages.caseForGoodMessage(
+        state,
+        goodGitPractice,
+        constructiveFeedbackOnlyToggle,
+      ): {
+        action = new SuccessfulBotAction(goodGitPractice, goodNote, hashtag);
+        break;
+      }
+      default: {
+        action = new FailedBotAction(CommonMessages.unknownState);
+        logger.error(`${botActionName} unknown state encountered`);
+      }
+    }
+    return action;
   }
 }

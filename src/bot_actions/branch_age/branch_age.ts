@@ -7,10 +7,7 @@ import {
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
 } from "../bot_action";
-import { BranchAgeNote } from "./branch_age_message";
 import { LoggerFactory } from "../../util";
-
-const logger = LoggerFactory.getInstance();
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
@@ -18,6 +15,13 @@ const logger = LoggerFactory.getInstance();
 
 export abstract class BranchAge {
   static botActionName = "BranchAge";
+  static readonly good =
+    `:star: It’s great that you’re committing and merging code frequently` +
+    ` - the commits on this branch aren’t old or stale. Good job!`;
+  static readonly bad =
+    `:loudspeaker: This merge request has a pretty old commit. ` +
+    `You should try and merge more frequently to keep your commits on branches fresh.`;
+  static readonly hashtag = `[#BranchAgeAnalysis](https://github.com/Cigna/GitRDoneBot#2-branch-age)`;
 
   static getOldestCommit(commits: Array<GitLabCommit>): GitLabCommit {
     const oldestCommit: GitLabCommit = commits.reduce(
@@ -70,7 +74,15 @@ export abstract class BranchAge {
           customConfig.threshold,
         );
       }
-      action = this.buildAction(customConfig, goodGitPractice, state);
+      action = CommonMessages.buildAction(
+        state,
+        goodGitPractice,
+        customConfig.constructiveFeedbackOnlyToggle,
+        this.bad,
+        this.good,
+        this.hashtag,
+        this.botActionName,
+      );
       LoggerFactory.appendBotInfo(
         new BotActionInfo(this.botActionName, response, {
           oldestCommit: oldestCommit,
@@ -83,58 +95,5 @@ export abstract class BranchAge {
       );
     }
     return { action };
-  }
-
-  /**
-   * Constructs a `BranchAgeNote` object by identifying one of five cases: standard case for permissions check,
-   * case for bad message, case for good message, case for no actions, or case for unknown state.
-   *
-   * @returns `message` of the `BranchAgeNote` object
-   * */
-  static buildAction(
-    customConfig: BotActionConfig,
-    goodGitPractice: boolean,
-    state: string,
-  ):
-    | SuccessfulBotAction
-    | FailedBotAction
-    | SuccessfulBotActionWithNothingToSay {
-    let action;
-
-    switch (true) {
-      case CommonMessages.caseForBadMessage(goodGitPractice): {
-        action = new SuccessfulBotAction(
-          false,
-          BranchAgeNote.bad,
-          BranchAgeNote.hashtag,
-        );
-        break;
-      }
-      case CommonMessages.caseForGoodMessage(
-        state,
-        customConfig.constructiveFeedbackOnlyToggle,
-        goodGitPractice,
-      ): {
-        action = new SuccessfulBotAction(
-          true,
-          BranchAgeNote.good,
-          BranchAgeNote.hashtag,
-        );
-        break;
-      }
-      case CommonMessages.caseForNoActions(
-        state,
-        customConfig.constructiveFeedbackOnlyToggle,
-        goodGitPractice,
-      ): {
-        action = new SuccessfulBotActionWithNothingToSay();
-        break;
-      }
-      default: {
-        action = new FailedBotAction(CommonMessages.unknownState);
-        logger.error(`BranchAge unknown state encountered`);
-      }
-    }
-    return action;
   }
 }

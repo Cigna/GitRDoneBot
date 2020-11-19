@@ -62,37 +62,23 @@ export class BotActionsResponse implements LambdaResponse {
     // only status is guaranteed to be set regardless of error
     let statusCode: number;
 
-    // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
-    // correct customConfig functionality can be implemented
-    const commitMessageConstructiveFeedbackOnlyToggle = false;
-    const commitMessagePromise: Promise<CommitMessages> = CommitMessages.from(
-      state,
-      api,
-      commitMessageConstructiveFeedbackOnlyToggle,
-      logger,
-    );
+
 
     const diffPromise: Promise<DiffSize> = DiffSize.from(
       state,
       api,
       customConfig.diffSize,
-      logger,
     );
 
-    const gitOuttaHerePromise: Promise<GitOuttaHere> = GitOuttaHere.from(
-      api,
-      logger,
-    );
+    const gitOuttaHerePromise: Promise<GitOuttaHere> = GitOuttaHere.from(api);
 
     const newGitWhoDisPromise: Promise<NewGitWhoDis> = NewGitWhoDis.from(
-      logger,
       mergeRequestEvent.authorName,
     );
 
     const selfMergePromise: Promise<SelfMerge> = SelfMerge.from(
       state,
       api,
-      logger,
       mergeRequestEvent.assigneeId,
       mergeRequestEvent.authorGitId,
     );
@@ -101,14 +87,21 @@ export class BotActionsResponse implements LambdaResponse {
       state,
       api,
       customConfig.tooManyMergeRequests,
-      logger,
       mergeRequestEvent.assigneeId,
     );
+
+    // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
+    // correct customConfig functionality can be implemented
+    const commitMessageConstructiveFeedbackOnlyToggle = false;
 
     // fire all Bot Actions in parallel - order does not matter
     const botActionResponses = await Promise.all([
       await BranchAge.analyze(state, api, customConfig.branchAge),
-      // await commitMessagePromise,
+      await CommitMessages.analyze(
+        state,
+        api,
+        commitMessageConstructiveFeedbackOnlyToggle,
+      ),
       // await diffPromise,
       // await gitOuttaHerePromise,
       // await newGitWhoDisPromise,
