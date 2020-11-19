@@ -1,4 +1,4 @@
-import { BotActionInfo, CommonMessages, BotActionResponse } from "..";
+import { BotActionInfo, CommonMessages } from "..";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { MergeRequestApi, SuccessfulGetResponse } from "../../gitlab";
 import { GitLabCommit } from "../../interfaces/gitlab_api_types";
@@ -7,7 +7,7 @@ import {
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
 } from "../bot_action";
-import { BranchAgeMessage } from "./branch_age_note";
+import { BranchAgeNote } from "./branch_age_message";
 import { LoggerFactory } from "../../util";
 
 const logger = LoggerFactory.getInstance();
@@ -46,12 +46,14 @@ export abstract class BranchAge {
     state: string,
     api: MergeRequestApi,
     customConfig: BotActionConfig,
-  ): Promise<BotActionResponse> {
+  ): Promise<
+    SuccessfulBotAction | FailedBotAction | SuccessfulBotActionWithNothingToSay
+  > {
     let action:
       | FailedBotAction
       | SuccessfulBotAction
       | SuccessfulBotActionWithNothingToSay;
-    let info: BotActionInfo;
+
     const response = await api.getSingleMRCommits();
 
     if (response instanceof SuccessfulGetResponse) {
@@ -68,15 +70,19 @@ export abstract class BranchAge {
           customConfig.threshold,
         );
       }
-      action = this.buildAction(customConfig, goodGitPractice, state, logger);
-      info = new BotActionInfo(this.botActionName, response, {
-        oldestCommit: oldestCommit,
-      });
+      action = this.buildAction(customConfig, goodGitPractice, state);
+      LoggerFactory.appendBotInfo(
+        new BotActionInfo(this.botActionName, response, {
+          oldestCommit: oldestCommit,
+        }),
+      );
     } else {
       action = new FailedBotAction(CommonMessages.checkPermissionsMessage);
-      info = new BotActionInfo(this.botActionName, response);
+      LoggerFactory.appendBotInfo(
+        new BotActionInfo(this.botActionName, response),
+      );
     }
-    return { action, info };
+    return { action };
   }
 
   /**
@@ -96,27 +102,27 @@ export abstract class BranchAge {
     let action;
 
     switch (true) {
-      case BranchAgeMessage.caseForBadMessage(goodGitPractice): {
+      case CommonMessages.caseForBadMessage(goodGitPractice): {
         action = new SuccessfulBotAction(
           false,
-          BranchAgeMessage.bad,
-          BranchAgeMessage.hashtag,
+          BranchAgeNote.bad,
+          BranchAgeNote.hashtag,
         );
         break;
       }
-      case BranchAgeMessage.caseForGoodMessage(
+      case CommonMessages.caseForGoodMessage(
         state,
         customConfig.constructiveFeedbackOnlyToggle,
         goodGitPractice,
       ): {
         action = new SuccessfulBotAction(
           true,
-          BranchAgeMessage.good,
-          BranchAgeMessage.hashtag,
+          BranchAgeNote.good,
+          BranchAgeNote.hashtag,
         );
         break;
       }
-      case BranchAgeMessage.caseForNoActions(
+      case CommonMessages.caseForNoActions(
         state,
         customConfig.constructiveFeedbackOnlyToggle,
         goodGitPractice,

@@ -21,6 +21,7 @@ import {
 } from "../merge_request";
 import { CustomConfig } from "../custom_config/custom_config";
 import { LoggerFactory } from "../util/bot_logger";
+import * as HttpStatus from "http-status-codes";
 
 const logger = LoggerFactory.getInstance();
 /**
@@ -58,7 +59,6 @@ export class BotActionsResponse implements LambdaResponse {
     const successfulBotActions: Array<SuccessfulBotAction> = [];
 
     // variables declared here so they will be in scope for response constructor
-<<<<<<< HEAD
     // only status is guaranteed to be set regardless of error
     let statusCode: number;
 
@@ -107,7 +107,7 @@ export class BotActionsResponse implements LambdaResponse {
 
     // fire all Bot Actions in parallel - order does not matter
     const botActionResponses = await Promise.all([
-      await BranchAge.analyze(state, api, customConfig.branchAge, logger),
+      await BranchAge.analyze(state, api, customConfig.branchAge),
       // await commitMessagePromise,
       // await diffPromise,
       // await gitOuttaHerePromise,
@@ -117,8 +117,8 @@ export class BotActionsResponse implements LambdaResponse {
     ]);
 
     botActionResponses.forEach(function (botActionResponse) {
-      if (botActionResponse.action instanceof SuccessfulBotAction) {
-        successfulBotActions.push(botActionResponse.action);
+      if (botActionResponse instanceof SuccessfulBotAction) {
+        successfulBotActions.push(botActionResponse);
       }
     });
 
@@ -138,60 +138,6 @@ export class BotActionsResponse implements LambdaResponse {
         (note: string, action: SuccessfulBotAction) =>
           note.concat(`${action.mrNote}<br /><br />`),
         "",
-=======
-    // only lambdaResponse is guaranteed to be set regardless of error
-    let lambdaResponse: BotActionsResponse | LambdaResponse,
-      branchAge!: BranchAge,
-      commitMessage!: CommitMessages,
-      diffSize!: DiffSize,
-      gitOuttaHere!: GitOuttaHere,
-      newGitWhoDis!: NewGitWhoDis,
-      selfMerge!: SelfMerge,
-      tooManyAssigned!: TooManyAssigned,
-      comment!: BotComment,
-      emoji!: BotEmoji;
-
-    try {
-      const branchAgePromise: Promise<BranchAge> = BranchAge.from(
-        state,
-        api,
-        customConfig.branchAge,
-      );
-
-      // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
-      // correct customConfig functionality can be implemented
-      const commitMessageConstructiveFeedbackOnlyToggle = false;
-      const commitMessagePromise: Promise<CommitMessages> = CommitMessages.from(
-        state,
-        api,
-        commitMessageConstructiveFeedbackOnlyToggle,
-      );
-
-      const diffPromise: Promise<DiffSize> = DiffSize.from(
-        state,
-        api,
-        customConfig.diffSize,
-      );
-
-      const gitOuttaHerePromise: Promise<GitOuttaHere> = GitOuttaHere.from(api);
-
-      const newGitWhoDisPromise: Promise<NewGitWhoDis> = NewGitWhoDis.from(
-        mergeRequestEvent.authorName,
-      );
-
-      const selfMergePromise: Promise<SelfMerge> = SelfMerge.from(
-        state,
-        api,
-        mergeRequestEvent.assigneeId,
-        mergeRequestEvent.authorGitId,
-      );
-
-      const tooManyAssignedPromise: Promise<TooManyAssigned> = TooManyAssigned.from(
-        state,
-        api,
-        customConfig.tooManyMergeRequests,
-        mergeRequestEvent.assigneeId,
->>>>>>> origin/logging-overhaul
       );
 
       const allGoodGitPractice = successfulBotActions.every(
@@ -211,121 +157,18 @@ export class BotActionsResponse implements LambdaResponse {
       );
 
       // fire POST logic in parallel - must be performed only after all Bot Action promises have resolved
-<<<<<<< HEAD
+
       const [comment, emoji] = [
         await postCommentPromise,
         await postEmojiPromise,
       ];
     }
 
-    // const responseBody = JSON.stringify({
-    //   mergeRequestEvent,
-    //   customConfig,
-    //   commitMessage,
-    //   diffSize,
-    //   gitOuttaHere,
-    //   newGitWhoDis,
-    //   selfMerge,
-    //   tooManyAssigned,
-    //   comment,
-    //   emoji,
-    // });
-
     // NOTE STATUS DOESN'T TAKE INTO ACCOUNT EMOJI AND COMMENT....
     // Emoji returns a 404 if it already exists so we probably don't care about it.
 
     logger.info(botActionResponses);
+    LoggerFactory.logBotActionInfo();
     return new BotActionsResponse(statusCode, "What should we put here?");
-=======
-      [comment, emoji] = [await postCommentPromise, await postEmojiPromise];
-
-      // gets overall status from statuses returned by individual Bot Action API calls
-      const statusCode = this.fromCodes([
-        branchAge.apiResponse.statusCode,
-        commitMessage.apiResponse.statusCode,
-        diffSize.apiResponse.statusCode,
-        gitOuttaHere.apiResponse.statusCode,
-        selfMerge.apiResponse.statusCode,
-        tooManyAssigned.apiResponse.statusCode,
-      ]);
-
-      // ============= TODO: Fix the design =================
-      // We don't actually need to send any of this back to GitLab, this is really just for logging
-      const responseBody = {
-        mergeRequestEvent: mergeRequestEvent,
-        comment: comment,
-        emoji: emoji,
-        customConfig: customConfig,
-        branchAge: {
-          apiResponse: branchAge.apiResponse.statusCode,
-          goodGitPractice: branchAge.goodGitPractice,
-          mrNote: branchAge.mrNote,
-          oldestCommit: branchAge.oldestCommit,
-        },
-        commitMessage: {
-          apiResponse: commitMessage.apiResponse.statusCode,
-          goodGitPractice: commitMessage.goodGitPractice,
-          mrNote: commitMessage.mrNote,
-          calculatedThreshold: commitMessage.calculatedThreshold,
-        },
-        diffSize: {
-          apiResponse: diffSize.apiResponse.statusCode,
-          goodGitPractice: diffSize.goodGitPractice,
-          mrNote: diffSize.mrNote,
-          totalDiffs: diffSize.totalDiffs,
-        },
-        gitOuttaHere: {
-          apiResponse: gitOuttaHere.apiResponse.statusCode,
-          goodGitPractice: gitOuttaHere.goodGitPractice,
-          mrNote: gitOuttaHere.mrNote,
-        },
-        newGitWhoDis: {
-          apiResponse: newGitWhoDis.apiResponse.statusCode,
-          goodGitPractice: newGitWhoDis.goodGitPractice,
-          mrNote: newGitWhoDis.mrNote,
-        },
-        selfMerge: {
-          apiResponse: selfMerge.apiResponse.statusCode,
-          goodGitPractice: selfMerge.goodGitPractice,
-          mrNote: selfMerge.mrNote,
-          approversNeeded: selfMerge.approversNeeded,
-        },
-        tooManyAssigned: {
-          apiResponse: tooManyAssigned.apiResponse.statusCode,
-          goodGitPractice: tooManyAssigned.goodGitPractice,
-          mrNote: tooManyAssigned.mrNote,
-        },
-      };
-
-      lambdaResponse = new BotActionsResponse(
-        statusCode,
-        JSON.stringify(responseBody),
-      );
-    } catch (err) {
-      lambdaResponse = new ErrorResponse(
-        `BotActionsResponse Error: ${err.message}`,
-      );
-    }
-
-    return lambdaResponse;
-  }
-
-  /**
-   * Provides an overall status from a set of status codes
-   *
-   * @param allCodes Array of status codes
-   *
-   * @returns
-   * 1. 200 when none of the elements of allCodes are a `4XX` or `5XX`.
-   * 1. 207 when at least one element of allCodes is a `4XX` or `5XX`.
-   */
-  static fromCodes(allCodes: Array<number>): number {
-    const statusCode: number = allCodes.some((code) => {
-      return code >= 400;
-    })
-      ? 207
-      : 200;
-    return statusCode;
->>>>>>> origin/logging-overhaul
   }
 }
