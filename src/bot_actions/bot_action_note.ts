@@ -7,6 +7,6 @@
 export abstract class CommonMessages {
   static readonly unknownState: string =
     "Unknown state encountered while composing note:";
-\  static readonly checkPermissionsMessage: string =
+  static readonly checkPermissionsMessage: string =
     "Please check that GitRDoneBot has the correct permissions to access your project resources.";
 }
