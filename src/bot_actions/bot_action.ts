@@ -10,22 +10,29 @@
 
 import { ApiResponse } from "../gitlab";
 
-export interface BotActionResponse {
-  action:
-    | SuccessfulBotAction
-    | FailedBotAction
-    | SuccessfulBotActionWithNothingToSay;
-  info: BotActionInfo;
-}
+// export interface BotActionResponse {
+//   action:
+//     | SuccessfulBotAction
+//     | FailedBotAction
+//     | SuccessfulBotActionWithNothingToSay;
+//   info: BotActionInfo;
+// }
 
 export class BotActionInfo {
   // Note, not all bot actions have additional computed values.
   constructor(
     readonly name: string,
-    readonly response: ApiResponse,
+    readonly statusCode: number,
+    readonly action:
+      | SuccessfulBotAction
+      | FailedBotAction
+      | SuccessfulBotActionWithNothingToSay,
     readonly computedValues?: {},
   ) {}
 }
+// Note: a successfulBotAction can have bad or good git practice.
+// The successful part of it means we were able to compute the good git practice and the message,
+// independent of whether that message contains positive or constructive feedback.
 export class SuccessfulBotAction {
   mrNote: string;
   constructor(
@@ -36,8 +43,12 @@ export class SuccessfulBotAction {
     this.mrNote = `${message} ${hashtag}`;
   }
 }
+// TODO: Do we even need a comment here?
+// We would want a check permissions message if: all ones that have an API call fail, or all things fail (this might never happen)
 export class FailedBotAction {
   constructor(readonly mrNote: string) {}
 }
-
-export class SuccessfulBotActionWithNothingToSay {}
+// The reason for silence is for logging purposes only.
+export class SuccessfulBotActionWithNothingToSay {
+  constructor(readonly reasonForSilence: string) {}
+}

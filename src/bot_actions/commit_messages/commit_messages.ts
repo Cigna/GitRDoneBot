@@ -53,7 +53,9 @@ export class CommitMessages {
       const totalCommits = response.result.length;
 
       if (totalCommits === 0) {
-        action = new SuccessfulBotActionWithNothingToSay();
+        action = new SuccessfulBotActionWithNothingToSay(
+          "I have no commits to analyze.",
+        );
       } else {
         const validityOfCommits: Array<boolean> = response.result.map(
           (commit: GitLabCommit) =>
@@ -71,14 +73,14 @@ export class CommitMessages {
         );
       }
       LoggerFactory.appendBotInfo(
-        new BotActionInfo(this.botActionName, response, {
+        new BotActionInfo(this.botActionName, response.statusCode, action, {
           totalCommits: totalCommits,
         }),
       );
     } else {
       action = new FailedBotAction(CommonMessages.checkPermissionsMessage);
       LoggerFactory.appendBotInfo(
-        new BotActionInfo(this.botActionName, response),
+        new BotActionInfo(this.botActionName, response.statusCode, action),
       );
     }
 

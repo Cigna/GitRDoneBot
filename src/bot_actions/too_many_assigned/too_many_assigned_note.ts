@@ -11,7 +11,6 @@ const logger = LoggerFactory.getInstance();
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Too Many Assigned action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the number of merge requests assigned to the assignee of the GitLab Merge Request.
  */
-<<<<<<< HEAD
 export class TooManyAssignedNote extends CommonMessages {
   static readonly bad = `:loudspeaker: You've assigned this merge request to someone who already has a lot on their plate.
        Reassigning the merge request to someone else will help it get approved more quickly`;

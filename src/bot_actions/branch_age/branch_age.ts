@@ -84,16 +84,16 @@ export abstract class BranchAge {
         this.botActionName,
       );
       LoggerFactory.appendBotInfo(
-        new BotActionInfo(this.botActionName, response, {
+        new BotActionInfo(this.botActionName, response.statusCode, action, {
           oldestCommit: oldestCommit,
         }),
       );
     } else {
       action = new FailedBotAction(CommonMessages.checkPermissionsMessage);
       LoggerFactory.appendBotInfo(
-        new BotActionInfo(this.botActionName, response),
+        new BotActionInfo(this.botActionName, response.statusCode, action),
       );
     }
-    return { action };
+    return action;
   }
 }

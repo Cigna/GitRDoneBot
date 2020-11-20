@@ -62,8 +62,6 @@ export class BotActionsResponse implements LambdaResponse {
     // only status is guaranteed to be set regardless of error
     let statusCode: number;
 
-
-
     const diffPromise: Promise<DiffSize> = DiffSize.from(
       state,
       api,
@@ -161,7 +159,7 @@ export class BotActionsResponse implements LambdaResponse {
     // Emoji returns a 404 if it already exists so we probably don't care about it.
 
     logger.info(botActionResponses);
-    LoggerFactory.logBotActionInfo();
+    logger.info(LoggerFactory.getBotActionInfo());
     return new BotActionsResponse(statusCode, "What should we put here?");
   }
 }
