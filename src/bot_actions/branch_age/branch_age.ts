@@ -8,6 +8,8 @@ import {
   SuccessfulBotActionWithNothingToSay,
 } from "../bot_action";
 import { LoggerFactory } from "../../util";
+
+const logger = LoggerFactory.getInstance();
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
@@ -74,7 +76,7 @@ export abstract class BranchAge {
           customConfig.threshold,
         );
       }
-      action = CommonMessages.buildAction(
+      action = this.buildAction(
         state,
         goodGitPractice,
         customConfig.constructiveFeedbackOnlyToggle,
@@ -93,6 +95,50 @@ export abstract class BranchAge {
       LoggerFactory.appendBotInfo(
         new BotActionInfo(this.botActionName, response.statusCode, action),
       );
+    }
+    return action;
+  }
+  static buildAction(
+    state: string,
+    goodGitPractice: boolean,
+    constructiveFeedbackOnlyToggle: boolean,
+    badNote: string,
+    goodNote: string,
+    hashtag: string,
+    botActionName: string,
+  ):
+    | SuccessfulBotAction
+    | FailedBotAction
+    | SuccessfulBotActionWithNothingToSay {
+    let action;
+
+    switch (true) {
+      // No Actions check MUST come second
+      case CommonMessages.caseForNoActions(
+        state,
+        goodGitPractice,
+        constructiveFeedbackOnlyToggle,
+      ): {
+        action = new SuccessfulBotActionWithNothingToSay(
+          "Don't say nice things. Silence is a virtue.",
+        );
+        break;
+      }
+      case CommonMessages.caseForBadMessage(goodGitPractice): {
+        action = new SuccessfulBotAction(goodGitPractice, badNote, hashtag);
+      }
+      case CommonMessages.caseForGoodMessage(
+        state,
+        goodGitPractice,
+        constructiveFeedbackOnlyToggle,
+      ): {
+        action = new SuccessfulBotAction(goodGitPractice, goodNote, hashtag);
+        break;
+      }
+      default: {
+        action = new FailedBotAction(CommonMessages.unknownState);
+        logger.error(`${botActionName} unknown state encountered`);
+      }
     }
     return action;
   }

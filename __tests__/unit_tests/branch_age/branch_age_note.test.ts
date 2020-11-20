@@ -1,6 +1,6 @@
 import { BotActionConfig } from "../../../src/custom_config/bot_action_config";
 import { BranchAgeDefaults } from "../../../src/custom_config/action_config_defaults";
-import { BranchAgeNote } from "../../../src/bot_actions/branch_age/branch_age_note";
+import { BranchAge, CommonMessages, SuccessfulBotAction, SuccessfulBotActionWithNothingToSay } from "../../../src/bot_actions";
 import { SuccessfulGetResponse, FailedResponse } from "../../../src/gitlab";
 
 // default value for customConfig.constructiveFeedbackOnlyToggle is false
@@ -11,22 +11,15 @@ const trueCustomConfig = BotActionConfig.from(BranchAgeDefaults, {
 const successfulResponse = new SuccessfulGetResponse(200, {});
 const failedResponse = new FailedResponse(401);
 
-describe("BranchAgeNote.fromMessage(message)", () => {
-  describe("any message string", (message = "Helpful reminder from your friendly neighborhood GitRDoneBot.") => {
-    test("RETURNS CLASS INSTANCE: BranchAgeNote", () => {
-      const note = BranchAgeNote.fromMessage(message);
-      expect(note).toBeInstanceOf(BranchAgeNote);
-    });
-  });
-});
-
+// These cases were moved to CommonMessages, we might want to move them back
+describe("BranchAge.buildAction", () => {
 describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, goodGitPractice)", () => {
   describe("'open' state", (state = "open") => {
     describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: true", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -35,22 +28,10 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
         });
       });
 
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForNoActions(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -64,19 +45,7 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -88,7 +57,7 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -104,7 +73,7 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: true", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -113,22 +82,10 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
         });
       });
 
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForNoActions(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -142,19 +99,7 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -166,7 +111,7 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -182,7 +127,7 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: true", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -191,22 +136,10 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
         });
       });
 
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForNoActions(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -220,7 +153,7 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: true", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -229,22 +162,10 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
         });
       });
 
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForNoActions(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForNoActions(
+            CommonMessages.caseForNoActions(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -259,19 +180,13 @@ describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, 
 describe("BranchAgeNote.caseForBadMessage(goodGitPractice)", () => {
   describe("goodGitPractice === true", (goodGitPractice = true) => {
     test("RETURNS BOOLEAN: false", () => {
-      expect(BranchAgeNote.caseForBadMessage(goodGitPractice)).toBe(false);
+      expect(CommonMessages.caseForBadMessage(goodGitPractice)).toBe(false);
     });
   });
 
   describe("goodGitPractice === false", (goodGitPractice = false) => {
     test("RETURNS BOOLEAN: true", () => {
-      expect(BranchAgeNote.caseForBadMessage(goodGitPractice)).toBe(true);
-    });
-  });
-
-  describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-    test("RETURNS BOOLEAN: false", () => {
-      expect(BranchAgeNote.caseForBadMessage(goodGitPractice)).toBe(false);
+      expect(CommonMessages.caseForBadMessage(goodGitPractice)).toBe(true);
     });
   });
 });
@@ -282,19 +197,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -306,7 +209,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -320,7 +223,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: true", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -329,22 +232,10 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
         });
       });
 
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForGoodMessage(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -360,19 +251,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -384,7 +263,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -398,7 +277,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: true", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -407,22 +286,10 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
         });
       });
 
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForGoodMessage(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -438,19 +305,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -462,7 +317,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -476,19 +331,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === true", (goodGitPractice = true) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
-              state,
-              constructiveFeedbackOnlyToggle,
-              goodGitPractice,
-            ),
-          ).toBe(false);
-        });
-      });
-
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -500,7 +343,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
       describe("goodGitPractice === false", (goodGitPractice = false) => {
         test("RETURNS BOOLEAN: false", () => {
           expect(
-            BranchAgeNote.caseForGoodMessage(
+            CommonMessages.caseForGoodMessage(
               state,
               constructiveFeedbackOnlyToggle,
               goodGitPractice,
@@ -519,80 +362,65 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
         describe("goodGitPractice === true", (goodGitPractice = true) => {
           test("RETURNS STRING: noAction", () => {
             expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
+              BranchAge.buildAction(
                 state,
+                goodGitPractice,
+                customConfig.constructiveFeedbackOnlyToggle,
+                BranchAge.bad,
+                BranchAge.good,
+                BranchAge.hashtag,
+                BranchAge.botActionName,
               ),
-            ).toBe(BranchAgeNote.noActionMessage);
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
           });
         });
 
         describe("goodGitPractice === false", (goodGitPractice = false) => {
           test("RETURNS STRING: bad + hashtag", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
+            const action = BranchAge.buildAction(
+              state,
+              goodGitPractice,
+              customConfig.constructiveFeedbackOnlyToggle,
+              BranchAge.bad,
+              BranchAge.good,
+              BranchAge.hashtag,
+              BranchAge.botActionName,
+            )
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(`${BranchAge.bad} ${BranchAge.hashtag}`);
           });
         });
-
-        describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-          test("RETURNS STRING: unknownState", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(BranchAgeNote.unknownState);
-          });
-        });
-      });
 
       describe("customConfig.constructiveFeedbackOnlyToggle === false", (customConfig = falseCustomConfig) => {
         describe("goodGitPractice === true", (goodGitPractice = true) => {
           test("RETURNS STRING: good + hashtag", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(`${BranchAgeNote.good} ${BranchAgeNote.hashtag}`);
+            const action = BranchAge.buildAction(
+              state,
+              goodGitPractice,
+              customConfig.constructiveFeedbackOnlyToggle,
+              BranchAge.bad,
+              BranchAge.good,
+              BranchAge.hashtag,
+              BranchAge.botActionName,
+            )
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(`${BranchAge.good} ${BranchAge.hashtag}`);
           });
         });
 
         describe("goodGitPractice === false", (goodGitPractice = false) => {
           test("RETURNS STRING: bad + hashtag", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
-          });
-        });
-
-        describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-          test("RETURNS STRING: unknownState", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(BranchAgeNote.unknownState);
+            const action = BranchAge.buildAction(
+              state,
+              goodGitPractice,
+              customConfig.constructiveFeedbackOnlyToggle,
+              BranchAge.bad,
+              BranchAge.good,
+              BranchAge.hashtag,
+              BranchAge.botActionName,
+            )
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(`${BranchAge.bad} ${BranchAge.hashtag}`);
           });
         });
       });
@@ -603,80 +431,64 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
         describe("goodGitPractice === true", (goodGitPractice = true) => {
           test("RETURNS STRING: noAction", () => {
             expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
+              BranchAge.buildAction(
                 state,
+                goodGitPractice,
+                customConfig.constructiveFeedbackOnlyToggle,
+                BranchAge.bad,
+                BranchAge.good,
+                BranchAge.hashtag,
+                BranchAge.botActionName,
               ),
-            ).toBe(BranchAgeNote.noActionMessage);
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
           });
         });
 
         describe("goodGitPractice === false", (goodGitPractice = false) => {
           test("RETURNS STRING: bad + hashtag", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
+            const action = BranchAge.buildAction(
+              state,
+              goodGitPractice,
+              customConfig.constructiveFeedbackOnlyToggle,
+              BranchAge.bad,
+              BranchAge.good,
+              BranchAge.hashtag,
+              BranchAge.botActionName,
+            )
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(`${BranchAge.bad} ${BranchAge.hashtag}`);
           });
         });
-
-        describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-          test("RETURNS STRING: unknownState", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(BranchAgeNote.unknownState);
-          });
-        });
-      });
 
       describe("customConfig.constructiveFeedbackOnlyToggle === false", (customConfig = falseCustomConfig) => {
         describe("goodGitPractice === true", (goodGitPractice = true) => {
           test("RETURNS STRING: good + hashtag", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(`${BranchAgeNote.good} ${BranchAgeNote.hashtag}`);
+            const action = BranchAge.buildAction(
+              state,
+              goodGitPractice,
+              customConfig.constructiveFeedbackOnlyToggle,
+              BranchAge.bad,
+              BranchAge.good,
+              BranchAge.hashtag,
+              BranchAge.botActionName,
+            )
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(`${BranchAge.good} ${BranchAge.hashtag}`);
           });
         });
 
         describe("goodGitPractice === false", (goodGitPractice = false) => {
-          test("RETURNS STRING: bad + hashtag", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
-          });
-        });
-
-        describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-          test("RETURNS STRING: unknownState", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(BranchAgeNote.unknownState);
+          const action = BranchAge.buildAction(
+            state,
+            goodGitPractice,
+            customConfig.constructiveFeedbackOnlyToggle,
+            BranchAge.bad,
+            BranchAge.good,
+            BranchAge.hashtag,
+            BranchAge.botActionName,
+          )
+          expect(action).toBeInstanceOf(SuccessfulBotAction);
+          expect((<SuccessfulBotAction>action).mrNote).toBe(`${BranchAge.bad} ${BranchAge.hashtag}`);
           });
         });
       });
@@ -687,39 +499,32 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
         describe("goodGitPractice === true", (goodGitPractice = true) => {
           test("RETURNS STRING: noAction", () => {
             expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
+              BranchAge.buildAction(
                 state,
+                goodGitPractice,
+                customConfig.constructiveFeedbackOnlyToggle,
+                BranchAge.bad,
+                BranchAge.good,
+                BranchAge.hashtag,
+                BranchAge.botActionName,
               ),
-            ).toBe(BranchAgeNote.noActionMessage);
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
           });
         });
 
         describe("goodGitPractice === false", (goodGitPractice = false) => {
           test("RETURNS STRING: bad + hashtag", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
-          });
-        });
-
-        describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-          test("RETURNS STRING: unknownState", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(BranchAgeNote.unknownState);
+            const action = BranchAge.buildAction(
+              state,
+              goodGitPractice,
+              customConfig.constructiveFeedbackOnlyToggle,
+              BranchAge.bad,
+              BranchAge.good,
+              BranchAge.hashtag,
+              BranchAge.botActionName,
+            )
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(`${BranchAge.bad} ${BranchAge.hashtag}`);
           });
         });
       });
@@ -728,62 +533,55 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
         describe("goodGitPractice === true", (goodGitPractice = true) => {
           test("RETURNS STRING: noAction", () => {
             expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
+              BranchAge.buildAction(
                 state,
+                goodGitPractice,
+                customConfig.constructiveFeedbackOnlyToggle,
+                BranchAge.bad,
+                BranchAge.good,
+                BranchAge.hashtag,
+                BranchAge.botActionName,
               ),
-            ).toBe(BranchAgeNote.noActionMessage);
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
           });
         });
 
         describe("goodGitPractice === false", (goodGitPractice = false) => {
           test("RETURNS STRING: bad + hashtag", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(`${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`);
-          });
-        });
-
-        describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-          test("RETURNS STRING: unknownState", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(BranchAgeNote.unknownState);
+            const action = BranchAge.buildAction(
+              state,
+              goodGitPractice,
+              customConfig.constructiveFeedbackOnlyToggle,
+              BranchAge.bad,
+              BranchAge.good,
+              BranchAge.hashtag,
+              BranchAge.botActionName,
+            )
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(`${BranchAge.bad} ${BranchAge.hashtag}`);
           });
         });
       });
     });
   });
 
+  // TODO: this is being handled not by the same function and should be tested at the action level.
   // if apiResponse === FailedResponse, all other params are ignored
-  describe("apiResponse === FailedResponse", (apiResponse = failedResponse) => {
-    describe("state === undefined", (state = undefined) => {
-      describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
-        describe("customConfig === undefined", (customConfig = undefined) => {
-          test("RETURNS STRING: checkPermissions", () => {
-            expect(
-              BranchAgeNote.buildMessage(
-                customConfig,
-                apiResponse,
-                goodGitPractice,
-                state,
-              ),
-            ).toBe(BranchAgeNote.checkPermissionsMessage);
-          });
-        });
-      });
-    });
-  });
-});
+  // describe("apiResponse === FailedResponse", (apiResponse = failedResponse) => {
+  //   describe("state === undefined", (state = undefined) => {
+  //     describe("goodGitPractice === undefined", (goodGitPractice = undefined) => {
+  //       describe("customConfig === undefined", (customConfig = undefined) => {
+  //         test("RETURNS STRING: checkPermissions", () => {
+  //           expect(
+  //             BranchAgeNote.buildMessage(
+  //               customConfig,
+  //               apiResponse,
+  //               goodGitPractice,
+  //               state,
+  //             ),
+  //           ).toBe(BranchAgeNote.checkPermissionsMessage);
+  //         });
+  //       });
+  //     });
+  //   });
+  // });
