@@ -36,8 +36,8 @@ export abstract class CommonMessages {
 
   static caseForNoActions(
     state: string,
-    constructiveFeedbackOnlyToggle: boolean,
     goodGitPractice: boolean,
+    constructiveFeedbackOnlyToggle: boolean,
   ): boolean {
     return (
       (state === "merge" || constructiveFeedbackOnlyToggle) &&
@@ -72,7 +72,9 @@ export abstract class CommonMessages {
         goodGitPractice,
         constructiveFeedbackOnlyToggle,
       ): {
-        action = new SuccessfulBotActionWithNothingToSay();
+        action = new SuccessfulBotActionWithNothingToSay(
+          "Sing a song of silence.",
+        );
         break;
       }
       case CommonMessages.caseForBadMessage(goodGitPractice): {

@@ -126,6 +126,7 @@ export abstract class BranchAge {
       }
       case CommonMessages.caseForBadMessage(goodGitPractice): {
         action = new SuccessfulBotAction(goodGitPractice, badNote, hashtag);
+        break;
       }
       case CommonMessages.caseForGoodMessage(
         state,
