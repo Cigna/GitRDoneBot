@@ -17,7 +17,9 @@
                 "${workspaceRoot}/node_modules/.bin/jest", 
                 "--runInBand",
                 "--verbose",
-                "${current relative file path of test you want to run}"
+                "__tests__/unit_tests/branch_age/branch_age.test.ts",
+                "__tests__/component_builder_tests_with_mocks/branch_age.test.ts",
+                "__tests__/unit_tests/branch_age/branch_age_note.test.ts"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

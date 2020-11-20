@@ -6,183 +6,13 @@ import {
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
 } from "../../../src/bot_actions";
-import { SuccessfulGetResponse, FailedResponse } from "../../../src/gitlab";
-import { LoggerFactory } from "../../../src/util";
-
-const logger = LoggerFactory.getInstance();
 
 // default value for customConfig.constructiveFeedbackOnlyToggle is false
 const falseCustomConfig = BotActionConfig.from(BranchAgeDefaults, {});
 const trueCustomConfig = BotActionConfig.from(BranchAgeDefaults, {
   branchAgeAnalysis: { constructiveFeedbackOnlyToggle: true },
 });
-const successfulResponse = new SuccessfulGetResponse(200, {});
-const failedResponse = new FailedResponse(401);
 
-// These cases were moved to CommonMessages, we might want to move them back
-describe("BranchAgeNote.caseForNoActions(state, constructiveFeedbackOnlyToggle, goodGitPractice)", () => {
-  describe("'open' state", (state = "open") => {
-    describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
-      describe("goodGitPractice === true", (goodGitPractice = true) => {
-        test("RETURNS BOOLEAN: true", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(true);
-        });
-      });
-
-      describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(false);
-        });
-      });
-    });
-
-    describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
-      describe("goodGitPractice === true", (goodGitPractice = true) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(false);
-        });
-      });
-
-      describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(false);
-        });
-      });
-    });
-  });
-
-  describe("'update' state", (state = "update") => {
-    describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
-      describe("goodGitPractice === true", (goodGitPractice = true) => {
-        test("RETURNS BOOLEAN: true", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(true);
-        });
-      });
-
-      describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(false);
-        });
-      });
-    });
-
-    describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
-      describe("goodGitPractice === true", (goodGitPractice = true) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(false);
-        });
-      });
-
-      describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(false);
-        });
-      });
-    });
-  });
-
-  describe("'merge' state", (state = "merge") => {
-    describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
-      describe("goodGitPractice === true", (goodGitPractice = true) => {
-        test("RETURNS BOOLEAN: true", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(true);
-        });
-      });
-
-      describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(false);
-        });
-      });
-    });
-
-    describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
-      describe("goodGitPractice === true", (goodGitPractice = true) => {
-        test("RETURNS BOOLEAN: true", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(true);
-        });
-      });
-
-      describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS BOOLEAN: false", () => {
-          expect(
-            CommonMessages.caseForNoActions(
-              state,
-              goodGitPractice,
-              constructiveFeedbackOnlyToggle,
-            ),
-          ).toBe(false);
-        });
-      });
-    });
-  });
-});
 
 describe("BranchAgeNote.caseForBadMessage(goodGitPractice)", () => {
   describe("goodGitPractice === true", (goodGitPractice = true) => {
@@ -375,7 +205,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
               BranchAge.bad,
               BranchAge.good,
               BranchAge.hashtag,
-              BranchAge.botActionName,
             ),
           ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
         });
@@ -390,7 +219,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
             BranchAge.bad,
             BranchAge.good,
             BranchAge.hashtag,
-            BranchAge.botActionName,
           );
           expect(action).toBeInstanceOf(SuccessfulBotAction);
           expect((<SuccessfulBotAction>action).mrNote).toBe(
@@ -410,7 +238,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
             BranchAge.bad,
             BranchAge.good,
             BranchAge.hashtag,
-            BranchAge.botActionName,
           );
           expect(action).toBeInstanceOf(SuccessfulBotAction);
           expect((<SuccessfulBotAction>action).mrNote).toBe(
@@ -428,7 +255,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
             BranchAge.bad,
             BranchAge.good,
             BranchAge.hashtag,
-            BranchAge.botActionName,
           );
           expect(action).toBeInstanceOf(SuccessfulBotAction);
           expect((<SuccessfulBotAction>action).mrNote).toBe(
@@ -451,7 +277,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
               BranchAge.bad,
               BranchAge.good,
               BranchAge.hashtag,
-              BranchAge.botActionName,
             ),
           ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
         });
@@ -466,7 +291,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
             BranchAge.bad,
             BranchAge.good,
             BranchAge.hashtag,
-            BranchAge.botActionName,
           );
           expect(action).toBeInstanceOf(SuccessfulBotAction);
           expect((<SuccessfulBotAction>action).mrNote).toBe(
@@ -486,7 +310,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
             BranchAge.bad,
             BranchAge.good,
             BranchAge.hashtag,
-            BranchAge.botActionName,
           );
           expect(action).toBeInstanceOf(SuccessfulBotAction);
           expect((<SuccessfulBotAction>action).mrNote).toBe(
@@ -504,7 +327,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
             BranchAge.bad,
             BranchAge.good,
             BranchAge.hashtag,
-            BranchAge.botActionName,
           );
           expect(action).toBeInstanceOf(SuccessfulBotAction);
           expect((<SuccessfulBotAction>action).mrNote).toBe(
@@ -527,7 +349,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
               BranchAge.bad,
               BranchAge.good,
               BranchAge.hashtag,
-              BranchAge.botActionName,
             ),
           ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
         });
@@ -542,7 +363,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
             BranchAge.bad,
             BranchAge.good,
             BranchAge.hashtag,
-            BranchAge.botActionName,
           );
           expect(action).toBeInstanceOf(SuccessfulBotAction);
           expect((<SuccessfulBotAction>action).mrNote).toBe(
@@ -563,7 +383,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
               BranchAge.bad,
               BranchAge.good,
               BranchAge.hashtag,
-              BranchAge.botActionName,
             ),
           ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
         });
@@ -578,7 +397,6 @@ describe("BranchAgeNote.buildMessage(customConfig, apiResponse, goodGitPractice,
             BranchAge.bad,
             BranchAge.good,
             BranchAge.hashtag,
-            BranchAge.botActionName,
           );
           expect(action).toBeInstanceOf(SuccessfulBotAction);
           expect((<SuccessfulBotAction>action).mrNote).toBe(

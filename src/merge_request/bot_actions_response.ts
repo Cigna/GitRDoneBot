@@ -95,11 +95,11 @@ export class BotActionsResponse implements LambdaResponse {
     // fire all Bot Actions in parallel - order does not matter
     const botActionResponses = await Promise.all([
       await BranchAge.analyze(state, api, customConfig.branchAge),
-      await CommitMessages.analyze(
-        state,
-        api,
-        commitMessageConstructiveFeedbackOnlyToggle,
-      ),
+      // await CommitMessages.analyze(
+      //   state,
+      //   api,
+      //   commitMessageConstructiveFeedbackOnlyToggle,
+      // ),
       // await diffPromise,
       // await gitOuttaHerePromise,
       // await newGitWhoDisPromise,
@@ -157,9 +157,9 @@ export class BotActionsResponse implements LambdaResponse {
 
     // NOTE STATUS DOESN'T TAKE INTO ACCOUNT EMOJI AND COMMENT....
     // Emoji returns a 404 if it already exists so we probably don't care about it.
-
-    logger.info(botActionResponses);
-    logger.info(LoggerFactory.getBotActionInfo());
-    return new BotActionsResponse(statusCode, "What should we put here?");
+    return new BotActionsResponse(
+      statusCode,
+      JSON.stringify(botActionResponses),
+    );
   }
 }

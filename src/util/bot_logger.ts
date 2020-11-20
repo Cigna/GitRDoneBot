@@ -1,8 +1,6 @@
 import * as winston from "winston";
-import { BotActionInfo } from "../bot_actions";
 
 let logger: winston.Logger;
-let botActionInfos: Array<BotActionInfo>;
 
 export class LoggerFactory {
   public static getInstance(): winston.Logger {
@@ -18,16 +16,5 @@ export class LoggerFactory {
     }
 
     return logger;
-  }
-
-  public static appendBotInfo(info: BotActionInfo): void {
-    if (!botActionInfos) {
-      botActionInfos = [];
-    }
-    botActionInfos.push(info);
-  }
-
-  public static getBotActionInfo(): Array<BotActionInfo> {
-    return botActionInfos;
   }
 }

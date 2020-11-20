@@ -1,4 +1,4 @@
-import { BotActionInfo, CommonMessages } from "..";
+import { BotActionResponse, CommonMessages } from "..";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
 import { MergeRequestApi, SuccessfulGetResponse } from "../../gitlab";
 import { GitLabCommit } from "../../interfaces/gitlab_api_types";
@@ -52,13 +52,12 @@ export abstract class BranchAge {
     state: string,
     api: MergeRequestApi,
     customConfig: BotActionConfig,
-  ): Promise<
-    SuccessfulBotAction | FailedBotAction | SuccessfulBotActionWithNothingToSay
-  > {
+  ): Promise<BotActionResponse> {
     let action:
       | FailedBotAction
       | SuccessfulBotAction
       | SuccessfulBotActionWithNothingToSay;
+    let actionResponse: BotActionResponse;
 
     const response = await api.getSingleMRCommits();
 
@@ -83,20 +82,24 @@ export abstract class BranchAge {
         this.bad,
         this.good,
         this.hashtag,
-        this.botActionName,
       );
-      LoggerFactory.appendBotInfo(
-        new BotActionInfo(this.botActionName, response.statusCode, action, {
+      actionResponse = new BotActionResponse(
+        this.botActionName,
+        response.statusCode,
+        action,
+        {
           oldestCommit: oldestCommit,
-        }),
+        },
       );
     } else {
       action = new FailedBotAction(CommonMessages.checkPermissionsMessage);
-      LoggerFactory.appendBotInfo(
-        new BotActionInfo(this.botActionName, response.statusCode, action),
+      actionResponse = new BotActionResponse(
+        this.botActionName,
+        response.statusCode,
+        action,
       );
     }
-    return action;
+    return actionResponse;
   }
   static buildAction(
     state: string,
@@ -105,7 +108,6 @@ export abstract class BranchAge {
     badNote: string,
     goodNote: string,
     hashtag: string,
-    botActionName: string,
   ):
     | SuccessfulBotAction
     | FailedBotAction
@@ -113,17 +115,6 @@ export abstract class BranchAge {
     let action;
 
     switch (true) {
-      // No Actions check MUST come second
-      case CommonMessages.caseForNoActions(
-        state,
-        goodGitPractice,
-        constructiveFeedbackOnlyToggle,
-      ): {
-        action = new SuccessfulBotActionWithNothingToSay(
-          "Don't say nice things. Silence is a virtue.",
-        );
-        break;
-      }
       case CommonMessages.caseForBadMessage(goodGitPractice): {
         action = new SuccessfulBotAction(goodGitPractice, badNote, hashtag);
         break;
@@ -137,8 +128,9 @@ export abstract class BranchAge {
         break;
       }
       default: {
-        action = new FailedBotAction(CommonMessages.unknownState);
-        logger.error(`${botActionName} unknown state encountered`);
+        action = new SuccessfulBotActionWithNothingToSay(
+          "Don't say nice things. Silence is a virtue.",
+        );
       }
     }
     return action;

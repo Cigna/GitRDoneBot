@@ -18,7 +18,7 @@ import { ApiResponse } from "../gitlab";
 //   info: BotActionInfo;
 // }
 
-export class BotActionInfo {
+export class BotActionResponse {
   // Note, not all bot actions have additional computed values.
   constructor(
     readonly name: string,

@@ -1,19 +1,21 @@
 import * as HttpStatus from "http-status-codes";
-import {
-  FailedResponse,
-  MergeRequestApi,
-  SuccessfulGetResponse,
-} from "../../src/gitlab";
+import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
   mockGitLabCommit,
   fetch_network_error,
   unauthorized_401,
   not_found_404,
 } from "../helpers";
-import { BranchAge, BotActionNote } from "../../src/bot_actions";
+import {
+  BotActionResponse,
+  BranchAge,
+  CommonMessages,
+  FailedBotAction,
+  SuccessfulBotAction,
+  SuccessfulBotActionWithNothingToSay,
+} from "../../src/bot_actions";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { BranchAgeDefaults } from "../../src/custom_config/action_config_defaults";
-import { BranchAgeNote } from "../../src/bot_actions/branch_age/branch_age_note";
 
 // TEST FIXTURES
 const customConfig = BotActionConfig.from(BranchAgeDefaults, {});
@@ -45,71 +47,75 @@ describe("Mock API Test: BranchAge Class", () => {
 
   describe("open state", (state = "open") => {
     describe("when oldest commit is greater than threshold", () => {
-      let branchAgeResponse: BranchAge;
+      let branchAgeResponse: BotActionResponse;
 
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(old_commits_gitlab_response);
-        branchAgeResponse = await BranchAge.from(state, api, customConfig);
+        branchAgeResponse = await BranchAge.analyze(state, api, customConfig);
         done();
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(branchAgeResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
-        );
+      test("should return an instance of SuccessfulBotAction", () => {
+        expect(branchAgeResponse.action).toBeInstanceOf(SuccessfulBotAction);
       });
 
       test("goodGitPractice is false", () => {
-        expect(branchAgeResponse.goodGitPractice).toBe(false);
+        expect(
+          (<SuccessfulBotAction>branchAgeResponse.action).goodGitPractice,
+        ).toBe(false);
       });
 
       test("mrNote is bad with hashtag", () => {
-        expect(branchAgeResponse.mrNote).toBe(
-          `${BranchAgeNote.bad} ${BranchAgeNote.hashtag}`,
+        expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
+          `${BranchAge.bad} ${BranchAge.hashtag}`,
         );
       });
 
       test("oldestCommit title is 'Oldest Commit'", () => {
-        expect(branchAgeResponse.oldestCommit.title).toBe("Oldest commit");
+        expect(branchAgeResponse.computedValues["oldestCommit"].title).toBe(
+          "Oldest commit",
+        );
       });
     });
 
     describe("when oldest commit is less than threshold", () => {
-      let branchAgeResponse: BranchAge;
+      let branchAgeResponse: BotActionResponse;
 
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(new_commits_gitlab_response);
-        branchAgeResponse = await BranchAge.from(state, api, customConfig);
+        branchAgeResponse = await BranchAge.analyze(state, api, customConfig);
         done();
       });
 
       test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(branchAgeResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
-        );
+        expect(branchAgeResponse.action).toBeInstanceOf(SuccessfulBotAction);
       });
 
       test("oldestCommit title is 'Oldest Commit'", () => {
-        expect(branchAgeResponse.oldestCommit.title).toBe("Oldest commit");
+        expect(branchAgeResponse.computedValues["oldestCommit"].title).toBe(
+          "Oldest commit",
+        );
       });
 
       test("goodGitPractice is true", () => {
-        expect(branchAgeResponse.goodGitPractice).toBe(true);
+        expect(
+          (<SuccessfulBotAction>branchAgeResponse.action).goodGitPractice,
+        ).toBe(true);
       });
 
       test("mrNote is good with hashtag", () => {
-        expect(branchAgeResponse.mrNote).toBe(
-          `${BranchAgeNote.good} ${BranchAgeNote.hashtag}`,
+        expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
+          `${BranchAge.good} ${BranchAge.hashtag}`,
         );
       });
     });
 
     describe("when oldest commit is equal to threshold", () => {
-      let branchAgeResponse: BranchAge;
+      let branchAgeResponse: BotActionResponse;
 
       beforeAll(async (done) => {
         jest.clearAllMocks();
@@ -117,33 +123,35 @@ describe("Mock API Test: BranchAge Class", () => {
         api.getSingleMRCommits.mockResolvedValue(
           threshold_commits_gitlab_response,
         );
-        branchAgeResponse = await BranchAge.from(state, api, customConfig);
+        branchAgeResponse = await BranchAge.analyze(state, api, customConfig);
         done();
       });
 
       test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(branchAgeResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
-        );
+        expect(branchAgeResponse.action).toBeInstanceOf(SuccessfulBotAction);
       });
 
       test("oldestCommit title is 'Oldest Commit'", () => {
-        expect(branchAgeResponse.oldestCommit.title).toBe("Oldest commit");
+        expect(branchAgeResponse.computedValues["oldestCommit"].title).toBe(
+          "Oldest commit",
+        );
       });
 
       test("goodGitPractice is true", () => {
-        expect(branchAgeResponse.goodGitPractice).toBe(true);
+        expect(
+          (<SuccessfulBotAction>branchAgeResponse.action).goodGitPractice,
+        ).toBe(true);
       });
 
       test("mrNote is good with hashtag", () => {
-        expect(branchAgeResponse.mrNote).toBe(
-          `${BranchAgeNote.good} ${BranchAgeNote.hashtag}`,
+        expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
+          `${BranchAge.good} ${BranchAge.hashtag}`,
         );
       });
     });
 
     describe("when commit array is empty", () => {
-      let branchAgeResponse: BranchAge;
+      let branchAgeResponse: BotActionResponse;
 
       beforeAll(async (done) => {
         jest.clearAllMocks();
@@ -151,106 +159,86 @@ describe("Mock API Test: BranchAge Class", () => {
         api.getSingleMRCommits.mockResolvedValue(
           new SuccessfulGetResponse(200, []),
         );
-        branchAgeResponse = await BranchAge.from(state, api, customConfig);
+        branchAgeResponse = await BranchAge.analyze(state, api, customConfig);
         done();
       });
 
       test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(branchAgeResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
-        );
-      });
-
-      test("oldestCommit is undefined", () => {
-        expect(branchAgeResponse.oldestCommit).toEqual(undefined);
+        expect(branchAgeResponse.action).toBeInstanceOf(SuccessfulBotAction);
       });
 
       test("goodGitPractice is true", () => {
-        expect(branchAgeResponse.goodGitPractice).toBe(true);
+        expect(
+          (<SuccessfulBotAction>branchAgeResponse.action).goodGitPractice,
+        ).toBe(true);
       });
 
       test("mrNote is good with hashtag", () => {
-        expect(branchAgeResponse.mrNote).toBe(
-          `${BranchAgeNote.good} ${BranchAgeNote.hashtag}`,
+        expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
+          `${BranchAge.good} ${BranchAge.hashtag}`,
         );
       });
     });
 
     describe("when fetch network error", () => {
-      let branchAgeResponse: BranchAge;
+      let branchAgeResponse: BotActionResponse;
 
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(fetch_network_error);
-        branchAgeResponse = await BranchAge.from(state, api, customConfig);
+        branchAgeResponse = await BranchAge.analyze(state, api, customConfig);
         done();
       });
 
       test("should return apiResponse state of FailedResponse", () => {
-        expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
+        expect(branchAgeResponse.action).toBeInstanceOf(FailedBotAction);
       });
     });
   });
 
   describe("any state", (state = "any") => {
     describe("when 401 response received from GitLab", () => {
-      let branchAgeResponse: BranchAge;
+      let branchAgeResponse: BotActionResponse;
 
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(unauthorized_401);
-        branchAgeResponse = await BranchAge.from(state, api, customConfig);
+        branchAgeResponse = await BranchAge.analyze(state, api, customConfig);
         done();
       });
 
       test("should return apiResponse state of FailedResponse", () => {
-        expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
-      });
-
-      test("oldestCommit is undefined", () => {
-        expect(branchAgeResponse.oldestCommit).toBe(undefined);
+        expect(branchAgeResponse.action).toBeInstanceOf(FailedBotAction);
       });
 
       test("mrNote === checkPermissionsMessage", () => {
-        expect(branchAgeResponse.mrNote).toBe(
-          BotActionNote.checkPermissionsMessage,
+        expect((<FailedBotAction>branchAgeResponse.action).mrNote).toBe(
+          CommonMessages.checkPermissionsMessage,
         );
-      });
-
-      test("goodGitPractice is undefined", () => {
-        expect(branchAgeResponse.goodGitPractice).toBe(undefined);
       });
     });
 
     describe("when 404 response received from GitLab", () => {
-      let branchAgeResponse: BranchAge;
+      let branchAgeResponse: BotActionResponse;
 
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValue(not_found_404);
-        branchAgeResponse = await BranchAge.from(state, api, customConfig);
+        branchAgeResponse = await BranchAge.analyze(state, api, customConfig);
         done();
       });
 
       test("should return apiResponse state of FailedResponse", () => {
-        expect(branchAgeResponse.apiResponse).toBeInstanceOf(FailedResponse);
-      });
-
-      test("oldestCommit is undefined", () => {
-        expect(branchAgeResponse.oldestCommit).toBe(undefined);
+        expect(branchAgeResponse.action).toBeInstanceOf(FailedBotAction);
       });
 
       test("mrNote === checkPermissionsMessage", () => {
-        expect(branchAgeResponse.mrNote).toBe(
-          BotActionNote.checkPermissionsMessage,
+        expect((<FailedBotAction>branchAgeResponse.action).mrNote).toBe(
+          CommonMessages.checkPermissionsMessage,
         );
-      });
-
-      test("goodGitPractice is undefined", () => {
-        expect(branchAgeResponse.goodGitPractice).toBe(undefined);
       });
     });
   });

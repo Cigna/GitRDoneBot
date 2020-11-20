@@ -1,5 +1,5 @@
 import {
-  BotActionInfo,
+  BotActionResponse,
   CommonMessages,
   FailedBotAction,
   SuccessfulBotAction,
@@ -73,14 +73,14 @@ export class CommitMessages {
         );
       }
       LoggerFactory.appendBotInfo(
-        new BotActionInfo(this.botActionName, response.statusCode, action, {
+        new BotActionResponse(this.botActionName, response.statusCode, action, {
           totalCommits: totalCommits,
         }),
       );
     } else {
       action = new FailedBotAction(CommonMessages.checkPermissionsMessage);
       LoggerFactory.appendBotInfo(
-        new BotActionInfo(this.botActionName, response.statusCode, action),
+        new BotActionResponse(this.botActionName, response.statusCode, action),
       );
     }
 
