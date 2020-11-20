@@ -58,9 +58,9 @@ export class BotActionsResponse implements LambdaResponse {
     );
     const successfulBotActions: Array<SuccessfulBotAction> = [];
 
-    // variables declared here so they will be in scope for response constructor
-    // only status is guaranteed to be set regardless of error
-    let statusCode: number;
+    // lambdaResponse is guaranteed to be set,
+    // must declared here so it will be in scope for response constructor
+    let lambdaResponse!: BotActionsResponse | ErrorResponse;
 
     const diffPromise: Promise<DiffSize> = DiffSize.from(
       state,
@@ -116,9 +116,16 @@ export class BotActionsResponse implements LambdaResponse {
     const totalActions = botActionResponses.length;
     const successfulActions = successfulBotActions.length;
 
+    // TODO: do we want to return an error response here?
+    // should BotActionsResponse be reserved only for success?
+    // will there ever be 0 successes?
+    // need to think about overall partial failure design
     if (successfulActions === 0) {
-      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    } else {
+      lambdaResponse = new ErrorResponse(JSON.stringify(botActionResponses));
+    }
+
+    if (!(lambdaResponse instanceof ErrorResponse)) {
+      let statusCode: number;
       if (successfulActions === totalActions) {
         statusCode = HttpStatus.OK;
       } else {
@@ -153,13 +160,15 @@ export class BotActionsResponse implements LambdaResponse {
         await postCommentPromise,
         await postEmojiPromise,
       ];
+
+      lambdaResponse = new BotActionsResponse(
+        statusCode,
+        JSON.stringify(botActionResponses),
+      );
     }
 
     // NOTE STATUS DOESN'T TAKE INTO ACCOUNT EMOJI AND COMMENT....
     // Emoji returns a 404 if it already exists so we probably don't care about it.
-    return new BotActionsResponse(
-      statusCode,
-      JSON.stringify(botActionResponses),
-    );
+    return lambdaResponse;
   }
 }
