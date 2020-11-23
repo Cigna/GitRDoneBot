@@ -56,3 +56,9 @@ export class NotSupportedResponse implements LambdaResponse {
     logger.info(this);
   }
 }
+
+// TODO: define set of responses corresponding to the various comment-posting-behavior states
+// IncorrectPermissionsResponse - 207/401/403: DON'T want to trigger GitLab retry
+// CommentFailedResponse - 500: DO want to trigger GitLab retry
+// CommentSuccessResponse - 201
+// NoCommentNeededResponse - 200

@@ -45,6 +45,8 @@ export class SuccessfulBotAction {
 }
 // TODO: Do we even need a comment here?
 // We would want a check permissions message if: all ones that have an API call fail, or all things fail (this might never happen)
+// Do we need TWO failed states: one representing GitLab API/network failure, and one representing 403/401 incorrect permissions failure?
+// If we know based on state type WHY a BotAction failed, that can inform the Comment whether or not to try posting
 export class FailedBotAction {
   constructor(readonly mrNote: string) {}
 }

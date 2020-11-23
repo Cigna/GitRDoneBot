@@ -40,6 +40,7 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   try {
     gitLabEvent = JSON.parse(event.body);
     objectKind = getObjectKind(gitLabEvent);
+    // TODO: don't log this here, it's already passed to BotActionsResponse class, so log as needed there when constructing response
     logger.info(gitLabEvent);
   } catch (err) {
     objectKind = undefined;
@@ -120,6 +121,12 @@ const webhook: Handler = async (
 ): Promise<LambdaResponse> => {
   if (!containerId && context.hasOwnProperty("awsRequestId")) {
     containerId = context.awsRequestId;
+  }
+
+  try {
+    logger.info(JSON.parse(event));
+  } catch (err) {
+    logger.error(`Error parsing event: ${err.message}`);
   }
 
   const response = event.hasOwnProperty("body")
