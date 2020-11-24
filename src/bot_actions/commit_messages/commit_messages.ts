@@ -1,7 +1,6 @@
 import {
   BotActionResponse,
-  CommonMessages,
-  FailedBotAction,
+  NetworkFailureBotAction,
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
 } from "..";
@@ -38,10 +37,12 @@ export class CommitMessages {
     api: MergeRequestApi,
     constructiveFeedbackOnlyToggle: boolean,
   ): Promise<
-    SuccessfulBotAction | FailedBotAction | SuccessfulBotActionWithNothingToSay
+    | SuccessfulBotAction
+    | NetworkFailureBotAction
+    | SuccessfulBotActionWithNothingToSay
   > {
     let action:
-      | FailedBotAction
+      | NetworkFailureBotAction
       | SuccessfulBotAction
       | SuccessfulBotActionWithNothingToSay;
 
@@ -54,7 +55,9 @@ export class CommitMessages {
 
       if (totalCommits === 0) {
         action = new SuccessfulBotActionWithNothingToSay(
-          "I have no commits to analyze.",
+          state,
+          goodGitPractice,
+          constructiveFeedbackOnlyToggle,
         );
       } else {
         const validityOfCommits: Array<boolean> = response.result.map(
@@ -78,7 +81,9 @@ export class CommitMessages {
         }),
       );
     } else {
-      action = new FailedBotAction(CommonMessages.checkPermissionsMessage);
+      action = new NetworkFailureBotAction(
+        CommonMessages.checkPermissionsMessage,
+      );
       LoggerFactory.appendBotInfo(
         new BotActionResponse(this.botActionName, response.statusCode, action),
       );

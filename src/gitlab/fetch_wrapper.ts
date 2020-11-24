@@ -75,11 +75,7 @@ export class FetchWrapper {
   public async makePutRequest(
     uri: string,
     qs: any,
-  ): Promise<
-    | SuccessfulPostORPutResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
     let response;
     const putOptions = {
       body: JSON.stringify(qs),
@@ -106,11 +102,7 @@ export class FetchWrapper {
   public async makePostRequest(
     uri: string,
     qs: any,
-  ): Promise<
-    | SuccessfulPostORPutResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
     let response;
     const postOptions = {
       body: JSON.stringify(qs),

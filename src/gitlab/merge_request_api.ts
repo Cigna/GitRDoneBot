@@ -35,11 +35,7 @@ export class MergeRequestApi {
 
   public postEmoji(
     qs: any,
-  ): Promise<
-    | SuccessfulPostORPutResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makePostRequest(uri, {
       name: qs,
@@ -89,22 +85,14 @@ export class MergeRequestApi {
   public editMRNote(
     noteId: number,
     qs: any,
-  ): Promise<
-    | SuccessfulPostORPutResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.makePutRequest(uri, { body: qs });
   }
 
   public newMRNote(
     qs: any,
-  ): Promise<
-    | SuccessfulPostORPutResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
     const uri: string = this.uriBuilder.forNotes();
     return this.fetchWrapper.makePostRequest(uri, { body: qs });
   }

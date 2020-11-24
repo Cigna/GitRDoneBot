@@ -118,10 +118,7 @@ export function BuildGetResponse<T>(
 export function BuildPostORPutResponse(
   statusCode: number,
   body?: any,
-):
-  | SuccessfulPostORPutResponse
-  | NetworkFailureResponse
-  | AuthorizationFailureResponse {
+): SuccessfulPostORPutResponse | NetworkFailureResponse {
   let response;
 
   if (
@@ -130,8 +127,6 @@ export function BuildPostORPutResponse(
     body.hasOwnProperty("id")
   ) {
     response = new SuccessfulPostORPutResponse(statusCode, body.id);
-  } else if (statusCode === (HttpStatus.FORBIDDEN || HttpStatus.UNAUTHORIZED)) {
-    response = new AuthorizationFailureResponse(statusCode);
   } else {
     response = new NetworkFailureResponse(statusCode);
   }

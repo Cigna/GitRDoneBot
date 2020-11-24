@@ -1,5 +1,8 @@
 import * as HttpStatus from "http-status-codes";
+import { BotActionResponse } from "../bot_actions";
+import { CustomConfig } from "../custom_config/custom_config";
 import { LoggerFactory } from "../util";
+import { MergeRequestEvent } from "./i_merge_request_event";
 
 const logger = LoggerFactory.getInstance();
 
@@ -77,6 +80,18 @@ export class NotSupportedResponse implements LambdaResponse {
 // * RESPONSE TYPE:
 //   * IncorrectPermissionsResponse
 //   * statusCode 207/401/403: DON'T want to trigger GitLab retry
+export class IncorrectPermissionsResponse implements LambdaResponse {
+  readonly body: string;
+  readonly statusCode = 401;
+
+  constructor(event: MergeRequestEvent) {
+    this.body = JSON.stringify(event);
+    logger.info({
+      statusCode: this.statusCode,
+      body: JSON.parse(this.body),
+    });
+  }
+}
 
 // CommentFailedResponse
 // *** Scenario 1. Comment posting fails ***
@@ -100,6 +115,30 @@ export class NotSupportedResponse implements LambdaResponse {
 //     * Emoji info
 //     * Comment info
 //   * statusCode
+export class CommentFailedResponse implements LambdaResponse {
+  readonly body: string;
+  readonly statusCode = 500;
+
+  constructor(
+    mrEvent: MergeRequestEvent,
+    customConfig: CustomConfig,
+    botActionResponses: BotActionResponse[],
+    emoji: string,
+    comment: string,
+  ) {
+    this.body = JSON.stringify({
+      mrEvent: mrEvent,
+      customConfig: customConfig,
+      botActionResponses: botActionResponses,
+      emoji: emoji,
+      comment: comment,
+    });
+    logger.info({
+      statusCode: this.statusCode,
+      body: JSON.parse(this.body),
+    });
+  }
+}
 
 // CommentSuccessResponse
 // *** Scenario 2. Comment posting succeeds ***
@@ -120,6 +159,30 @@ export class NotSupportedResponse implements LambdaResponse {
 //     * Emoji info
 //     * Comment info
 //   * statusCode
+export class CommentSuccessResponse implements LambdaResponse {
+  readonly body: string;
+  readonly statusCode = 201;
+
+  constructor(
+    mrEvent: MergeRequestEvent,
+    customConfig: CustomConfig,
+    botActionResponses: BotActionResponse[],
+    emoji: string,
+    comment: string,
+  ) {
+    this.body = JSON.stringify({
+      mrEvent: mrEvent,
+      customConfig: customConfig,
+      botActionResponses: botActionResponses,
+      emoji: emoji,
+      comment: comment,
+    });
+    logger.info({
+      statusCode: this.statusCode,
+      body: JSON.parse(this.body),
+    });
+  }
+}
 
 // NoCommentNeededResponse
 // *** Scenario 3. Comment posting not needed ***
@@ -140,3 +203,23 @@ export class NotSupportedResponse implements LambdaResponse {
 //     * Emoji info
 //     * ?Comment info?
 //   * statusCode
+export class NoCommentNeededResponse implements LambdaResponse {
+  readonly body: string;
+  readonly statusCode = 200;
+
+  constructor(
+    mrEvent: MergeRequestEvent,
+    customConfig: CustomConfig,
+    botActionResponses: BotActionResponse[],
+  ) {
+    this.body = JSON.stringify({
+      mrEvent: mrEvent,
+      customConfig: customConfig,
+      botActionResponses: botActionResponses,
+    });
+    logger.info({
+      statusCode: this.statusCode,
+      body: JSON.parse(this.body),
+    });
+  }
+}

@@ -1,23 +1,23 @@
 import {
-  FailedResponse,
+  NetworkFailureResponse,
   MergeRequestApi,
   NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../gitlab";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
-import { BotAction } from "../bot_action";
+import { BotActionResponse } from "../bot_action";
 import { TooManyAssignedNote } from "./too_many_assigned_note";
 
 /**
  * This class analyzes the number of merge requests assigned to the assignee of the GitLab Merge Request.
  * This class implements the `BotAction` interface.
  * */
-export class TooManyAssigned implements BotAction {
+export class TooManyAssigned implements BotActionResponse {
   private constructor(
     readonly apiResponse:
       | SuccessfulGetResponse
       | NoRequestNeeded
-      | FailedResponse,
+      | NetworkFailureResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
   ) {}
@@ -39,8 +39,11 @@ export class TooManyAssigned implements BotAction {
     api: MergeRequestApi,
     customConfig: BotActionConfig,
     assigneeId: number | null,
-  ): Promise<BotAction> {
-    let response: SuccessfulGetResponse | NoRequestNeeded | FailedResponse;
+  ): Promise<BotActionResponse> {
+    let response:
+      | SuccessfulGetResponse
+      | NoRequestNeeded
+      | NetworkFailureResponse;
     let goodGitPractice!: boolean;
 
     if (state !== "merge" && assigneeId !== null) {

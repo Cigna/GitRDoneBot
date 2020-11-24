@@ -1,4 +1,4 @@
-import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
+import { NetworkFailureResponse, SuccessfulGetResponse } from "../../gitlab";
 import { CommonMessages } from "../bot_action_note";
 import { BotActionNote } from "../bot_action_note";
 import { LoggerFactory } from "../../util";
@@ -37,7 +37,7 @@ export class GitOuttaHereNote extends CommonMessages {
    * @returns `message` of the `GitOuttaHereNote` object
    * */
   static buildMessage(
-    apiResponse: SuccessfulGetResponse | FailedResponse,
+    apiResponse: SuccessfulGetResponse | NetworkFailureResponse,
     goodGitPractice: boolean | undefined,
   ): string {
     let note: GitOuttaHereNote;

@@ -1,5 +1,5 @@
 import {
-  FailedResponse,
+  NetworkFailureResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../gitlab";
@@ -21,7 +21,7 @@ export class CustomConfig {
     readonly diffSize: BotActionConfig,
     readonly tooManyMergeRequests: BotActionConfig,
     readonly updateMergeRequestComment: boolean,
-    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
+    readonly apiResponse: SuccessfulGetResponse | NetworkFailureResponse,
   ) {}
 
   /**

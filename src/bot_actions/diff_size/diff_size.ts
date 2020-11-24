@@ -1,6 +1,6 @@
-import { BotAction } from "../bot_action";
+import { BotActionResponse } from "../bot_action";
 import {
-  FailedResponse,
+  NetworkFailureResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
@@ -13,9 +13,9 @@ import { Change } from "../../interfaces";
  * This class implements the `BotAction` interface and also contains the property:
  * 1. `totalDiffs`: `number` lines of diff contained in the Merge Request
  * */
-export class DiffSize implements BotAction {
+export class DiffSize implements BotActionResponse {
   private constructor(
-    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
+    readonly apiResponse: SuccessfulGetResponse | NetworkFailureResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly totalDiffs: number,

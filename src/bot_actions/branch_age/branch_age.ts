@@ -60,8 +60,7 @@ export abstract class BranchAge {
       | AuthorizationFailureBotAction
       | NetworkFailureBotAction
       | SuccessfulBotAction
-      | SuccessfulBotActionWithNothingToSay
-      | UnknownStateBotAction;
+      | SuccessfulBotActionWithNothingToSay;
     let actionResponse: BotActionResponse;
 
     const response = await api.getSingleMRCommits();
@@ -129,16 +128,17 @@ export abstract class BranchAge {
     return goodGitPractice === false;
   }
 
-  static caseForNoActions(
-    state: string,
-    goodGitPractice: boolean,
-    constructiveFeedbackOnlyToggle: boolean,
-  ): boolean {
-    return (
-      (state === "merge" || constructiveFeedbackOnlyToggle) &&
-      goodGitPractice === true
-    );
-  }
+  // Is this needed any longer? or can we just rely on the default case here?
+  // static caseForNoActions(
+  //   state: string,
+  //   goodGitPractice: boolean,
+  //   constructiveFeedbackOnlyToggle: boolean,
+  // ): boolean {
+  //   return (
+  //     (state === "merge" || constructiveFeedbackOnlyToggle) &&
+  //     goodGitPractice === true
+  //   );
+  // }
 
   static buildAction(
     state: string,

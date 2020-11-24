@@ -1,7 +1,7 @@
 import { CommonMessages } from "../bot_action_note";
 import { BotActionNote } from "../bot_action_note";
 import {
-  FailedResponse,
+  NetworkFailureResponse,
   NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../gitlab";
@@ -106,7 +106,10 @@ export class SelfMergeNote extends CommonMessages {
    * @returns `message` of the `SelfMergeNote` object
    * */
   static buildMessage(
-    apiResponse: SuccessfulGetResponse | NoRequestNeeded | FailedResponse,
+    apiResponse:
+      | SuccessfulGetResponse
+      | NoRequestNeeded
+      | NetworkFailureResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     approversNeeded: boolean | undefined,

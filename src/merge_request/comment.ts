@@ -1,8 +1,7 @@
 import {
   MergeRequestApi,
   SuccessfulGetResponse,
-  FailedResponse,
-  NoRequestNeeded,
+  NetworkFailureResponse,
   SuccessfulPostORPutResponse,
 } from "../gitlab";
 import { Note } from "../interfaces";
@@ -15,15 +14,7 @@ const logger = LoggerFactory.getInstance();
  * This class handles the logic for aggregating messages from individual Bot Actions into a single comment to be posted to end-user's Merge Request.
  * Each instance of this class contains the final message posted to a Merge Request, as well as HTTP status information about the POST request.
  */
-export class BotComment {
-  private constructor(
-    readonly apiResponse:
-      | SuccessfulPostORPutResponse
-      | NoRequestNeeded
-      | FailedResponse,
-    readonly text: string,
-  ) {}
-
+export abstract class BotComment {
   // /**
   //  * Composes single comment by aggregating all Bot Action `mrNote` properties. Filters out empty strings, no action strings ("NA"), and error message strings.
   //  * @param messages Array of `mrNote` strings
@@ -79,11 +70,8 @@ export class BotComment {
     state: string,
     updateToggle: boolean,
     comment: string,
-  ): Promise<BotComment> {
-    let response:
-      | SuccessfulPostORPutResponse
-      | NoRequestNeeded
-      | FailedResponse;
+  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
+    let response: SuccessfulPostORPutResponse | NetworkFailureResponse;
 
     switch (true) {
       case this.caseForNewNote(state, updateToggle): {
@@ -100,12 +88,12 @@ export class BotComment {
         break;
       }
       default: {
-        response = new FailedResponse(500);
+        response = new NetworkFailureResponse(500);
         logger.error(`comment.post: Encountered Unknown State`);
       }
     }
 
-    return new BotComment(response, comment);
+    return response;
   }
 
   /**

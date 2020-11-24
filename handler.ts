@@ -8,7 +8,6 @@ import {
 } from "./src/interfaces";
 import { MergeRequestApi } from "./src/gitlab";
 import {
-  BotActionsResponse,
   getMrId,
   getObjectKind,
   getProjectId,
@@ -16,6 +15,7 @@ import {
 } from "./src/merge_request";
 import { getToken, getBaseURI, LoggerFactory } from "./src/util";
 import { CustomConfig } from "./src/custom_config/custom_config";
+import { runBotActions } from "./src/bot_actions";
 
 let containerId: string;
 const logger = LoggerFactory.getInstance();
@@ -83,7 +83,7 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
           ) {
             response = new NoActionResponse();
           } else {
-            response = await BotActionsResponse.from(
+            response = await runBotActions(
               api,
               customConfig,
               gitLabEvent,

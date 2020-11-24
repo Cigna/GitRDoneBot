@@ -1,6 +1,6 @@
-import { BotAction } from "../bot_action";
+import { BotActionResponse } from "../bot_action";
 import {
-  FailedResponse,
+  NetworkFailureResponse,
   NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../gitlab";
@@ -10,10 +10,10 @@ import { NewGitWhoDisNote } from "./new_git_who_dis_note";
  * This class analyzes the name of the author of the GitLab Merge Request.
  * This class implements the `BotAction` interface.
  * */
-export class NewGitWhoDis implements BotAction {
+export class NewGitWhoDis implements BotActionResponse {
   readonly apiResponse:
     | SuccessfulGetResponse
-    | FailedResponse
+    | NetworkFailureResponse
     | NoRequestNeeded;
 
   private constructor(
@@ -29,7 +29,7 @@ export class NewGitWhoDis implements BotAction {
    * @returns BotAction object constructed after checking that the author name is not a LAN ID,
    * determining goodGitPractice based on that check, and instantiating a new note object
    * */
-  static async from(authorName: string): Promise<BotAction> {
+  static async from(authorName: string): Promise<BotActionResponse> {
     const goodGitPractice = this.authorNameIsNotLanId(authorName);
 
     return new NewGitWhoDis(

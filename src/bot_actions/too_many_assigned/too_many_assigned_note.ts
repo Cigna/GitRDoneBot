@@ -1,7 +1,7 @@
 import { CommonMessages } from "../bot_action_note";
 import { BotActionNote } from "../bot_action_note";
 import {
-  FailedResponse,
+  NetworkFailureResponse,
   NoRequestNeeded,
   SuccessfulGetResponse,
 } from "../../gitlab";
@@ -24,13 +24,16 @@ export class TooManyAssignedNote extends CommonMessages {
    * @remarks Custom case needed instead of using generic BotActionNote `standardCaseForCheckPermissionsMessage` because extra param assigneeId needs to be checked.
    */
   static customCaseForCheckPermissionsMessage(
-    apiResponse: SuccessfulGetResponse | NoRequestNeeded | FailedResponse,
+    apiResponse:
+      | SuccessfulGetResponse
+      | NoRequestNeeded
+      | NetworkFailureResponse,
     state: string,
     assigneeId: number | null,
   ): boolean {
     return (
       state !== "merge" &&
-      apiResponse instanceof FailedResponse &&
+      apiResponse instanceof NetworkFailureResponse &&
       assigneeId !== null
     );
   }
@@ -66,7 +69,10 @@ export class TooManyAssignedNote extends CommonMessages {
    * @returns `message` of the `TooManyAssignedNote` object
    * */
   static buildMessage(
-    apiResponse: SuccessfulGetResponse | NoRequestNeeded | FailedResponse,
+    apiResponse:
+      | SuccessfulGetResponse
+      | NoRequestNeeded
+      | NetworkFailureResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     assigneeId: number | null,

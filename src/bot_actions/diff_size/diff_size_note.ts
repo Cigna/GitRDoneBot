@@ -1,7 +1,7 @@
 import { CommonMessages } from "../bot_action_note";
 import { BotActionNote } from "../bot_action_note";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
-import { FailedResponse, SuccessfulGetResponse } from "../../gitlab";
+import { NetworkFailureResponse, SuccessfulGetResponse } from "../../gitlab";
 import { LoggerFactory } from "../../util";
 
 const logger = LoggerFactory.getInstance();
@@ -77,7 +77,7 @@ export class DiffSizeNote extends CommonMessages {
    * */
   static buildMessage(
     customConfig: BotActionConfig,
-    apiResponse: SuccessfulGetResponse | FailedResponse,
+    apiResponse: SuccessfulGetResponse | NetworkFailureResponse,
     state: string,
     goodGitPractice: boolean | undefined,
     totalDiffs: number,

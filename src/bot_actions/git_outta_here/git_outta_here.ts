@@ -1,18 +1,18 @@
 import {
-  FailedResponse,
+  NetworkFailureResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
 } from "../../gitlab";
-import { BotAction } from "../bot_action";
+import { BotActionResponse } from "../bot_action";
 import { GitOuttaHereNote } from "./git_outta_here_note";
 
 /**
  * This class checks for log files in the changes contained in the GitLab Merge Request.
  * This class implements the `BotAction` interface.
  * */
-export class GitOuttaHere implements BotAction {
+export class GitOuttaHere implements BotActionResponse {
   private constructor(
-    readonly apiResponse: SuccessfulGetResponse | FailedResponse,
+    readonly apiResponse: SuccessfulGetResponse | NetworkFailureResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
   ) {}

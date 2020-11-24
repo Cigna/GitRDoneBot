@@ -1,6 +1,6 @@
-import { BotAction } from "../bot_action";
+import { BotActionResponse } from "../bot_action";
 import {
-  FailedResponse,
+  NetworkFailureResponse,
   MergeRequestApi,
   NoRequestNeeded,
   SuccessfulGetResponse,
@@ -14,12 +14,12 @@ import { User } from "../../interfaces/gitlab_api_types";
  * 1. `approversNeeded`: `boolean` If true, Merge Request is merged with approvers. If false, Merge Request is merged without approvers.
  * If undefined, Merge Request is not merged.
  */
-export class SelfMerge implements BotAction {
+export class SelfMerge implements BotActionResponse {
   private constructor(
     readonly apiResponse:
       | SuccessfulGetResponse
       | NoRequestNeeded
-      | FailedResponse,
+      | NetworkFailureResponse,
     readonly goodGitPractice: boolean,
     readonly mrNote: string,
     readonly approversNeeded: boolean | undefined,
@@ -44,7 +44,10 @@ export class SelfMerge implements BotAction {
   ): Promise<SelfMerge> {
     let goodGitPractice!: boolean;
     let approversNeeded!: boolean;
-    let response: SuccessfulGetResponse | NoRequestNeeded | FailedResponse;
+    let response:
+      | SuccessfulGetResponse
+      | NoRequestNeeded
+      | NetworkFailureResponse;
 
     if (state !== "merge") {
       response = new NoRequestNeeded();
