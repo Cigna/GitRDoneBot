@@ -1,6 +1,7 @@
 import { URI } from "./uri";
 import {
-  FailedResponse,
+  AuthorizationFailureResponse,
+  NetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "./api_responses";
@@ -34,7 +35,11 @@ export class MergeRequestApi {
 
   public postEmoji(
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulPostORPutResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makePostRequest(uri, {
       name: qs,
@@ -44,13 +49,21 @@ export class MergeRequestApi {
   /** HELPER METHOD FOR TESTS ONLY */
   public deleteEmoji(
     awardId: number,
-  ): Promise<SuccessfulGetResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forSingleEmoji(awardId);
     return this.fetchWrapper.makeDeleteRequest(uri);
   }
 
   /** HELPER METHOD FOR TESTS ONLY */
-  public getAllEmojis(): Promise<SuccessfulGetResponse | FailedResponse> {
+  public getAllEmojis(): Promise<
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makeGetRequest(uri);
   }
@@ -64,7 +77,11 @@ export class MergeRequestApi {
    * */
   public getAllMRNotes(
     page: number,
-  ): Promise<SuccessfulGetResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forNotesFilterByPage(page);
     return this.fetchWrapper.makeGetRequest(uri);
   }
@@ -72,14 +89,22 @@ export class MergeRequestApi {
   public editMRNote(
     noteId: number,
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulPostORPutResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.makePutRequest(uri, { body: qs });
   }
 
   public newMRNote(
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulPostORPutResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forNotes();
     return this.fetchWrapper.makePostRequest(uri, { body: qs });
   }
@@ -92,7 +117,11 @@ export class MergeRequestApi {
    * if it's tried, a 403 Forbidden status will be returned :) */
   public deleteMRNote(
     noteId: number,
-  ): Promise<SuccessfulGetResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.makeDeleteRequest(uri);
   }
@@ -102,7 +131,11 @@ export class MergeRequestApi {
   public getMergeRequestsByAssigneeId(
     assigneeId: number,
     threshold: number,
-  ): Promise<SuccessfulGetResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forMRsFilterByAssigneeId(
       assigneeId,
       threshold,
@@ -111,7 +144,9 @@ export class MergeRequestApi {
   }
 
   public getMRApprovalConfig(): Promise<
-    SuccessfulGetResponse | FailedResponse
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forMRApprovals();
     return this.fetchWrapper.makeGetRequest(uri);
@@ -119,7 +154,9 @@ export class MergeRequestApi {
 
   // this method is used by multiple Bot Actions, so the first successful response is cached
   public async getSingleMRChanges(): Promise<
-    SuccessfulGetResponse | FailedResponse
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forMRChanges();
 
@@ -133,7 +170,9 @@ export class MergeRequestApi {
 
   // this method is used by multiple Bot Actions, so the first successful response is cached
   public async getSingleMRCommits(): Promise<
-    SuccessfulGetResponse | FailedResponse
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forSingleMRCommits();
 
@@ -145,7 +184,11 @@ export class MergeRequestApi {
     return response;
   }
 
-  public getSingleMR(): Promise<SuccessfulGetResponse | FailedResponse> {
+  public getSingleMR(): Promise<
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     const uri: string = this.uriBuilder.forSingleMR();
     return this.fetchWrapper.makeGetRequest(uri);
   }
@@ -153,7 +196,9 @@ export class MergeRequestApi {
   // REPOSITORY FILES
 
   public getConfigurationFile(): Promise<
-    SuccessfulGetResponse | FailedResponse
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forSingleProjectRepoRawConfigFile();
     return this.fetchWrapper.makeGetRequest(uri);

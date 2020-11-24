@@ -2,7 +2,8 @@ import fetch from "node-fetch";
 import * as HttpStatus from "http-status-codes";
 import { BuildGetResponse, BuildPostORPutResponse } from ".";
 import {
-  FailedResponse,
+  AuthorizationFailureResponse,
+  NetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "./api_responses";
@@ -46,7 +47,11 @@ export class FetchWrapper {
    */
   public async makeGetRequest(
     uri: string,
-  ): Promise<SuccessfulGetResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     let response;
     try {
       const result: RawFetchResponse = await this.handleFetch(
@@ -70,7 +75,11 @@ export class FetchWrapper {
   public async makePutRequest(
     uri: string,
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulPostORPutResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     let response;
     const putOptions = {
       body: JSON.stringify(qs),
@@ -97,7 +106,11 @@ export class FetchWrapper {
   public async makePostRequest(
     uri: string,
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulPostORPutResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     let response;
     const postOptions = {
       body: JSON.stringify(qs),
@@ -131,7 +144,11 @@ export class FetchWrapper {
    */
   public async makeDeleteRequest(
     uri: string,
-  ): Promise<SuccessfulGetResponse | FailedResponse> {
+  ): Promise<
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse
+  > {
     let response;
     try {
       const statusCode: number = await this.handleDeleteFetch(

@@ -1,3 +1,6 @@
+import { LoggerFactory } from "../util";
+
+const logger = LoggerFactory.getInstance();
 /**
  * This interface defines the core properties that are dynamically
  * calculated by each distinct Bot Action:
@@ -7,29 +10,28 @@
  * @remarks 'goodGitPractice' will be undefined when Bot Action logic couldn't be performed due to api
  * failure in order to distinguish from when its value is explicitly set to false after performing some logic.
  * */
-
-import { ApiResponse } from "../gitlab";
-
-// export interface BotActionResponse {
-//   action:
-//     | SuccessfulBotAction
-//     | FailedBotAction
-//     | SuccessfulBotActionWithNothingToSay;
-//   info: BotActionInfo;
-// }
-
 export class BotActionResponse {
   // Note, not all bot actions have additional computed values.
   constructor(
     readonly name: string,
     readonly statusCode: number,
     readonly action:
+      | AuthorizationFailureBotAction
+      | NetworkFailureBotAction
       | SuccessfulBotAction
-      | FailedBotAction
-      | SuccessfulBotActionWithNothingToSay,
+      | SuccessfulBotActionWithNothingToSay
     readonly computedValues?: {},
   ) {}
 }
+
+export class AuthorizationFailureBotAction {
+  authorizationFailure = true;
+}
+
+export class NetworkFailureBotAction {
+  networkFailure = true;
+}
+
 // Note: a successfulBotAction can have bad or good git practice.
 // The successful part of it means we were able to compute the good git practice and the message,
 // independent of whether that message contains positive or constructive feedback.
@@ -43,14 +45,23 @@ export class SuccessfulBotAction {
     this.mrNote = `${message} ${hashtag}`;
   }
 }
-// TODO: Do we even need a comment here?
-// We would want a check permissions message if: all ones that have an API call fail, or all things fail (this might never happen)
-// Do we need TWO failed states: one representing GitLab API/network failure, and one representing 403/401 incorrect permissions failure?
-// If we know based on state type WHY a BotAction failed, that can inform the Comment whether or not to try posting
-export class FailedBotAction {
-  constructor(readonly mrNote: string) {}
-}
-// The reason for silence is for logging purposes only.
+
 export class SuccessfulBotActionWithNothingToSay {
-  constructor(readonly reasonForSilence: string) {}
+  constructor(
+    readonly mrState: string,
+    readonly goodGitPractice: boolean,
+    readonly constructiveFeedbackOnlyToggle: boolean,
+  ) {}
 }
+
+// // TODO: do we need to log to error here?
+// export class UnknownStateBotAction {
+//   unknownState = "Unknown state encountered while composing note:";
+//   constructor(
+//     readonly mrState: string,
+//     readonly goodGitPractice: boolean,
+//     readonly constructiveFeedbackOnlyToggle: boolean,
+//   ) {
+//     logger.error(this);
+//   }
+// }

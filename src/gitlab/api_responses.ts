@@ -42,12 +42,24 @@ export class SuccessfulGetResponse extends ApiResponse {
 }
 
 /**
- * Subclass of ApiResponse. Used for all API requests that respond with codes other than 200 or 201.
+ * Subclass of ApiResponse. Used for all API requests that respond with codes indicating network failure.
  */
-export class FailedResponse extends ApiResponse {
+export class NetworkFailureResponse extends ApiResponse {
   // unique property to ensure safe static type-checking
   // required due to how TS implements structural subtyping
-  private _failed = true;
+  private _networkFailure = true;
+  constructor(readonly statusCode: number) {
+    super(statusCode);
+  }
+}
+
+/**
+ * Subclass of ApiResponse. Used for all API requests that respond with codes 401 or 403.
+ */
+export class AuthorizationFailureResponse extends ApiResponse {
+  // unique property to ensure safe static type-checking
+  // required due to how TS implements structural subtyping
+  private _authorizationFailure = true;
   constructor(readonly statusCode: number) {
     super(statusCode);
   }
@@ -82,13 +94,18 @@ export class SuccessfulPostORPutResponse extends ApiResponse {
 export function BuildGetResponse<T>(
   statusCode: number,
   body: T[] | T | undefined,
-): SuccessfulGetResponse | FailedResponse {
+):
+  | SuccessfulGetResponse
+  | NetworkFailureResponse
+  | AuthorizationFailureResponse {
   let response;
 
   if (ApiResponse.computeSuccess(statusCode) && body !== undefined) {
     response = new SuccessfulGetResponse(statusCode, body);
+  } else if (statusCode === (HttpStatus.FORBIDDEN || HttpStatus.UNAUTHORIZED)) {
+    response = new AuthorizationFailureResponse(statusCode);
   } else {
-    response = new FailedResponse(statusCode);
+    response = new NetworkFailureResponse(statusCode);
   }
   return response;
 }
@@ -101,7 +118,10 @@ export function BuildGetResponse<T>(
 export function BuildPostORPutResponse(
   statusCode: number,
   body?: any,
-): SuccessfulPostORPutResponse | FailedResponse {
+):
+  | SuccessfulPostORPutResponse
+  | NetworkFailureResponse
+  | AuthorizationFailureResponse {
   let response;
 
   if (
@@ -110,8 +130,10 @@ export function BuildPostORPutResponse(
     body.hasOwnProperty("id")
   ) {
     response = new SuccessfulPostORPutResponse(statusCode, body.id);
+  } else if (statusCode === (HttpStatus.FORBIDDEN || HttpStatus.UNAUTHORIZED)) {
+    response = new AuthorizationFailureResponse(statusCode);
   } else {
-    response = new FailedResponse(statusCode);
+    response = new NetworkFailureResponse(statusCode);
   }
   return response;
 }

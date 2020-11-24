@@ -1,15 +1,18 @@
-import { BotActionResponse, CommonMessages } from "..";
+import { BotActionResponse } from "..";
 import { BotActionConfig } from "../../custom_config/bot_action_config";
-import { MergeRequestApi, SuccessfulGetResponse } from "../../gitlab";
+import {
+  AuthorizationFailureResponse,
+  MergeRequestApi,
+  SuccessfulGetResponse,
+} from "../../gitlab";
 import { GitLabCommit } from "../../interfaces/gitlab_api_types";
 import {
-  FailedBotAction,
+  AuthorizationFailureBotAction,
+  NetworkFailureBotAction,
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
 } from "../bot_action";
-import { LoggerFactory } from "../../util";
 
-const logger = LoggerFactory.getInstance();
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
@@ -54,9 +57,11 @@ export abstract class BranchAge {
     customConfig: BotActionConfig,
   ): Promise<BotActionResponse> {
     let action:
-      | FailedBotAction
+      | AuthorizationFailureBotAction
+      | NetworkFailureBotAction
       | SuccessfulBotAction
-      | SuccessfulBotActionWithNothingToSay;
+      | SuccessfulBotActionWithNothingToSay
+      | UnknownStateBotAction;
     let actionResponse: BotActionResponse;
 
     const response = await api.getSingleMRCommits();
@@ -75,6 +80,7 @@ export abstract class BranchAge {
           customConfig.threshold,
         );
       }
+
       action = this.buildAction(
         state,
         goodGitPractice,
@@ -83,6 +89,7 @@ export abstract class BranchAge {
         this.good,
         this.hashtag,
       );
+
       actionResponse = new BotActionResponse(
         this.botActionName,
         response.statusCode,
@@ -92,7 +99,11 @@ export abstract class BranchAge {
         },
       );
     } else {
-      action = new FailedBotAction(CommonMessages.checkPermissionsMessage);
+      if (response instanceof AuthorizationFailureResponse) {
+        action = new AuthorizationFailureBotAction();
+      } else {
+        action = new NetworkFailureBotAction();
+      }
       actionResponse = new BotActionResponse(
         this.botActionName,
         response.statusCode,
@@ -101,6 +112,34 @@ export abstract class BranchAge {
     }
     return actionResponse;
   }
+
+  static caseForGoodMessage(
+    state: string,
+    goodGitPractice: boolean,
+    constructiveFeedbackOnlyToggle: boolean,
+  ): boolean {
+    return (
+      state !== "merge" &&
+      goodGitPractice === true &&
+      !constructiveFeedbackOnlyToggle
+    );
+  }
+
+  static caseForBadMessage(goodGitPractice: boolean): boolean {
+    return goodGitPractice === false;
+  }
+
+  static caseForNoActions(
+    state: string,
+    goodGitPractice: boolean,
+    constructiveFeedbackOnlyToggle: boolean,
+  ): boolean {
+    return (
+      (state === "merge" || constructiveFeedbackOnlyToggle) &&
+      goodGitPractice === true
+    );
+  }
+
   static buildAction(
     state: string,
     goodGitPractice: boolean,
@@ -108,18 +147,15 @@ export abstract class BranchAge {
     badNote: string,
     goodNote: string,
     hashtag: string,
-  ):
-    | SuccessfulBotAction
-    | FailedBotAction
-    | SuccessfulBotActionWithNothingToSay {
+  ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
     let action;
 
     switch (true) {
-      case CommonMessages.caseForBadMessage(goodGitPractice): {
+      case this.caseForBadMessage(goodGitPractice): {
         action = new SuccessfulBotAction(goodGitPractice, badNote, hashtag);
         break;
       }
-      case CommonMessages.caseForGoodMessage(
+      case this.caseForGoodMessage(
         state,
         goodGitPractice,
         constructiveFeedbackOnlyToggle,
@@ -129,7 +165,9 @@ export abstract class BranchAge {
       }
       default: {
         action = new SuccessfulBotActionWithNothingToSay(
-          "Don't say nice things. Silence is a virtue.",
+          state,
+          goodGitPractice,
+          constructiveFeedbackOnlyToggle,
         );
       }
     }
