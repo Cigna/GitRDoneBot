@@ -40,8 +40,6 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   try {
     gitLabEvent = JSON.parse(event.body);
     objectKind = getObjectKind(gitLabEvent);
-    // TODO: don't log this here, it's already passed to BotActionsResponse class, so log as needed there when constructing response
-    logger.info(gitLabEvent);
   } catch (err) {
     objectKind = undefined;
     response = new ErrorResponse(`Error parsing event.body: ${err.message}`);
@@ -124,11 +122,14 @@ const webhook: Handler = async (
   }
 
   try {
+    // TODO: find out if event is already in JSON format or if it needs to be parsed
     logger.info(JSON.parse(event));
   } catch (err) {
     logger.error(`Error parsing event: ${err.message}`);
   }
 
+  // TODO: sophisticate this once we have better visibility on what GitLab events specifically look like
+  // and filter out whatever the empty event.body event is
   const response = event.hasOwnProperty("body")
     ? await handleGitLabWebhook(event)
     : new HealthCheckResponse(containerId, event);

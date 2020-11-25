@@ -212,14 +212,16 @@ export class NoCommentNeededResponse implements LambdaResponse {
     customConfig: CustomConfig,
     botActionResponses: BotActionResponse[],
   ) {
-    this.body = JSON.stringify({
+    // TODO: refactor all responses to do this
+    const bodyObj = {
       mrEvent: mrEvent,
       customConfig: customConfig,
       botActionResponses: botActionResponses,
-    });
+    };
     logger.info({
       statusCode: this.statusCode,
-      body: JSON.parse(this.body),
+      body: bodyObj,
     });
+    this.body = JSON.stringify(bodyObj);
   }
 }

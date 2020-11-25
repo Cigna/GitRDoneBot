@@ -11,37 +11,9 @@ import { LoggerFactory } from "../util";
 const logger = LoggerFactory.getInstance();
 
 /**
- * This class handles the logic for aggregating messages from individual Bot Actions into a single comment to be posted to end-user's Merge Request.
- * Each instance of this class contains the final message posted to a Merge Request, as well as HTTP status information about the POST request.
+ * This abstract class contains the logic for posting comments to end-user's Merge Request.
  */
 export abstract class BotComment {
-  // /**
-  //  * Composes single comment by aggregating all Bot Action `mrNote` properties. Filters out empty strings, no action strings ("NA"), and error message strings.
-  //  * @param messages Array of `mrNote` strings
-  //  * @returns Properly formatted GitLab MR note
-  //  * */
-  // static compose(messages: Array<string>): string {
-  //   let comment: string = messages
-  //     .filter((msg) => {
-  //       return msg.match(
-  //         new RegExp(
-  //           /^((?!Unknown state encountered while composing note:)(?!NA).)+/,
-  //         ),
-  //       );
-  //     })
-  //     .join("<br /><br />");
-
-  //   if (comment === "") {
-  //     comment = this.noActionContent;
-  //   }
-  //   return comment;
-  // }
-
-  // /** This case MUST be listed first in the switch statement */
-  // static caseForNoActions(comment: string): boolean {
-  //   return comment === this.noActionContent;
-  // }
-
   static caseForNewNote(state: string, updateToggle: boolean): boolean {
     return state === "open" || (state === "merge" && updateToggle === false);
   }

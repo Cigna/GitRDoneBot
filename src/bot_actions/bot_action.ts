@@ -60,14 +60,11 @@ export class SuccessfulBotAction {
 }
 
 export class SuccessfulBotActionWithNothingToSay {
-  constructor(
-    readonly mrState: string,
-    readonly goodGitPractice: boolean,
-    readonly constructiveFeedbackOnlyToggle: boolean,
-  ) {}
+  constructor(readonly goodGitPractice: boolean) {}
 }
 
-// // TODO: do we need to log to error here?
+// TODO: leave this here until all BotActions are refactored to determine whether or not it's needed
+// TODO: do we need to log to error here?
 // export class UnknownStateBotAction {
 //   unknownState = "Unknown state encountered while composing note:";
 //   constructor(
@@ -110,44 +107,13 @@ export async function runBotActions(
     | CommentSuccessResponse
     | NoCommentNeededResponse;
 
-  // // ALWAYS REQUIRES API CALL
-  // const diffPromise: Promise<DiffSize> = DiffSize.from(
-  //   state,
-  //   api,
-  //   customConfig.diffSize,
-  // );
-
-  // // ALWAYS REQUIRES API CALL
-  // const gitOuttaHerePromise: Promise<GitOuttaHere> = GitOuttaHere.from(api);
-
-  // // NEVER REQUIRES API CALL
-  // const newGitWhoDisPromise: Promise<NewGitWhoDis> = NewGitWhoDis.from(
-  //   mergeRequestEvent.authorName,
-  // );
-
-  // // SOMETIMES REQUIRES API CALL
-  // const selfMergePromise: Promise<SelfMerge> = SelfMerge.from(
-  //   state,
-  //   api,
-  //   mergeRequestEvent.assigneeId,
-  //   mergeRequestEvent.authorGitId,
-  // );
-
-  // // SOMETIMES REQUIRES API CALL
-  // const tooManyAssignedPromise: Promise<TooManyAssigned> = TooManyAssigned.from(
-  //   state,
-  //   api,
-  //   customConfig.tooManyMergeRequests,
-  //   mergeRequestEvent.assigneeId,
-  // );
-
-  // // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
-  // // correct customConfig functionality can be implemented
+  // TODO: can we stick this in the individual BotActions that require it so it doesn't pollute the code here?
+  // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
+  // correct customConfig functionality can be implemented
   // const commitMessageConstructiveFeedbackOnlyToggle = false;
 
   // fire all Bot Actions in parallel - order does not matter
-
-  const botActionResponses = await Promise.all([
+  const botActionResponses: Array<BotActionResponse> = await Promise.all([
     // ALWAYS REQUIRES API CALL
     await BranchAge.analyze(state, api, customConfig.branchAge),
     // await CommitMessages.analyze(
@@ -164,12 +130,7 @@ export async function runBotActions(
 
   const chattyBotActions: Array<SuccessfulBotAction> = [];
   const silentBotActions: Array<SuccessfulBotActionWithNothingToSay> = [];
-  const successfulBotActions: Array<
-    SuccessfulBotAction | SuccessfulBotActionWithNothingToSay
-  > = [];
 
-  // do we need to care about NetworkFailureBotAction here?
-  // can probably get rid of this switch and turn into better array filtering/sorting logic
   botActionResponses.forEach(function (response) {
     switch (true) {
       case response.action instanceof AuthorizationFailureBotAction: {
@@ -178,13 +139,9 @@ export async function runBotActions(
       }
       case response.action instanceof SuccessfulBotAction: {
         chattyBotActions.push(response.action as SuccessfulBotAction);
-        successfulBotActions.push(response.action as SuccessfulBotAction);
       }
       case response.action instanceof SuccessfulBotActionWithNothingToSay: {
         silentBotActions.push(
-          response.action as SuccessfulBotActionWithNothingToSay,
-        );
-        successfulBotActions.push(
           response.action as SuccessfulBotActionWithNothingToSay,
         );
       }
@@ -199,33 +156,32 @@ export async function runBotActions(
         botActionResponses,
       );
     } else {
-      const note = chattyBotActions.reduce(
+      const note: string = chattyBotActions.reduce(
         (note: string, action: SuccessfulBotAction) =>
           note.concat(`${action.mrNote}<br /><br />`),
         "",
       );
 
-      const allGoodGitPractice = successfulBotActions.every(
-        (action) => action.goodGitPractice === true,
-      );
+      const allGoodGitPractice: boolean = [
+        ...chattyBotActions,
+        ...silentBotActions,
+      ].every((action) => action.goodGitPractice === true);
 
       const emoji = allGoodGitPractice ? "trophy" : "eyes";
+      // we don't really care whether this succeeds or fails
+      api.postEmoji(emoji);
 
-      // fire POST logic in parallel - must be performed only after all Bot Action promises have resolved
-      // TODO: what are we doing with emoji response? do we care if it was successful? is it a throwaway? should we just eliminate it?
-      const [commentResponse, emojiResponse]: Array<
-        SuccessfulPostORPutResponse | NetworkFailureResponse
-      > = [
+      // POST logic must be performed only after all Bot Action promises have resolved
+      const commentResponse:
+        | SuccessfulPostORPutResponse
+        | NetworkFailureResponse =
         // TODO: Would it make sense to just bring all the BotComment stuff into this file??
         await BotComment.post(
           api,
           state,
           customConfig.updateMergeRequestComment,
           note,
-        ),
-        // deleted entire BotEmoji class - too extra
-        await api.postEmoji(emoji),
-      ];
+        );
 
       if (commentResponse instanceof NetworkFailureResponse) {
         lambdaResponse = new CommentFailedResponse(

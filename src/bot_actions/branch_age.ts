@@ -1,17 +1,17 @@
-import { BotActionResponse } from "..";
-import { BotActionConfig } from "../../custom_config/bot_action_config";
+import { BotActionResponse } from ".";
+import { BotActionConfig } from "../custom_config/bot_action_config";
 import {
   AuthorizationFailureResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
-} from "../../gitlab";
-import { GitLabCommit } from "../../interfaces/gitlab_api_types";
+} from "../gitlab";
+import { GitLabCommit } from "../interfaces/gitlab_api_types";
 import {
   AuthorizationFailureBotAction,
   NetworkFailureBotAction,
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
-} from "../bot_action";
+} from "./bot_action";
 
 /**
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
@@ -20,10 +20,10 @@ import {
 
 export abstract class BranchAge {
   static botActionName = "BranchAge";
-  static readonly good =
+  static readonly goodNote =
     `:star: It’s great that you’re committing and merging code frequently` +
     ` - the commits on this branch aren’t old or stale. Good job!`;
-  static readonly bad =
+  static readonly badNote =
     `:loudspeaker: This merge request has a pretty old commit. ` +
     `You should try and merge more frequently to keep your commits on branches fresh.`;
   static readonly hashtag = `[#BranchAgeAnalysis](https://github.com/Cigna/GitRDoneBot#2-branch-age)`;
@@ -84,9 +84,6 @@ export abstract class BranchAge {
         state,
         goodGitPractice,
         customConfig.constructiveFeedbackOnlyToggle,
-        this.bad,
-        this.good,
-        this.hashtag,
       );
 
       actionResponse = new BotActionResponse(
@@ -98,6 +95,7 @@ export abstract class BranchAge {
         },
       );
     } else {
+      // TODO: look for opportunities throughout BotActions to reduce number of cases handled by buildAction
       if (response instanceof AuthorizationFailureResponse) {
         action = new AuthorizationFailureBotAction();
       } else {
@@ -128,31 +126,21 @@ export abstract class BranchAge {
     return goodGitPractice === false;
   }
 
-  // Is this needed any longer? or can we just rely on the default case here?
-  // static caseForNoActions(
-  //   state: string,
-  //   goodGitPractice: boolean,
-  //   constructiveFeedbackOnlyToggle: boolean,
-  // ): boolean {
-  //   return (
-  //     (state === "merge" || constructiveFeedbackOnlyToggle) &&
-  //     goodGitPractice === true
-  //   );
-  // }
-
+  // TODO: bring buildAction & requisite cases & note strings into every BotAction and eliminate separate note classes
   static buildAction(
     state: string,
     goodGitPractice: boolean,
     constructiveFeedbackOnlyToggle: boolean,
-    badNote: string,
-    goodNote: string,
-    hashtag: string,
   ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
     let action;
 
     switch (true) {
       case this.caseForBadMessage(goodGitPractice): {
-        action = new SuccessfulBotAction(goodGitPractice, badNote, hashtag);
+        action = new SuccessfulBotAction(
+          goodGitPractice,
+          this.badNote,
+          this.hashtag,
+        );
         break;
       }
       case this.caseForGoodMessage(
@@ -160,15 +148,15 @@ export abstract class BranchAge {
         goodGitPractice,
         constructiveFeedbackOnlyToggle,
       ): {
-        action = new SuccessfulBotAction(goodGitPractice, goodNote, hashtag);
+        action = new SuccessfulBotAction(
+          goodGitPractice,
+          this.goodNote,
+          this.hashtag,
+        );
         break;
       }
       default: {
-        action = new SuccessfulBotActionWithNothingToSay(
-          state,
-          goodGitPractice,
-          constructiveFeedbackOnlyToggle,
-        );
+        action = new SuccessfulBotActionWithNothingToSay(goodGitPractice);
       }
     }
     return action;
