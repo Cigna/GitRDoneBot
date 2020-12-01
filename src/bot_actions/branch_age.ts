@@ -80,7 +80,7 @@ export abstract class BranchAge {
         );
       }
 
-      action = this.buildAction(
+      action = this.buildSuccessfulAction(
         state,
         goodGitPractice,
         customConfig.constructiveFeedbackOnlyToggle,
@@ -127,7 +127,7 @@ export abstract class BranchAge {
   }
 
   // TODO: bring buildAction & requisite cases & note strings into every BotAction and eliminate separate note classes
-  static buildAction(
+  static buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,
     constructiveFeedbackOnlyToggle: boolean,
