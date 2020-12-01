@@ -1,31 +1,34 @@
 import {
+  AuthorizationFailureBotAction,
   BotActionResponse,
   NetworkFailureBotAction,
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
-} from "..";
-import { MergeRequestApi, SuccessfulGetResponse } from "../../gitlab";
-import { GitLabCommit } from "../../interfaces";
-import { LoggerFactory } from "../../util";
+} from ".";
+import {
+  AuthorizationFailureResponse,
+  MergeRequestApi,
+  SuccessfulGetResponse,
+} from "../gitlab";
+import { GitLabCommit } from "../interfaces";
 
 /**
  * This class analyzes the titles of the commits contained in the GitLab Merge Request.
  * This class implements the `BotAction` interface and also contains the property:
  * 1. `calculatedThreshold`: `number` the number of failing commit titles that will result in bad practice for an individual commit message criteria
  */
-export class CommitMessages {
+export abstract class CommitMessages {
   private static minimumThreshold = 2;
   static botActionName = "CommitMessages";
-  static readonly good = `:star: Nice work following your team's commit message style conventions!`;
+  static readonly goodNote = `:star: Nice work following your team's commit message style conventions!`;
   static readonly hashtag = `[#CommitMessage](https://github.com/Cigna/GitRDoneBot#5-commit-messages)`;
-  static readonly bad = `:loudspeaker: Keep commits descriptive and concise - more than one word and between 3 and 50 characters`;
+  static readonly badNote = `:loudspeaker: Keep commits descriptive and concise - more than one word and between 3 and 50 characters`;
 
   /**
    * Constructs a complete Commit Message object by making an HTTP call and analyzing response.
    *
    * @param state the state of the incoming Merge Request event from GitLab
    * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
-   * @param constructiveFeedbackOnlyToggle if true, commit message note will reflect no action when CommitMessage.goodGitPractice is true
    *
    * @returns CommitMessage object constructed after testing the number of failing commit titles against calculated threshold for each good practice criteria,
    * determining overall goodGitPractice based on individual tests, and instantiating a new note object.
@@ -35,16 +38,13 @@ export class CommitMessages {
   static async analyze(
     state: string,
     api: MergeRequestApi,
-    constructiveFeedbackOnlyToggle: boolean,
-  ): Promise<
-    | SuccessfulBotAction
-    | NetworkFailureBotAction
-    | SuccessfulBotActionWithNothingToSay
-  > {
+  ): Promise<BotActionResponse> {
     let action:
+      | AuthorizationFailureBotAction
       | NetworkFailureBotAction
       | SuccessfulBotAction
       | SuccessfulBotActionWithNothingToSay;
+    let actionResponse: BotActionResponse;
 
     const response = await api.getSingleMRCommits();
 
@@ -54,42 +54,40 @@ export class CommitMessages {
       const totalCommits = response.result.length;
 
       if (totalCommits === 0) {
-        action = new SuccessfulBotActionWithNothingToSay(
-          state,
-          goodGitPractice,
-          constructiveFeedbackOnlyToggle,
-        );
+        goodGitPractice = true;
+        // action = new SuccessfulBotActionWithNothingToSay(goodGitPractice);
       } else {
         const validityOfCommits: Array<boolean> = response.result.map(
           (commit: GitLabCommit) =>
             this.lengthValid(commit.title) && !this.isOneWord(commit.title),
         );
         goodGitPractice = this.testThreshold(validityOfCommits, threshold);
-        action = CommonMessages.buildAction(
-          state,
-          goodGitPractice,
-          constructiveFeedbackOnlyToggle,
-          this.bad,
-          this.good,
-          this.hashtag,
-          this.botActionName,
-        );
       }
-      LoggerFactory.appendBotInfo(
-        new BotActionResponse(this.botActionName, response.statusCode, action, {
-          totalCommits: totalCommits,
-        }),
+
+      action = this.buildSuccessfulAction(state, goodGitPractice);
+
+      actionResponse = new BotActionResponse(
+        this.botActionName,
+        response.statusCode,
+        action,
+        {
+          calculatedThreshold: threshold,
+        },
       );
     } else {
-      action = new NetworkFailureBotAction(
-        CommonMessages.checkPermissionsMessage,
-      );
-      LoggerFactory.appendBotInfo(
-        new BotActionResponse(this.botActionName, response.statusCode, action),
+      if (response instanceof AuthorizationFailureResponse) {
+        action = new AuthorizationFailureBotAction();
+      } else {
+        action = new NetworkFailureBotAction();
+      }
+      actionResponse = new BotActionResponse(
+        this.botActionName,
+        response.statusCode,
+        action,
       );
     }
 
-    return action;
+    return actionResponse;
   }
 
   /**
@@ -137,5 +135,43 @@ export class CommitMessages {
 
   private static isOneWord(title: string): boolean {
     return title.trim().split(" ").length === 1;
+  }
+
+  static caseForGoodMessage(state: string, goodGitPractice: boolean): boolean {
+    return state !== "merge" && goodGitPractice === true;
+  }
+
+  static caseForBadMessage(goodGitPractice: boolean): boolean {
+    return goodGitPractice === false;
+  }
+
+  static buildSuccessfulAction(
+    state: string,
+    goodGitPractice: boolean,
+  ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
+    let action;
+
+    switch (true) {
+      case this.caseForBadMessage(goodGitPractice): {
+        action = new SuccessfulBotAction(
+          goodGitPractice,
+          this.badNote,
+          this.hashtag,
+        );
+        break;
+      }
+      case this.caseForGoodMessage(state, goodGitPractice): {
+        action = new SuccessfulBotAction(
+          goodGitPractice,
+          this.goodNote,
+          this.hashtag,
+        );
+        break;
+      }
+      default: {
+        action = new SuccessfulBotActionWithNothingToSay(goodGitPractice);
+      }
+    }
+    return action;
   }
 }
