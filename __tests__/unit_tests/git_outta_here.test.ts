@@ -1,4 +1,8 @@
-import { GitOuttaHere } from "../../../src/bot_actions";
+import {
+  GitOuttaHere,
+  SuccessfulBotAction,
+  SuccessfulBotActionWithNothingToSay,
+} from "../../src/bot_actions";
 
 const deleted_log_files = [
   {
@@ -55,7 +59,7 @@ const no_log_files = [
 
 const changes_equal_zero = [];
 
-describe("noLogFiles function", () => {
+describe("GitOuttaHere.noLogFiles function", () => {
   test("should return false when log files EXIST", () => {
     expect(GitOuttaHere["noLogFiles"](log_files_exist)).toBe(false);
   });
@@ -67,5 +71,25 @@ describe("noLogFiles function", () => {
   });
   test("should return true when there are 0 changes", () => {
     expect(GitOuttaHere["noLogFiles"](changes_equal_zero)).toBe(true);
+  });
+});
+
+describe("GitOuttaHere.buildSuccessfulAction(goodGitPractice)", () => {
+  describe("goodGitPractice === true", (goodGitPractice = true) => {
+    test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+      expect(
+        GitOuttaHere.buildSuccessfulAction(goodGitPractice),
+      ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+    });
+  });
+
+  describe("goodGitPractice === false", (goodGitPractice = false) => {
+    test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+      const action = GitOuttaHere.buildSuccessfulAction(goodGitPractice);
+      expect(action).toBeInstanceOf(SuccessfulBotAction);
+      expect((<SuccessfulBotAction>action).mrNote).toBe(
+        `${GitOuttaHere.badNote} ${GitOuttaHere.hashtag}`,
+      );
+    });
   });
 });
