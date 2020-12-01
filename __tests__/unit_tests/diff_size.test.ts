@@ -1,4 +1,8 @@
-import { DiffSize } from "../../../src/bot_actions";
+import {
+  DiffSize,
+  SuccessfulBotAction,
+  SuccessfulBotActionWithNothingToSay,
+} from "../../src/bot_actions";
 
 const changes_between_zero_and_500 = [
   {
@@ -119,7 +123,7 @@ const multiple_files_changes_equal_1476 = [
     renamed_file: false,
     deleted_file: false,
     diff:
-      '@@ -1,13 +1,14 @@\n import * as HttpStatus from "http-status-codes";\n import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";\n import {  } from "../../src/util";\n-import { DiffSize, BotActionNote, DiffSizeNote } from "../../src/bot_actions";\n+import { DiffSize, BotActionNote } from "../../src/bot_actions";\n import {\n   get_response_not_found_404,\n   get_response_fetch_network_error,\n } from "../helpers";\n import { BotActionConfig } from "../../src/custom_config/bot_action_config";\n import { DiffSizeDefaults } from "../../src/custom_config/action_config_defaults";\n+import { DiffSizeNote } from "../../src/bot_actions/diff_size/diff_size_note";\n \n // TEST FIXTURES\n \n',
+      '@@ -1,13 +1,14 @@\n import * as HttpStatus from "http-status-codes";\n import { GitLabGetResponse, MergeRequestApi } from "../../src/gitlab";\n import {  } from "../../src/util";\n-import { DiffSize, BotActionNote, DiffSize } from "../../src/bot_actions";\n+import { DiffSize, BotActionNote } from "../../src/bot_actions";\n import {\n   get_response_not_found_404,\n   get_response_fetch_network_error,\n } from "../helpers";\n import { BotActionConfig } from "../../src/custom_config/bot_action_config";\n import { DiffSizeDefaults } from "../../src/custom_config/action_config_defaults";\n+import { DiffSize } from "../../src/bot_actions/diff_size/diff_size_note";\n \n // TEST FIXTURES\n \n',
   },
   {
     old_path:
@@ -248,7 +252,7 @@ const multiple_files_changes_equal_1476 = [
     renamed_file: false,
     deleted_file: false,
     diff:
-      '@@ -1,7 +1,7 @@\n-import { DiffSizeNote } from "../../../src/bot_actions";\n import {  } from "../../../src/util";\n import { BotActionConfig } from "../../../src/custom_config/bot_action_config";\n import { DiffSizeDefaults } from "../../../src/custom_config/action_config_defaults";\n+import { DiffSizeNote } from "../../../src/bot_actions/diff_size/diff_size_note";\n \n // default value for customConfig.constructiveFeedbackOnlyToggle is false\n const falseCustomConfig = BotActionConfig.from(DiffSizeDefaults, {});\n',
+      '@@ -1,7 +1,7 @@\n-import { DiffSize } from "../../../src/bot_actions";\n import {  } from "../../../src/util";\n import { BotActionConfig } from "../../../src/custom_config/bot_action_config";\n import { DiffSizeDefaults } from "../../../src/custom_config/action_config_defaults";\n+import { DiffSize } from "../../../src/bot_actions/diff_size/diff_size_note";\n \n // default value for customConfig.constructiveFeedbackOnlyToggle is false\n const falseCustomConfig = BotActionConfig.from(DiffSizeDefaults, {});\n',
   },
   {
     old_path:
@@ -464,7 +468,7 @@ const multiple_files_changes_equal_1476 = [
     renamed_file: false,
     deleted_file: false,
     diff:
-      '@@ -1,36 +1,21 @@\n import * as winston from "winston";\n-import { BotActionNote } from "../bot_action_note";\n-import { CommitAnalysisResult } from "../../interfaces";\n+import { BotActionNote } from "..";\n \n /**\n- * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Commit Message action.\n+ * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Commit Messages Action.\n  * Each instance of this class contains a message string that provides feedback to the end-user about the titles of the commits contained in the GitLab Merge Request.\n  */\n-export class CommitMessageNote extends BotActionNote {\n+export class CommitMessagesNote extends BotActionNote {\n   static readonly good = `:star: Nice work following your team\'s commit message style conventions!`;\n-  static readonly bad =\n-    ":loudspeaker: Some of your commit messages didn\'t follow your team\'s conventions:";\n-  static readonly nudgeMessages: { [index: string]: string } = {\n-    length:\n-      "&emsp;&emsp;&emsp;✗ Keep commits descriptive and concise - between  3 and 50 characters",\n-    capitalization:\n-      "&emsp;&emsp;&emsp;✗ Capitalize the first letter of the message",\n-    punctuation: "&emsp;&emsp;&emsp;✗ Avoid unnecessary trailing punctuation",\n-    semantic:\n-      "&emsp;&emsp;&emsp;✗ Follow [semantic commit conventions](https://seesparkbox.com/foundry/semantic_commit_messages)",\n-    tense: `&emsp;&emsp;&emsp;✗ Begin with a present tense "action verb" like "Add new file"`,\n-  };\n-  static readonly hashtag = `[#CommitMessageAnalysis](http://http://fake.url.com)`;\n+  static readonly hashtag = `[#CommitMessage](http://http://fake.url.com)`;\n+  static readonly bad = `:loudspeaker: Keep commits descriptive and concise - between  3 and 50 characters`;\n \n   private constructor(message: string) {\n     super(message);\n   }\n \n-  static caseForBadMessage(\n-    goodGitPractice: boolean | undefined,\n-    thresholdTestedNudges: CommitAnalysisResult | undefined,\n-  ): boolean {\n-    return goodGitPractice === false && thresholdTestedNudges !== undefined;\n+  static caseForBadMessage(goodGitPractice: boolean | undefined): boolean {\n+    return goodGitPractice === false;\n   }\n \n   static caseForGoodMessage(\n@@ -58,43 +43,27 @@ export class CommitMessageNote extends BotActionNote {\n     );\n   }\n \n-  // safe to ignore eslint "Generic Object Injection Sink" warning:\n-  // no end-user-defined input involved in this function\n-  static badGitPracticesNote(\n-    thresholdTestedNudges: CommitAnalysisResult,\n-  ): string {\n-    const detailedFeedback: Array<string> = [];\n-    Object.keys(this.nudgeMessages).forEach((key) => {\n-      if (!thresholdTestedNudges[key]) {\n-        detailedFeedback.push(this.nudgeMessages[key]);\n-      }\n-    });\n-\n-    return this.bad.concat("<br />", detailedFeedback.join("<br />"));\n-  }\n-\n-  static fromMessage(message: string): CommitMessageNote {\n-    return new CommitMessageNote(\n+  static fromMessage(message: string): CommitMessagesNote {\n+    return new CommitMessagesNote(\n       this.conditionallyAddHashtag(message, this.hashtag),\n     );\n   }\n \n   /**\n-   * Constructs a `CommitMessageNote` object by identifying one of five cases: standard case for permissions check,\n+   * Constructs a `CommitMessagesNote` object by identifying one of five cases: standard case for permissions check,\n    * case for no actions, case for bad message, case for good message, or case for unknown state.\n    *\n-   * @returns `message` of the `CommitMessageNote` object\n+   * @returns `message` of the `CommitMessagesNote` object\n    * */\n   static buildMessage(\n     gitLabRequestSuccess: boolean | undefined,\n     state: string,\n     goodGitPractice: boolean | undefined,\n-    thresholdTestedNudges: CommitAnalysisResult | undefined,\n     constructiveFeedbackOnlyToggle: boolean,\n     totalCommits: number,\n     logger: winston.Logger,\n   ): string {\n-    let note: CommitMessageNote;\n+    let note: CommitMessagesNote;\n \n     switch (true) {\n       case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {\n@@ -111,13 +80,8 @@ export class CommitMessageNote extends BotActionNote {\n         note = this.fromMessage(this.noActionMessage);\n         break;\n       }\n-      case this.caseForBadMessage(goodGitPractice, thresholdTestedNudges): {\n-        note = this.fromMessage(\n-          // safe to ignore compiler and eslint warning here:\n-          // thresholdTestedNudges will never be undefined if caseForBadMessage returns true\n-          // @ts-ignore\n-          this.badGitPracticesNote(thresholdTestedNudges),\n-        );\n+      case this.caseForBadMessage(goodGitPractice): {\n+        note = this.fromMessage(this.bad);\n         break;\n       }\n       case this.caseForGoodMessage(\n@@ -130,7 +94,7 @@ export class CommitMessageNote extends BotActionNote {\n       }\n       default: {\n         note = this.fromMessage(this.unknownState);\n-        logger.error(`${note.message} CommitMessageAnalysis`);\n+        logger.error(`${note.message} CommitMessages`);\n       }\n     }\n     return note.message;\n',
+      '@@ -1,36 +1,21 @@\n import * as winston from "winston";\n-import { BotActionNote } from "../bot_action_note";\n-import { CommitAnalysisResult } from "../../interfaces";\n+import { BotActionNote } from "..";\n \n /**\n- * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Commit Message action.\n+ * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Commit Messages Action.\n  * Each instance of this class contains a message string that provides feedback to the end-user about the titles of the commits contained in the GitLab Merge Request.\n  */\n-export class CommitMessageNote extends BotActionNote {\n+export class CommitMessagesNote extends BotActionNote {\n   static readonly good = `:star: Nice work following your team\'s commit message style conventions!`;\n-  static readonly bad =\n-    ":loudspeaker: Some of your commit messages didn\'t follow your team\'s conventions:";\n-  static readonly nudgeMessages: { [index: string]: string } = {\n-    length:\n-      "&emsp;&emsp;&emsp;✗ Keep commits descriptive and concise - between  3 and 50 characters",\n-    capitalization:\n-      "&emsp;&emsp;&emsp;✗ Capitalize the first letter of the message",\n-    punctuation: "&emsp;&emsp;&emsp;✗ Avoid unnecessary trailing punctuation",\n-    semantic:\n-      "&emsp;&emsp;&emsp;✗ Follow [semantic commit conventions](https://seesparkbox.com/foundry/semantic_commit_messages)",\n-    tense: `&emsp;&emsp;&emsp;✗ Begin with a present tense "action verb" like "Add new file"`,\n-  };\n-  static readonly hashtag = `[#CommitMessageAnalysis](http://http://fake.url.com)`;\n+  static readonly hashtag = `[#CommitMessage](http://http://fake.url.com)`;\n+  static readonly bad = `:loudspeaker: Keep commits descriptive and concise - between  3 and 50 characters`;\n \n   private constructor(message: string) {\n     super(message);\n   }\n \n-  static caseForBadMessage(\n-    goodGitPractice: boolean | undefined,\n-    thresholdTestedNudges: CommitAnalysisResult | undefined,\n-  ): boolean {\n-    return goodGitPractice === false && thresholdTestedNudges !== undefined;\n+  static caseForBadMessage(goodGitPractice: boolean | undefined): boolean {\n+    return goodGitPractice === false;\n   }\n \n   static caseForGoodMessage(\n@@ -58,43 +43,27 @@ export class CommitMessageNote extends BotActionNote {\n     );\n   }\n \n-  // safe to ignore eslint "Generic Object Injection Sink" warning:\n-  // no end-user-defined input involved in this function\n-  static badGitPracticesNote(\n-    thresholdTestedNudges: CommitAnalysisResult,\n-  ): string {\n-    const detailedFeedback: Array<string> = [];\n-    Object.keys(this.nudgeMessages).forEach((key) => {\n-      if (!thresholdTestedNudges[key]) {\n-        detailedFeedback.push(this.nudgeMessages[key]);\n-      }\n-    });\n-\n-    return this.bad.concat("<br />", detailedFeedback.join("<br />"));\n-  }\n-\n-  static fromMessage(message: string): CommitMessageNote {\n-    return new CommitMessageNote(\n+  static fromMessage(message: string): CommitMessagesNote {\n+    return new CommitMessagesNote(\n       this.conditionallyAddHashtag(message, this.hashtag),\n     );\n   }\n \n   /**\n-   * Constructs a `CommitMessageNote` object by identifying one of five cases: standard case for permissions check,\n+   * Constructs a `CommitMessagesNote` object by identifying one of five cases: standard case for permissions check,\n    * case for no actions, case for bad message, case for good message, or case for unknown state.\n    *\n-   * @returns `message` of the `CommitMessageNote` object\n+   * @returns `message` of the `CommitMessagesNote` object\n    * */\n   static buildSuccessfulAction(\n     gitLabRequestSuccess: boolean | undefined,\n     state: string,\n     goodGitPractice: boolean | undefined,\n-    thresholdTestedNudges: CommitAnalysisResult | undefined,\n     constructiveFeedbackOnlyToggle: boolean,\n     totalCommits: number,\n     logger: winston.Logger,\n   ): string {\n-    let note: CommitMessageNote;\n+    let note: CommitMessagesNote;\n \n     switch (true) {\n       case this.standardCaseForCheckPermissionsMessage(gitLabRequestSuccess): {\n@@ -111,13 +80,8 @@ export class CommitMessageNote extends BotActionNote {\n         note = this.fromMessage(this.noActionMessage);\n         break;\n       }\n-      case this.caseForBadMessage(goodGitPractice, thresholdTestedNudges): {\n-        note = this.fromMessage(\n-          // safe to ignore compiler and eslint warning here:\n-          // thresholdTestedNudges will never be undefined if caseForBadMessage returns true\n-          // @ts-ignore\n-          this.badGitPracticesNote(thresholdTestedNudges),\n-        );\n+      case this.caseForBadMessage(goodGitPractice): {\n+        note = this.fromMessage(this.bad);\n         break;\n       }\n       case this.caseForGoodMessage(\n@@ -130,7 +94,7 @@ export class CommitMessageNote extends BotActionNote {\n       }\n       default: {\n         note = this.fromMessage(this.unknownState);\n-        logger.error(`${note.message} CommitMessageAnalysis`);\n+        logger.error(`${note.message} CommitMessages`);\n       }\n     }\n     return note.message;\n',
   },
   {
     old_path: "src/bot_actions/commit_messages/commit_message.ts",
@@ -475,7 +479,7 @@ const multiple_files_changes_equal_1476 = [
     renamed_file: true,
     deleted_file: false,
     diff:
-      '@@ -1,19 +1,12 @@\n-import { BotAction } from "../bot_action";\n+import { BotAction } from "..";\n import {\n+  MergeRequestApi,\n   GitLabAPIRequest,\n   GitLabGetResponse,\n-  MergeRequestApi,\n } from "../../gitlab";\n-import {\n-  allValuesTrue,\n-  assignCommitsBody,\n-  calculateThreshold,\n-  CommitMessageNote,\n-  getNumberOfTotalCommits,\n-  testAllNudges,\n-} from "../commit_messages";\n+import { GitLabCommit } from "../../interfaces";\n import * as winston from "winston";\n-import { CommitAnalysisResult, GitLabCommit } from "../../interfaces";\n+import { CommitMessagesNote } from "./commit_message_note";\n \n /**\n  * This class extends the `BotAction` class by analyzing the titles of the commits contained in the GitLab Merge Request.\n@@ -21,7 +14,7 @@ import { CommitAnalysisResult, GitLabCommit } from "../../interfaces";\n  * of this class also contains the property:\n  * 1. `calculatedThreshold`: `number` the number of failing commit titles that will result in bad practice for an individual commit message criteria\n  */\n-export class CommitMessage extends BotAction {\n+export class CommitMessages extends BotAction {\n   private constructor(\n     apiRequest: GitLabAPIRequest,\n     goodGitPractice: boolean,\n@@ -49,44 +42,78 @@ export class CommitMessage extends BotAction {\n     api: MergeRequestApi,\n     constructiveFeedbackOnlyToggle: boolean,\n     logger: winston.Logger,\n-  ): Promise<CommitMessage> {\n+  ): Promise<CommitMessages> {\n     let goodGitPractice!: boolean;\n-    let thresholdTestedNudges!: CommitAnalysisResult;\n \n     const apiResponse: GitLabGetResponse = await api.getSingleMRCommits();\n \n-    const totalCommits: number = getNumberOfTotalCommits(apiResponse);\n-    const commits: Array<GitLabCommit> = assignCommitsBody(\n-      totalCommits,\n-      apiResponse,\n+    const threshold: number = this.calculateThreshold(\n+      apiResponse.result.length,\n     );\n-    const threshold: number = calculateThreshold(totalCommits);\n \n-    if (apiResponse.apiRequest.success && totalCommits > 0) {\n-      thresholdTestedNudges = testAllNudges(commits, threshold);\n-\n-      goodGitPractice = allValuesTrue([\n-        thresholdTestedNudges.capitalization,\n-        thresholdTestedNudges.length,\n-        thresholdTestedNudges.punctuation,\n-        thresholdTestedNudges.semantic,\n-        thresholdTestedNudges.tense,\n-      ]);\n+    if (apiResponse.apiRequest.success && apiResponse.result.length > 0) {\n+      const validityOfCommits: Array<boolean> = apiResponse.result.map(\n+        (commit: GitLabCommit) => this.lengthValid(commit.title),\n+      );\n+      goodGitPractice = this.testThreshold(validityOfCommits, threshold);\n     }\n \n-    return new CommitMessage(\n+    return new CommitMessages(\n       apiResponse.apiRequest,\n       goodGitPractice,\n-      CommitMessageNote.buildMessage(\n+      CommitMessagesNote.buildMessage(\n         apiResponse.apiRequest.success,\n         state,\n         goodGitPractice,\n-        thresholdTestedNudges,\n         constructiveFeedbackOnlyToggle,\n-        totalCommits,\n+        apiResponse.result.length,\n         logger,\n       ),\n       threshold,\n     );\n   }\n+\n+  /**\n+   *\n+   * Computes the threshold (number of offenses required to give a "nudge")\n+   * Since MRs can be of many different sizes, it makes sense to evaluate\n+   * the user based on the percentage of correct commits.\n+   *\n+   * If we do this, though, we run into strange behavior when there are\n+   * very few commits.\n+   *\n+   * So, we define both a universal minimum threshold and a percentage of\n+   * commits. The "threshold" is the higher of these two numbers.\n+   *\n+   * @param totalCommits Number of commits used in this merge request\n+   */\n+  private static calculateThreshold(totalCommits: number): number {\n+    const MIN_NUM = 2;\n+    const PERCENT = 0.2;\n+    const THRESHOLD_FOR_PERCENT = MIN_NUM / PERCENT;\n+\n+    return totalCommits >= THRESHOLD_FOR_PERCENT\n+      ? Math.floor(totalCommits * PERCENT)\n+      : MIN_NUM;\n+  }\n+\n+  /**\n+   *\n+   * @param grammarParam Ordered array indicating whether each commit followed (true) or violated (false) this convention\n+   * @param threshold Obtained by the `calculateThreshold` function\n+   */\n+  private static testThreshold(\n+    grammarParam: Array<boolean>,\n+    threshold: number,\n+  ): boolean {\n+    return grammarParam.filter((bool) => bool === false).length < threshold;\n+  }\n+\n+  /**\n+   * Returns whether a string follows the length convention\n+   * @returns True if the string has at least 4 alphanumeric characters and at most 50 of any type of character.\n+   */\n+  private static lengthValid(message: string): boolean {\n+    return message.replace(/[\\W_]+/g, "").length >= 4 && message.length <= 50;\n+  }\n }\n',
+      '@@ -1,19 +1,12 @@\n-import { BotAction } from "../bot_action";\n+import { BotAction } from "..";\n import {\n+  MergeRequestApi,\n   GitLabAPIRequest,\n   GitLabGetResponse,\n-  MergeRequestApi,\n } from "../../gitlab";\n-import {\n-  allValuesTrue,\n-  assignCommitsBody,\n-  calculateThreshold,\n-  CommitMessageNote,\n-  getNumberOfTotalCommits,\n-  testAllNudges,\n-} from "../commit_messages";\n+import { GitLabCommit } from "../../interfaces";\n import * as winston from "winston";\n-import { CommitAnalysisResult, GitLabCommit } from "../../interfaces";\n+import { CommitMessagesNote } from "./commit_message_note";\n \n /**\n  * This class extends the `BotAction` class by analyzing the titles of the commits contained in the GitLab Merge Request.\n@@ -21,7 +14,7 @@ import { CommitAnalysisResult, GitLabCommit } from "../../interfaces";\n  * of this class also contains the property:\n  * 1. `calculatedThreshold`: `number` the number of failing commit titles that will result in bad practice for an individual commit message criteria\n  */\n-export class CommitMessage extends BotAction {\n+export class CommitMessages extends BotAction {\n   private constructor(\n     apiRequest: GitLabAPIRequest,\n     goodGitPractice: boolean,\n@@ -49,44 +42,78 @@ export class CommitMessage extends BotAction {\n     api: MergeRequestApi,\n     constructiveFeedbackOnlyToggle: boolean,\n     logger: winston.Logger,\n-  ): Promise<CommitMessage> {\n+  ): Promise<CommitMessages> {\n     let goodGitPractice!: boolean;\n-    let thresholdTestedNudges!: CommitAnalysisResult;\n \n     const apiResponse: GitLabGetResponse = await api.getSingleMRCommits();\n \n-    const totalCommits: number = getNumberOfTotalCommits(apiResponse);\n-    const commits: Array<GitLabCommit> = assignCommitsBody(\n-      totalCommits,\n-      apiResponse,\n+    const threshold: number = this.calculateThreshold(\n+      apiResponse.result.length,\n     );\n-    const threshold: number = calculateThreshold(totalCommits);\n \n-    if (apiResponse.apiRequest.success && totalCommits > 0) {\n-      thresholdTestedNudges = testAllNudges(commits, threshold);\n-\n-      goodGitPractice = allValuesTrue([\n-        thresholdTestedNudges.capitalization,\n-        thresholdTestedNudges.length,\n-        thresholdTestedNudges.punctuation,\n-        thresholdTestedNudges.semantic,\n-        thresholdTestedNudges.tense,\n-      ]);\n+    if (apiResponse.apiRequest.success && apiResponse.result.length > 0) {\n+      const validityOfCommits: Array<boolean> = apiResponse.result.map(\n+        (commit: GitLabCommit) => this.lengthValid(commit.title),\n+      );\n+      goodGitPractice = this.testThreshold(validityOfCommits, threshold);\n     }\n \n-    return new CommitMessage(\n+    return new CommitMessages(\n       apiResponse.apiRequest,\n       goodGitPractice,\n-      CommitMessageNote.buildSuccessfulAction(\n+      CommitMessagesNote.buildSuccessfulAction(\n         apiResponse.apiRequest.success,\n         state,\n         goodGitPractice,\n-        thresholdTestedNudges,\n         constructiveFeedbackOnlyToggle,\n-        totalCommits,\n+        apiResponse.result.length,\n         logger,\n       ),\n       threshold,\n     );\n   }\n+\n+  /**\n+   *\n+   * Computes the threshold (number of offenses required to give a "nudge")\n+   * Since MRs can be of many different sizes, it makes sense to evaluate\n+   * the user based on the percentage of correct commits.\n+   *\n+   * If we do this, though, we run into strange behavior when there are\n+   * very few commits.\n+   *\n+   * So, we define both a universal minimum threshold and a percentage of\n+   * commits. The "threshold" is the higher of these two numbers.\n+   *\n+   * @param totalCommits Number of commits used in this merge request\n+   */\n+  private static calculateThreshold(totalCommits: number): number {\n+    const MIN_NUM = 2;\n+    const PERCENT = 0.2;\n+    const THRESHOLD_FOR_PERCENT = MIN_NUM / PERCENT;\n+\n+    return totalCommits >= THRESHOLD_FOR_PERCENT\n+      ? Math.floor(totalCommits * PERCENT)\n+      : MIN_NUM;\n+  }\n+\n+  /**\n+   *\n+   * @param grammarParam Ordered array indicating whether each commit followed (true) or violated (false) this convention\n+   * @param threshold Obtained by the `calculateThreshold` function\n+   */\n+  private static testThreshold(\n+    grammarParam: Array<boolean>,\n+    threshold: number,\n+  ): boolean {\n+    return grammarParam.filter((bool) => bool === false).length < threshold;\n+  }\n+\n+  /**\n+   * Returns whether a string follows the length convention\n+   * @returns True if the string has at least 4 alphanumeric characters and at most 50 of any type of character.\n+   */\n+  private static lengthValid(message: string): boolean {\n+    return message.replace(/[\\W_]+/g, "").length >= 4 && message.length <= 50;\n+  }\n }\n',
   },
   {
     old_path: "src/bot_actions/commit_messages/index.ts",
@@ -497,7 +501,7 @@ const multiple_files_changes_equal_1476 = [
     renamed_file: false,
     deleted_file: false,
     diff:
-      '@@ -5,10 +5,11 @@ import {\n   MergeRequestApi,\n } from "../../gitlab";\n import * as winston from "winston";\n-import { calculateDiffs, DiffSizeNote } from "../diff_size";\n import { BotActionConfig } from "../../custom_config/bot_action_config";\n+import { DiffSizeNote } from "./diff_size_note";\n+import { Change } from "../../interfaces";\n+import * as parse from "parse-diff";\n \n-// TODO: figure out how to link to the BotAction class documentation using tsdoc syntax\n /**\n  * This class extends the `BotAction` class by analyzing how many lines of diff are contained in the GitLab Merge Request.\n  * In addition to the standard `BotAction` properties, each instance\n@@ -55,7 +56,7 @@ export class DiffSize extends BotAction {\n       apiResponse.apiRequest.success &&\n       apiResponse.result.hasOwnProperty("changes")\n     ) {\n-      totalDiffs = calculateDiffs(apiResponse.result.changes);\n+      totalDiffs = this.calculateDiffs(apiResponse.result.changes);\n       goodGitPractice = totalDiffs < customConfig.threshold;\n     } else {\n       totalDiffs = -1;\n@@ -75,4 +76,38 @@ export class DiffSize extends BotAction {\n       totalDiffs,\n     );\n   }\n+\n+  /**\n+   * Calculates the total lines of diff as the sum of additions and deletions across all of the Change objects.\n+   * @param changes array of GitLab Change objects\n+   * @returns total lines of diff across all of the `changes`\n+   * */\n+  private static calculateDiffs(changes: Array<Change>): number {\n+    let totalDiffs = 0;\n+\n+    if (changes.length !== 0) {\n+      const diffs: number[] = changes.map((change: Change) => {\n+        if (change.hasOwnProperty("diff")) {\n+          const gitDiff = change.diff;\n+          // workaround for GitLab API 11.2.3 change that broke the schema expected by parse-diff module\n+          const hackedDiff = "--- a/README.md\\n+++ b/README.md\\n" + gitDiff;\n+          const files = parse(hackedDiff);\n+          const total = files.map((file) => {\n+            return Math.abs(file.deletions) + Math.abs(file.additions);\n+          });\n+          return total.reduce(\n+            (accumulator, currentVal) => accumulator + currentVal,\n+          );\n+        } else {\n+          return 0;\n+        }\n+      });\n+\n+      totalDiffs = diffs.reduce(\n+        (accumulator, currentVal) => accumulator + currentVal,\n+      );\n+    }\n+\n+    return totalDiffs;\n+  }\n }\n',
+      '@@ -5,10 +5,11 @@ import {\n   MergeRequestApi,\n } from "../../gitlab";\n import * as winston from "winston";\n-import { calculateDiffs, DiffSize } from "../diff_size";\n import { BotActionConfig } from "../../custom_config/bot_action_config";\n+import { DiffSize } from "./diff_size_note";\n+import { Change } from "../../interfaces";\n+import * as parse from "parse-diff";\n \n-// TODO: figure out how to link to the BotAction class documentation using tsdoc syntax\n /**\n  * This class extends the `BotAction` class by analyzing how many lines of diff are contained in the GitLab Merge Request.\n  * In addition to the standard `BotAction` properties, each instance\n@@ -55,7 +56,7 @@ export class DiffSize extends BotAction {\n       apiResponse.apiRequest.success &&\n       apiResponse.result.hasOwnProperty("changes")\n     ) {\n-      totalDiffs = calculateDiffs(apiResponse.result.changes);\n+      totalDiffs = this.calculateDiffs(apiResponse.result.changes);\n       goodGitPractice = totalDiffs < customConfig.threshold;\n     } else {\n       totalDiffs = -1;\n@@ -75,4 +76,38 @@ export class DiffSize extends BotAction {\n       totalDiffs,\n     );\n   }\n+\n+  /**\n+   * Calculates the total lines of diff as the sum of additions and deletions across all of the Change objects.\n+   * @param changes array of GitLab Change objects\n+   * @returns total lines of diff across all of the `changes`\n+   * */\n+  private static calculateDiffs(changes: Array<Change>): number {\n+    let totalDiffs = 0;\n+\n+    if (changes.length !== 0) {\n+      const diffs: number[] = changes.map((change: Change) => {\n+        if (change.hasOwnProperty("diff")) {\n+          const gitDiff = change.diff;\n+          // workaround for GitLab API 11.2.3 change that broke the schema expected by parse-diff module\n+          const hackedDiff = "--- a/README.md\\n+++ b/README.md\\n" + gitDiff;\n+          const files = parse(hackedDiff);\n+          const total = files.map((file) => {\n+            return Math.abs(file.deletions) + Math.abs(file.additions);\n+          });\n+          return total.reduce(\n+            (accumulator, currentVal) => accumulator + currentVal,\n+          );\n+        } else {\n+          return 0;\n+        }\n+      });\n+\n+      totalDiffs = diffs.reduce(\n+        (accumulator, currentVal) => accumulator + currentVal,\n+      );\n+    }\n+\n+    return totalDiffs;\n+  }\n }\n',
   },
   {
     old_path: "src/bot_actions/diff_size/diff_size_helpers.ts",
@@ -585,7 +589,7 @@ const multiple_files_changes_equal_1476 = [
     renamed_file: false,
     deleted_file: false,
     diff:
-      '@@ -1,7 +1,7 @@\n-import { NewGitWhoDisNote, authorNameIsNotLanId } from ".";\n import * as winston from "winston";\n import { BotAction } from "../bot_action";\n import { GitLabGetResponse, GitLabAPIRequest } from "../../gitlab";\n+import { NewGitWhoDisNote } from "./new_git_who_dis_note";\n \n /**\n  * This class extends the `BotAction` class by analyzing the name of the author of the GitLab Merge Request.\n@@ -26,7 +26,7 @@ export class NewGitWhoDis extends BotAction {\n     logger: winston.Logger,\n     authorName: string,\n   ): Promise<BotAction> {\n-    const goodGitPractice: boolean = authorNameIsNotLanId(authorName);\n+    const goodGitPractice: boolean = this.authorNameIsNotLanId(authorName);\n     const apiResponse: GitLabGetResponse = GitLabGetResponse.noRequestNeeded();\n \n     return new BotAction(\n@@ -35,4 +35,10 @@ export class NewGitWhoDis extends BotAction {\n       NewGitWhoDisNote.buildMessage(authorName, goodGitPractice, logger),\n     );\n   }\n+\n+  private static authorNameIsNotLanId(authorName: string): boolean {\n+    const regex = new RegExp(/^[a-zA-Z]\\d{5}$/);\n+    const authorNameIsLanId: boolean = regex.test(authorName);\n+    return !authorNameIsLanId;\n+  }\n }\n',
+      '@@ -1,7 +1,7 @@\n-import { NewGitWhoDisNote, authorNameIsNotLanId } from ".";\n import * as winston from "winston";\n import { BotAction } from "../bot_action";\n import { GitLabGetResponse, GitLabAPIRequest } from "../../gitlab";\n+import { NewGitWhoDisNote } from "./new_git_who_dis_note";\n \n /**\n  * This class extends the `BotAction` class by analyzing the name of the author of the GitLab Merge Request.\n@@ -26,7 +26,7 @@ export class NewGitWhoDis extends BotAction {\n     logger: winston.Logger,\n     authorName: string,\n   ): Promise<BotAction> {\n-    const goodGitPractice: boolean = authorNameIsNotLanId(authorName);\n+    const goodGitPractice: boolean = this.authorNameIsNotLanId(authorName);\n     const apiResponse: GitLabGetResponse = GitLabGetResponse.noRequestNeeded();\n \n     return new BotAction(\n@@ -35,4 +35,10 @@ export class NewGitWhoDis extends BotAction {\n       NewGitWhoDisNote.buildSuccessfulAction(authorName, goodGitPractice, logger),\n     );\n   }\n+\n+  private static authorNameIsNotLanId(authorName: string): boolean {\n+    const regex = new RegExp(/^[a-zA-Z]\\d{5}$/);\n+    const authorNameIsLanId: boolean = regex.test(authorName);\n+    return !authorNameIsLanId;\n+  }\n }\n',
   },
   {
     old_path: "src/bot_actions/new_git_who_dis/new_git_who_dis_helpers.ts",
@@ -764,5 +768,1107 @@ describe("calculateDiffs function", () => {
 
   test("should return a total diffs value of exactly 0", () => {
     expect(DiffSize["calculateDiffs"](changes_equal_zero)).toEqual(0);
+  });
+});
+
+describe("DiffSize.caseForZeroMessage(state, totalDiffs, constructiveFeedbackOnlyToggle, goodGitPractice)", () => {
+  describe("'open' state", (state = "open") => {
+    describe("goodGitPractice === true", (goodGitPractice = true) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: true", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(true);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+
+    describe("goodGitPractice === false", (goodGitPractice = false) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+  });
+
+  describe("'update' state", (state = "update") => {
+    describe("goodGitPractice === true", (goodGitPractice = true) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: true", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(true);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+
+    describe("goodGitPractice === false", (goodGitPractice = false) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+  });
+
+  describe("'merge' state", (state = "merge") => {
+    describe("goodGitPractice === true", (goodGitPractice = true) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+
+    describe("goodGitPractice === false", (goodGitPractice = false) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForZeroMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+  });
+});
+
+describe("DiffSize.caseForBadMessage(goodGitPractice)", () => {
+  describe("goodGitPractice === true", (goodGitPractice = true) => {
+    test("RETURNS BOOLEAN: false", () => {
+      expect(DiffSize.caseForBadMessage(goodGitPractice)).toBe(false);
+    });
+  });
+
+  describe("goodGitPractice === false", (goodGitPractice = false) => {
+    test("RETURNS BOOLEAN: true", () => {
+      expect(DiffSize.caseForBadMessage(goodGitPractice)).toBe(true);
+    });
+  });
+});
+
+describe("DiffSize.caseForGoodMessage(state, totalDiffs, goodGitPractice, constructiveFeedbackOnlyToggle)", () => {
+  describe("'open' state", (state = "open") => {
+    describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+      describe("goodGitPractice === true", (goodGitPractice = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("goodGitPractice === false", (goodGitPractice = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+
+    describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+      describe("goodGitPractice === true", (goodGitPractice = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: true", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(true);
+          });
+        });
+      });
+
+      describe("goodGitPractice === false", (goodGitPractice = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+  });
+
+  describe("'update' state", (state = "update") => {
+    describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+      describe("goodGitPractice === true", (goodGitPractice = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("goodGitPractice === false", (goodGitPractice = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+
+    describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+      describe("goodGitPractice === true", (goodGitPractice = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: true", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(true);
+          });
+        });
+      });
+
+      describe("goodGitPractice === false", (goodGitPractice = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+  });
+
+  describe("'merge' state", (state = "merge") => {
+    describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+      describe("goodGitPractice === true", (goodGitPractice = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("goodGitPractice === false", (goodGitPractice = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+
+    describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+      describe("goodGitPractice === true", (goodGitPractice = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+
+      describe("goodGitPractice === false", (goodGitPractice = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+        describe("totalDiffs !== 0", (totalDiffs = 1) => {
+          test("RETURNS BOOLEAN: false", () => {
+            expect(
+              DiffSize.caseForGoodMessage(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBe(false);
+          });
+        });
+      });
+    });
+  });
+});
+
+describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, constructiveFeedbackOnlyToggle)", () => {
+  describe("'open' state", (state = "open") => {
+    describe("goodGitPractice === true", (goodGitPractice = true) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+            expect(
+              DiffSize.buildSuccessfulAction(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+            expect(
+              DiffSize.buildSuccessfulAction(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/zeroNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.zeroNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.goodNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+      });
+    });
+
+    describe("goodGitPractice === false", (goodGitPractice = false) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+      });
+    });
+  });
+
+  describe("'update' state", (state = "update") => {
+    describe("goodGitPractice === true", (goodGitPractice = true) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+            expect(
+              DiffSize.buildSuccessfulAction(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+            expect(
+              DiffSize.buildSuccessfulAction(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/zeroNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.zeroNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.goodNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+      });
+    });
+
+    describe("goodGitPractice === false", (goodGitPractice = false) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+      });
+    });
+  });
+
+  describe("'merge' state", (state = "merge") => {
+    describe("goodGitPractice === true", (goodGitPractice = true) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+            expect(
+              DiffSize.buildSuccessfulAction(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+            expect(
+              DiffSize.buildSuccessfulAction(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+            expect(
+              DiffSize.buildSuccessfulAction(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithNothingToSay", () => {
+            expect(
+              DiffSize.buildSuccessfulAction(
+                state,
+                totalDiffs,
+                goodGitPractice,
+                constructiveFeedbackOnlyToggle,
+              ),
+            ).toBeInstanceOf(SuccessfulBotActionWithNothingToSay);
+          });
+        });
+      });
+    });
+
+    describe("goodGitPractice === false", (goodGitPractice = false) => {
+      describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+      });
+
+      describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
+        describe("totalDiffs === 0", (totalDiffs = 0) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+
+        describe("totalDiffs !== 0", (totalDiffs = -1) => {
+          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+            const action = DiffSize.buildSuccessfulAction(
+              state,
+              totalDiffs,
+              goodGitPractice,
+              constructiveFeedbackOnlyToggle,
+            );
+            expect(action).toBeInstanceOf(SuccessfulBotAction);
+            expect((<SuccessfulBotAction>action).mrNote).toBe(
+              `${DiffSize.badNote} ${DiffSize.hashtag}`,
+            );
+          });
+        });
+      });
+    });
   });
 });
