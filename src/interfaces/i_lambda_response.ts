@@ -126,17 +126,18 @@ export class CommentFailedResponse implements LambdaResponse {
     emoji: string,
     comment: string,
   ) {
-    this.body = JSON.stringify({
+    const bodyObj = {
       mrEvent: mrEvent,
       customConfig: customConfig,
       botActionResponses: botActionResponses,
       emoji: emoji,
       comment: comment,
-    });
+    };
     logger.info({
       statusCode: this.statusCode,
-      body: JSON.parse(this.body),
+      body: bodyObj,
     });
+    this.body = JSON.stringify(bodyObj);
   }
 }
 
@@ -170,17 +171,18 @@ export class CommentSuccessResponse implements LambdaResponse {
     emoji: string,
     comment: string,
   ) {
-    this.body = JSON.stringify({
+    const bodyObj = {
       mrEvent: mrEvent,
       customConfig: customConfig,
       botActionResponses: botActionResponses,
       emoji: emoji,
       comment: comment,
-    });
+    };
     logger.info({
       statusCode: this.statusCode,
-      body: JSON.parse(this.body),
+      body: bodyObj,
     });
+    this.body = JSON.stringify(bodyObj);
   }
 }
 
@@ -212,7 +214,6 @@ export class NoCommentNeededResponse implements LambdaResponse {
     customConfig: CustomConfig,
     botActionResponses: BotActionResponse[],
   ) {
-    // TODO: refactor all responses to do this
     const bodyObj = {
       mrEvent: mrEvent,
       customConfig: customConfig,

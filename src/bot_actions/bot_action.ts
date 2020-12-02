@@ -169,14 +169,12 @@ export async function runBotActions(
       // POST logic must be performed only after all Bot Action promises have resolved
       const commentResponse:
         | SuccessfulPostORPutResponse
-        | NetworkFailureResponse =
-        // TODO: Would it make sense to just bring all the BotComment stuff into this file??
-        await BotComment.post(
-          api,
-          state,
-          customConfig.updateMergeRequestComment,
-          note,
-        );
+        | NetworkFailureResponse = await BotComment.post(
+        api,
+        state,
+        customConfig.updateMergeRequestComment,
+        note,
+      );
 
       if (commentResponse instanceof NetworkFailureResponse) {
         lambdaResponse = new CommentFailedResponse(
