@@ -44,7 +44,7 @@ export abstract class NewGitWhoDis {
     authorName: string,
     goodGitPractice: boolean,
   ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action;
+    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
 
     switch (goodGitPractice) {
       case false: {

@@ -23,7 +23,7 @@ export const getMergeRequestEventData = (event: any): MergeRequestEvent => {
   return {
     assigneeId: event.object_attributes.assignee_id,
     authorEmail: event.object_attributes.last_commit.author.email,
-    authorGitId: event.object_attributes.author_id,
+    authorId: event.object_attributes.author_id,
     authorName: event.user.name,
     authorUsername: event.user.username,
     eventState: event.object_attributes.action,

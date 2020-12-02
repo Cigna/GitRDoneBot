@@ -5,43 +5,43 @@ import {
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 
-describe("NewGitWhoDis.analyze (Any state) authorName !== LAN ID", () => {
-  const authorName: string = "Eleanor Shellstrop";
-  let botActionResponse: BotActionResponse;
-  beforeEach(async () => {
-    botActionResponse = await NewGitWhoDis.analyze(authorName);
+describe("NewGitWhoDis.analyze(authorName)", () => {
+  describe("authorName !== LAN ID", (authorName = "Eleanor Shellstrop") => {
+    let botActionResponse: BotActionResponse;
+    beforeEach(async () => {
+      botActionResponse = await NewGitWhoDis.analyze(authorName);
+    });
+    test("Should return instance of SuccessfulBotActionWithNothingToSay", () => {
+      expect(botActionResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithNothingToSay,
+      );
+    });
+    test("Should return goodGitPractice === true", () => {
+      expect(
+        (<SuccessfulBotActionWithNothingToSay>botActionResponse.action)
+          .goodGitPractice,
+      ).toBe(true);
+    });
   });
-  test("Should return instance of SuccessfulBotActionWithNothingToSay", () => {
-    expect(botActionResponse.action).toBeInstanceOf(
-      SuccessfulBotActionWithNothingToSay,
-    );
-  });
-  test("Should return goodGitPractice === true", () => {
-    expect(
-      (<SuccessfulBotActionWithNothingToSay>botActionResponse.action)
-        .goodGitPractice,
-    ).toBe(true);
+
+  describe("authorName === LAN ID", (authorName = "A12345") => {
+    let botActionResponse: BotActionResponse;
+    beforeEach(async () => {
+      botActionResponse = await NewGitWhoDis.analyze(authorName);
+    });
+    test("Should return instance of SuccessfulBotAction", () => {
+      expect(botActionResponse.action).toBeInstanceOf(SuccessfulBotAction);
+    });
+
+    test("Should return goodGitPractice === false", () => {
+      expect(
+        (<SuccessfulBotAction>botActionResponse.action).goodGitPractice,
+      ).toBe(false);
+    });
   });
 });
 
-describe("NewGitWhoDis.analyze: (Any state) authorName === LAN ID", () => {
-  const authorName: string = "A01234";
-  let botActionResponse: BotActionResponse;
-  beforeEach(async () => {
-    botActionResponse = await NewGitWhoDis.analyze(authorName);
-  });
-  test("Should return instance of SuccessfulBotAction", () => {
-    expect(botActionResponse.action).toBeInstanceOf(SuccessfulBotAction);
-  });
-
-  test("Should return goodGitPractice === false", () => {
-    expect(
-      (<SuccessfulBotAction>botActionResponse.action).goodGitPractice,
-    ).toBe(false);
-  });
-});
-
-describe("NewGitWhoDis.authorNameIsNotLanId function", () => {
+describe("NewGitWhoDis.authorNameIsNotLanId(authorName)", () => {
   test("Should return true when authorName is not LAN ID", () => {
     expect(NewGitWhoDis["authorNameIsNotLanId"]("Test Author")).toEqual(true);
   });

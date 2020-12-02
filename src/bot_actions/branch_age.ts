@@ -1,4 +1,3 @@
-import { BotActionResponse } from ".";
 import { BotActionConfig } from "../custom_config/bot_action_config";
 import {
   AuthorizationFailureResponse,
@@ -8,6 +7,7 @@ import {
 import { GitLabCommit } from "../interfaces/gitlab_api_types";
 import {
   AuthorizationFailureBotAction,
+  BotActionResponse,
   NetworkFailureBotAction,
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
@@ -17,9 +17,8 @@ import {
  * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
  * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
  */
-
 export abstract class BranchAge {
-  static botActionName = "BranchAge";
+  static readonly botActionName = "BranchAge";
   static readonly goodNote =
     `:star: It’s great that you’re committing and merging code frequently` +
     ` - the commits on this branch aren’t old or stale. Good job!`;
@@ -95,7 +94,6 @@ export abstract class BranchAge {
         },
       );
     } else {
-      // TODO: look for opportunities throughout BotActions to reduce number of cases handled by buildAction
       if (response instanceof AuthorizationFailureResponse) {
         action = new AuthorizationFailureBotAction();
       } else {
@@ -126,13 +124,12 @@ export abstract class BranchAge {
     return goodGitPractice === false;
   }
 
-  // TODO: bring buildAction & requisite cases & note strings into every BotAction and eliminate separate note classes
   static buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,
     constructiveFeedbackOnlyToggle: boolean,
   ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action;
+    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
 
     switch (true) {
       case this.caseForBadMessage(goodGitPractice): {

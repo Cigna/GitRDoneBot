@@ -59,7 +59,7 @@ const no_log_files = [
 
 const changes_equal_zero = [];
 
-describe("GitOuttaHere.noLogFiles function", () => {
+describe("GitOuttaHere.noLogFiles(changes)", () => {
   test("should return false when log files EXIST", () => {
     expect(GitOuttaHere["noLogFiles"](log_files_exist)).toBe(false);
   });

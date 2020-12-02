@@ -747,7 +747,7 @@ const multiple_files_changes_equal_1476 = [
   },
 ];
 
-describe("calculateDiffs function", () => {
+describe("DiffSize.calculateDiffs(changes)", () => {
   test("should return a total diffs value of less than 500", () => {
     expect(
       DiffSize["calculateDiffs"](changes_between_zero_and_500),
@@ -771,7 +771,7 @@ describe("calculateDiffs function", () => {
   });
 });
 
-describe("DiffSize.caseForZeroMessage(state, totalDiffs, constructiveFeedbackOnlyToggle, goodGitPractice)", () => {
+describe("DiffSize.caseForZeroMessage(state, totalDiffs, goodGitPractice, constructiveFeedbackOnlyToggle)", () => {
   describe("'open' state", (state = "open") => {
     describe("goodGitPractice === true", (goodGitPractice = true) => {
       describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {

@@ -17,7 +17,8 @@
                 "${workspaceRoot}/node_modules/.bin/jest", 
                 "--runInBand",
                 "--verbose",
-                "${current relative file path of test you want to run}"
+                // "${current relative file path of test you want to run}"
+                "__tests__/unit_tests/new_git_who_dis.test.ts"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

@@ -4,7 +4,7 @@ import {
   NetworkFailureBotAction,
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
-} from ".";
+} from "./bot_action";
 import {
   AuthorizationFailureResponse,
   MergeRequestApi,
@@ -55,7 +55,6 @@ export abstract class CommitMessages {
 
       if (totalCommits === 0) {
         goodGitPractice = true;
-        // action = new SuccessfulBotActionWithNothingToSay(goodGitPractice);
       } else {
         const validityOfCommits: Array<boolean> = response.result.map(
           (commit: GitLabCommit) =>
@@ -149,7 +148,7 @@ export abstract class CommitMessages {
     state: string,
     goodGitPractice: boolean,
   ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action;
+    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
 
     switch (true) {
       case this.caseForBadMessage(goodGitPractice): {

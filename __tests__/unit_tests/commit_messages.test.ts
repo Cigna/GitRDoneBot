@@ -12,7 +12,7 @@ function XsOfLength(num: number): string {
   return str;
 }
 
-describe("CommitMessages.lengthValid function", () => {
+describe("CommitMessages.lengthValid(message)", () => {
   test("returns false when string length is less than 4 characters", () => {
     expect(CommitMessages["lengthValid"]("a aa")).toBe(false);
   });
@@ -37,7 +37,7 @@ describe("CommitMessages.lengthValid function", () => {
   });
 });
 
-describe("CommitMessages.testThreshold function", () => {
+describe("CommitMessages.testThreshold(grammarParam, threshold)", () => {
   test("should return true if number of false values in array is less than threshold", () => {
     expect(CommitMessages["testThreshold"]([true, true, false], 2)).toBe(true);
   });
@@ -51,7 +51,7 @@ describe("CommitMessages.testThreshold function", () => {
   });
 });
 
-describe("CommitMessages.calculateThreshold function", () => {
+describe("CommitMessages.calculateThreshold(totalCommits)", () => {
   describe("totalCommits === 5", (totalCommits = 5) => {
     test("RETURNS NUMBER: 2", () => {
       expect(CommitMessages["calculateThreshold"](totalCommits)).toBe(2);
@@ -77,7 +77,7 @@ describe("CommitMessages.calculateThreshold function", () => {
   });
 });
 
-describe("CommitMessages.isOneWord function", () => {
+describe("CommitMessages.isOneWord(title)", () => {
   test("default case", () => {
     expect(CommitMessages["isOneWord"]("one")).toBe(true);
     expect(CommitMessages["isOneWord"]("hello ")).toBe(true);

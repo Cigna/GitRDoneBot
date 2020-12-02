@@ -1,4 +1,12 @@
-import { BranchAge } from ".";
+import {
+  BranchAge,
+  CommitMessages,
+  DiffSize,
+  GitOuttaHere,
+  NewGitWhoDis,
+  SelfMerge,
+  TooManyAssigned,
+} from "../bot_actions";
 import { CustomConfig } from "../custom_config/custom_config";
 import {
   MergeRequestApi,
@@ -63,19 +71,6 @@ export class SuccessfulBotActionWithNothingToSay {
   constructor(readonly goodGitPractice: boolean) {}
 }
 
-// TODO: leave this here until all BotActions are refactored to determine whether or not it's needed
-// TODO: do we need to log to error here?
-// export class UnknownStateBotAction {
-//   unknownState = "Unknown state encountered while composing note:";
-//   constructor(
-//     readonly mrState: string,
-//     readonly goodGitPractice: boolean,
-//     readonly constructiveFeedbackOnlyToggle: boolean,
-//   ) {
-//     logger.error(this);
-//   }
-// }
-
 /**
  * Uses information from Merge Request webhook event to invoke Bot Actions. Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request.
  * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
@@ -107,25 +102,25 @@ export async function runBotActions(
     | CommentSuccessResponse
     | NoCommentNeededResponse;
 
-  // TODO: can we stick this in the individual BotActions that require it so it doesn't pollute the code here?
-  // NOTE: this hardcoded commitMessageConstructiveFeedbackOnlyToggle is a placeholder until
-  // correct customConfig functionality can be implemented
-  // const commitMessageConstructiveFeedbackOnlyToggle = false;
-
   // fire all Bot Actions in parallel - order does not matter
   const botActionResponses: Array<BotActionResponse> = await Promise.all([
-    // ALWAYS REQUIRES API CALL
     await BranchAge.analyze(state, api, customConfig.branchAge),
-    // await CommitMessages.analyze(
-    //   state,
-    //   api,
-    //   commitMessageConstructiveFeedbackOnlyToggle,
-    // ),
-    // await diffPromise,
-    // await gitOuttaHerePromise,
-    // await newGitWhoDisPromise,
-    // await selfMergePromise,
-    // await tooManyAssignedPromise,
+    await CommitMessages.analyze(state, api),
+    await DiffSize.analyze(state, api, customConfig.diffSize),
+    await GitOuttaHere.analyze(api),
+    await NewGitWhoDis.analyze(mergeRequestEvent.authorName),
+    await SelfMerge.analyze(
+      state,
+      api,
+      mergeRequestEvent.assigneeId,
+      mergeRequestEvent.authorId,
+    ),
+    await TooManyAssigned.analyze(
+      state,
+      api,
+      customConfig.tooManyMergeRequests,
+      mergeRequestEvent.assigneeId,
+    ),
   ]);
 
   const chattyBotActions: Array<SuccessfulBotAction> = [];

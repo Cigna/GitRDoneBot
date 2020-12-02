@@ -27,7 +27,7 @@ const trueCustomConfig = BotActionConfig.from(BranchAgeDefaults, {
   branchAgeAnalysis: { constructiveFeedbackOnlyToggle: true },
 });
 
-describe("getOldestCommit function", () => {
+describe("BranchAge.getOldestCommit(commits)", () => {
   test("should return the oldest commit", () => {
     const oldestCommit: GitLabCommit = BranchAge["getOldestCommit"](
       old_commits,
@@ -36,11 +36,14 @@ describe("getOldestCommit function", () => {
   });
 });
 
-describe("isBranchYoungerThanThreshold function", () => {
+describe("BranchAge.isBranchYoungerThanThreshold(oldestCommit, threshold)", () => {
   test("should return true if commit is younger than threshold", () => {
     expect(
       BranchAge["isBranchYoungerThanThreshold"](
-        { title: "3rd Oldest commit", created_at: new Date().toString() },
+        {
+          title: "3rd Oldest commit",
+          created_at: new Date().toString(),
+        },
         defaultConfig.threshold,
       ),
     ).toBe(true);
@@ -71,7 +74,7 @@ describe("isBranchYoungerThanThreshold function", () => {
   });
 });
 
-describe("BranchAgeNote.caseForBadMessage(goodGitPractice)", () => {
+describe("BranchAge.caseForBadMessage(goodGitPractice)", () => {
   describe("goodGitPractice === true", (goodGitPractice = true) => {
     test("RETURNS BOOLEAN: false", () => {
       expect(BranchAge.caseForBadMessage(goodGitPractice)).toBe(false);
@@ -85,7 +88,7 @@ describe("BranchAgeNote.caseForBadMessage(goodGitPractice)", () => {
   });
 });
 
-describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle, goodGitPractice)", () => {
+describe("BranchAge.caseForGoodMessage(state, goodGitPractice, constructiveFeedbackOnlyToggle)", () => {
   describe("'open' state", (state = "open") => {
     describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {
@@ -249,7 +252,7 @@ describe("BranchAgeNote.caseForGoodMessage(state, constructiveFeedbackOnlyToggle
   });
 });
 
-describe("BranchAgeNote.buildAction(state, goodGitPractice, constructiveFeedbackOnlyToggle)", () => {
+describe("BranchAge.buildSuccessfulAction(state, goodGitPractice, constructiveFeedbackOnlyToggle)", () => {
   describe("'open' state", (state = "open") => {
     describe("customConfig.constructiveFeedbackOnlyToggle === true", (customConfig = trueCustomConfig) => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {

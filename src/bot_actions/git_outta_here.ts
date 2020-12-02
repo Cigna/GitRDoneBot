@@ -3,6 +3,7 @@ import {
   SuccessfulGetResponse,
   AuthorizationFailureResponse,
 } from "../gitlab";
+import { Change } from "../interfaces";
 import {
   AuthorizationFailureBotAction,
   BotActionResponse,
@@ -20,6 +21,7 @@ export abstract class GitOuttaHere {
   static readonly badNote =
     ":loudspeaker: It looks like you've got log files in your repo. You should remove them from the repo and store them somewhere else. Make sure you update your [`.gitignore` file](https://help.github.com/en/github/using-git/ignoring-files)! ";
   static readonly hashtag = `[#GitOuttaHere](https://github.com/Cigna/GitRDoneBot#7-git-outta-here)`;
+
   /**
    * Constructs a complete Bot Action object by making an HTTP call and analyzing response.
    *
@@ -73,7 +75,7 @@ export abstract class GitOuttaHere {
    * @param changes array of GitLab Change objects
    * @returns true if none of the `changes` reflect an update to or creation of a log file
    * */
-  private static noLogFiles(changes: any[]): boolean {
+  private static noLogFiles(changes: Array<Change>): boolean {
     let thereAreNoLogs = true;
     if (changes.length !== 0) {
       const regex = new RegExp(/\.log$/);
@@ -91,7 +93,7 @@ export abstract class GitOuttaHere {
   static buildSuccessfulAction(
     goodGitPractice: boolean,
   ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action;
+    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
 
     switch (goodGitPractice) {
       case false: {

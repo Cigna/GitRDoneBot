@@ -4,7 +4,7 @@ import {
   NetworkFailureBotAction,
   SuccessfulBotAction,
   SuccessfulBotActionWithNothingToSay,
-} from ".";
+} from "./bot_action";
 import { BotActionConfig } from "../custom_config/bot_action_config";
 import {
   AuthorizationFailureResponse,
@@ -163,7 +163,7 @@ export abstract class DiffSize {
     goodGitPractice: boolean,
     constructiveFeedbackOnlyToggle: boolean,
   ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action;
+    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
 
     switch (true) {
       case this.caseForZeroMessage(

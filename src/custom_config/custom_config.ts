@@ -2,6 +2,7 @@ import {
   NetworkFailureResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
+  AuthorizationFailureResponse,
 } from "../gitlab";
 import { BotActionConfig } from "./bot_action_config";
 import {
@@ -21,7 +22,10 @@ export class CustomConfig {
     readonly diffSize: BotActionConfig,
     readonly tooManyMergeRequests: BotActionConfig,
     readonly updateMergeRequestComment: boolean,
-    readonly apiResponse: SuccessfulGetResponse | NetworkFailureResponse,
+    readonly apiResponse:
+      | AuthorizationFailureResponse
+      | NetworkFailureResponse
+      | SuccessfulGetResponse,
   ) {}
 
   /**
