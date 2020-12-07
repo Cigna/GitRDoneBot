@@ -7,12 +7,11 @@ import {
   not_found_404,
 } from "../helpers";
 import {
+  AuthorizationFailureBotAction,
   BotActionResponse,
   BranchAge,
-  CommonMessages,
-  FailedBotAction,
+  NetworkFailureBotAction,
   SuccessfulBotAction,
-  SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { BranchAgeDefaults } from "../../src/custom_config/action_config_defaults";
@@ -69,7 +68,7 @@ describe("Mock API Test: BranchAge Class", () => {
 
       test("mrNote is bad with hashtag", () => {
         expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
-          `${BranchAge.bad} ${BranchAge.hashtag}`,
+          `${BranchAge.badNote} ${BranchAge.hashtag}`,
         );
       });
 
@@ -109,7 +108,7 @@ describe("Mock API Test: BranchAge Class", () => {
 
       test("mrNote is good with hashtag", () => {
         expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
-          `${BranchAge.good} ${BranchAge.hashtag}`,
+          `${BranchAge.goodNote} ${BranchAge.hashtag}`,
         );
       });
     });
@@ -145,7 +144,7 @@ describe("Mock API Test: BranchAge Class", () => {
 
       test("mrNote is good with hashtag", () => {
         expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
-          `${BranchAge.good} ${BranchAge.hashtag}`,
+          `${BranchAge.goodNote} ${BranchAge.hashtag}`,
         );
       });
     });
@@ -175,7 +174,7 @@ describe("Mock API Test: BranchAge Class", () => {
 
       test("mrNote is good with hashtag", () => {
         expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
-          `${BranchAge.good} ${BranchAge.hashtag}`,
+          `${BranchAge.goodNote} ${BranchAge.hashtag}`,
         );
       });
     });
@@ -192,7 +191,9 @@ describe("Mock API Test: BranchAge Class", () => {
       });
 
       test("should return apiResponse state of FailedResponse", () => {
-        expect(branchAgeResponse.action).toBeInstanceOf(FailedBotAction);
+        expect(branchAgeResponse.action).toBeInstanceOf(
+          NetworkFailureBotAction,
+        );
       });
     });
   });
@@ -210,12 +211,8 @@ describe("Mock API Test: BranchAge Class", () => {
       });
 
       test("should return apiResponse state of FailedResponse", () => {
-        expect(branchAgeResponse.action).toBeInstanceOf(FailedBotAction);
-      });
-
-      test("mrNote === checkPermissionsMessage", () => {
-        expect((<FailedBotAction>branchAgeResponse.action).mrNote).toBe(
-          CommonMessages.checkPermissionsMessage,
+        expect(branchAgeResponse.action).toBeInstanceOf(
+          AuthorizationFailureBotAction,
         );
       });
     });
@@ -232,12 +229,8 @@ describe("Mock API Test: BranchAge Class", () => {
       });
 
       test("should return apiResponse state of FailedResponse", () => {
-        expect(branchAgeResponse.action).toBeInstanceOf(FailedBotAction);
-      });
-
-      test("mrNote === checkPermissionsMessage", () => {
-        expect((<FailedBotAction>branchAgeResponse.action).mrNote).toBe(
-          CommonMessages.checkPermissionsMessage,
+        expect(branchAgeResponse.action).toBeInstanceOf(
+          NetworkFailureBotAction,
         );
       });
     });
