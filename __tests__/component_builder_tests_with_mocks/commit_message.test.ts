@@ -4,8 +4,10 @@ import {
   mockGitLabCommit,
   createNGitLabCommits,
   internal_error_500,
+  unauthorized_401,
 } from "../helpers";
 import {
+  AuthorizationFailureBotAction,
   BotActionResponse,
   CommitMessages,
   NetworkFailureBotAction,
@@ -57,7 +59,7 @@ describe("Mock API Test: CommitMessages Class", () => {
   const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
 
   describe("open state", (state = "open") => {
-    describe("when there is a single commit", (constructiveFeedbackOnlyToggle = false) => {
+    describe("when there is a single commit", () => {
       let commitMessageResponse: BotActionResponse;
 
       beforeAll(async () => {
@@ -91,7 +93,7 @@ describe("Mock API Test: CommitMessages Class", () => {
       });
     });
 
-    describe("when total number of commits falls below dynamic calculation threshold", (constructiveFeedbackOnlyToggle = false) => {
+    describe("when total number of commits falls below dynamic calculation threshold", () => {
       let commitMessageResponse: BotActionResponse;
 
       beforeAll(async () => {
@@ -130,7 +132,7 @@ describe("Mock API Test: CommitMessages Class", () => {
       });
     });
 
-    describe("when total number of commits triggers dynamic calculation", (constructiveFeedbackOnlyToggle = false) => {
+    describe("when total number of commits triggers dynamic calculation", () => {
       let commitMessageResponse: BotActionResponse;
 
       beforeAll(async () => {
@@ -169,7 +171,7 @@ describe("Mock API Test: CommitMessages Class", () => {
       });
     });
 
-    describe("when the API request fails", (constructiveFeedbackOnlyToggle = false) => {
+    describe("when the API request fails due to network failure", () => {
       let commitMessageResponse: BotActionResponse;
 
       beforeAll(async () => {
@@ -179,14 +181,31 @@ describe("Mock API Test: CommitMessages Class", () => {
         commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return apiResponse state of FailedResponse", () => {
+      test("should return instance of NetworkFailureBotAction", () => {
         expect(commitMessageResponse.action).toBeInstanceOf(
           NetworkFailureBotAction,
         );
       });
     });
 
-    describe("when there are no commits", (constructiveFeedbackOnlyToggle = false) => {
+    describe("when the API request fails due to authorization failure", () => {
+      let commitMessageResponse: BotActionResponse;
+
+      beforeAll(async () => {
+        jest.clearAllMocks();
+        // @ts-ignore
+        api.getSingleMRCommits.mockResolvedValueOnce(unauthorized_401);
+        commitMessageResponse = await CommitMessages.analyze(state, api);
+      });
+
+      test("should return instance of AuthorizationFailureBotAction", () => {
+        expect(commitMessageResponse.action).toBeInstanceOf(
+          AuthorizationFailureBotAction,
+        );
+      });
+    });
+
+    describe("when there are no commits", () => {
       let commitMessageResponse: BotActionResponse;
 
       beforeAll(async () => {
@@ -196,7 +215,7 @@ describe("Mock API Test: CommitMessages Class", () => {
         commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
+      test("should return instance of SuccessfulBotAction", () => {
         expect(commitMessageResponse.action).toBeInstanceOf(
           SuccessfulBotAction,
         );
@@ -222,7 +241,7 @@ describe("Mock API Test: CommitMessages Class", () => {
       });
     });
 
-    describe("when there are too many one word commits", (constructiveFeedbackOnlyToggle = false) => {
+    describe("when there are too many one word commits", () => {
       let commitMessageResponse: BotActionResponse;
 
       beforeAll(async () => {
