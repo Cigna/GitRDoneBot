@@ -1,14 +1,13 @@
-import * as HttpStatus from "http-status-codes";
+import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
-  FailedResponse,
-  MergeRequestApi,
-  SuccessfulGetResponse,
-} from "../../src/gitlab";
-import { DiffSize, BotActionNote } from "../../src/bot_actions";
-import { not_found_404, fetch_network_error } from "../helpers";
+  AuthorizationFailureBotAction,
+  DiffSize,
+  NetworkFailureBotAction,
+  SuccessfulBotAction,
+} from "../../src/bot_actions";
+import { unauthorized_401, fetch_network_error } from "../helpers";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { DiffSizeDefaults } from "../../src/custom_config/action_config_defaults";
-import { DiffSizeNote } from "../../src/bot_actions/diff_size/diff_size_note";
 
 // TEST FIXTURES
 
@@ -69,82 +68,83 @@ jest.mock("../../src/gitlab/merge_request_api");
 describe("Mock API Test: DiffSize Class", () => {
   const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
 
-  describe("(Any state) 3XX-5XX response from GitLab", (state = "any") => {
+  describe("(Any state) When the API request fails due to authorization failure", (state = "any") => {
     let diffSizeResponse;
 
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(not_found_404);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig);
+      api.getSingleMRChanges.mockResolvedValue(unauthorized_401);
+      diffSizeResponse = await DiffSize.analyze(state, api, customConfig);
       done();
     });
 
-    test("should return apiResponse state of FailedResponse", async () => {
-      expect(diffSizeResponse.apiResponse).toBeInstanceOf(FailedResponse);
-    });
-
-    test("goodGitPractice is undefined", async () => {
-      expect(diffSizeResponse.goodGitPractice).toBe(undefined);
-    });
-
-    test("mrNote is checkPermissions", async () => {
-      expect(diffSizeResponse.mrNote).toBe(
-        BotActionNote.checkPermissionsMessage,
+    test("should return instance of AuthorizationFailureBotAction", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(
+        AuthorizationFailureBotAction,
       );
-    });
-
-    test("totalDiffs is default value -1", async () => {
-      const diffAnalysisResponse: DiffSize = await DiffSize.from(
-        state,
-        api,
-        customConfig,
-      );
-      expect(diffAnalysisResponse.totalDiffs).toBe(-1);
     });
   });
 
-  describe("(Open state) totalDiffs greater than 0 and less than threshold", (state = "open") => {
+  describe("(Any state) When the API request fails due to network failure", (state = "any") => {
+    let diffSizeResponse;
+
+    beforeAll(async (done) => {
+      jest.clearAllMocks();
+      // @ts-ignore
+      api.getSingleMRChanges.mockResolvedValue(fetch_network_error);
+      diffSizeResponse = await DiffSize.analyze(state, api, customConfig);
+      done();
+    });
+
+    test("should return instance of NetworkFailureBotAction", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(NetworkFailureBotAction);
+    });
+  });
+
+  describe("(Open state) When totalDiffs are greater than 0 and less than threshold", (state = "open") => {
     let diffSizeResponse;
 
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_between_zero_and_500);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig);
+      diffSizeResponse = await DiffSize.analyze(state, api, customConfig);
       done();
     });
 
-    test("should return apiResponse state of SuccessfulGetResponse", async () => {
-      expect(diffSizeResponse.apiResponse).toBeInstanceOf(
-        SuccessfulGetResponse,
-      );
+    test("should return instance of SuccessfulBotAction", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(SuccessfulBotAction);
     });
 
     test("goodGitPractice is true", async () => {
-      expect(diffSizeResponse.goodGitPractice).toBe(true);
+      expect(
+        (<SuccessfulBotAction>diffSizeResponse.action).goodGitPractice,
+      ).toBe(true);
     });
 
     test("mrNote is good with hashtag", async () => {
-      expect(diffSizeResponse.mrNote).toBe(
-        `${DiffSizeNote.good} ${DiffSizeNote.hashtag}`,
+      expect((<SuccessfulBotAction>diffSizeResponse.action).mrNote).toBe(
+        `${DiffSize.goodNote} ${DiffSize.hashtag}`,
       );
     });
 
     test("totalDiffs value is between 0 and threshold", async () => {
-      expect(diffSizeResponse.totalDiffs).toBeLessThan(customConfig.threshold);
-      expect(diffSizeResponse.totalDiffs).toBeGreaterThan(0);
+      expect(diffSizeResponse.computedValues["totalDiffs"]).toBeLessThan(
+        customConfig.threshold,
+      );
+      expect(diffSizeResponse.computedValues["totalDiffs"]).toBeGreaterThan(0);
     });
   });
 
-  describe("(Open state) totalDiffs equal to the threshold", (state = "open") => {
+  describe("(Open state) When totalDiffs are equal to the threshold", (state = "open") => {
     let diffSizeResponse;
 
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_between_zero_and_500);
-      diffSizeResponse = await DiffSize.from(
+      diffSizeResponse = await DiffSize.analyze(
         state,
         api,
         customConfigThresholdOne,
@@ -152,107 +152,91 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("should return apiResponse state of SuccessfulGetResponse", async () => {
-      expect(diffSizeResponse.apiResponse).toBeInstanceOf(
-        SuccessfulGetResponse,
-      );
+    test("should return instance of SuccessfulBotAction", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(SuccessfulBotAction);
     });
 
     test("goodGitPractice is true", async () => {
-      expect(diffSizeResponse.goodGitPractice).toBe(true);
+      expect(
+        (<SuccessfulBotAction>diffSizeResponse.action).goodGitPractice,
+      ).toBe(true);
     });
 
     test("mrNote is good with hashtag", async () => {
-      expect(diffSizeResponse.mrNote).toBe(
-        `${DiffSizeNote.good} ${DiffSizeNote.hashtag}`,
+      expect((<SuccessfulBotAction>diffSizeResponse.action).mrNote).toBe(
+        `${DiffSize.goodNote} ${DiffSize.hashtag}`,
       );
     });
 
     test("totalDiffs value is equal to the threshold", async () => {
-      expect(diffSizeResponse.totalDiffs).toEqual(
+      expect(diffSizeResponse.computedValues["totalDiffs"]).toEqual(
         customConfigThresholdOne.threshold,
       );
     });
   });
 
-  describe("(Open state) totalDiffs greater than threshold", (state = "open") => {
+  describe("(Open state) When totalDiffs are greater than threshold", (state = "open") => {
     let diffSizeResponse;
 
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_more_than_500);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig);
+      diffSizeResponse = await DiffSize.analyze(state, api, customConfig);
       done();
     });
-    test("should return apiResponse state of SuccessfulGetResponse", async () => {
-      expect(diffSizeResponse.apiResponse).toBeInstanceOf(
-        SuccessfulGetResponse,
-      );
+    test("should return instance of SuccessfulBotAction", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(SuccessfulBotAction);
     });
 
     test("goodGitPractice is false", async () => {
-      expect(diffSizeResponse.goodGitPractice).toBe(false);
+      expect(
+        (<SuccessfulBotAction>diffSizeResponse.action).goodGitPractice,
+      ).toBe(false);
     });
 
     test("mrNote is bad with hashtag", async () => {
-      expect(diffSizeResponse.mrNote).toBe(
-        `${DiffSizeNote.bad} ${DiffSizeNote.hashtag}`,
+      expect((<SuccessfulBotAction>diffSizeResponse.action).mrNote).toBe(
+        `${DiffSize.badNote} ${DiffSize.hashtag}`,
       );
     });
 
     test("totalDiffs value is greater than threshold", async () => {
-      expect(diffSizeResponse.totalDiffs).toBeGreaterThan(
+      expect(diffSizeResponse.computedValues["totalDiffs"]).toBeGreaterThan(
         customConfig.threshold,
       );
     });
   });
 
-  describe("(Open state) totalDiffs === 0", (state = "open") => {
+  describe("(Open state) When totalDiffs === 0", (state = "open") => {
     let diffSizeResponse;
 
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(changes_equal_zero);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig);
+      diffSizeResponse = await DiffSize.analyze(state, api, customConfig);
       done();
     });
 
-    test("should return apiResponse state of SuccessfulGetResponse", async () => {
-      expect(diffSizeResponse.apiResponse).toBeInstanceOf(
-        SuccessfulGetResponse,
-      );
+    test("should return instance of SuccessfulBotAction", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(SuccessfulBotAction);
     });
 
     test("goodGitPractice is true", async () => {
-      expect(diffSizeResponse.goodGitPractice).toBe(true);
+      expect(
+        (<SuccessfulBotAction>diffSizeResponse.action).goodGitPractice,
+      ).toBe(true);
     });
 
     test("mrNote is zeroline with hashtag", async () => {
-      expect(diffSizeResponse.mrNote).toBe(
-        `${DiffSizeNote.zeroLine} ${DiffSizeNote.hashtag}`,
+      expect((<SuccessfulBotAction>diffSizeResponse.action).mrNote).toBe(
+        `${DiffSize.zeroNote} ${DiffSize.hashtag}`,
       );
     });
 
     test("totalDiffs value is 0", async () => {
-      expect(diffSizeResponse.totalDiffs).toBe(0);
-    });
-  });
-
-  describe("(Open state) fetch network error", (state = "open") => {
-    let diffSizeResponse;
-
-    beforeAll(async (done) => {
-      jest.clearAllMocks();
-      // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(fetch_network_error);
-      diffSizeResponse = await DiffSize.from(state, api, customConfig);
-      done();
-    });
-
-    test("should return apiResponse state of FailedResponse", async () => {
-      expect(diffSizeResponse.apiResponse).toBeInstanceOf(FailedResponse);
+      expect(diffSizeResponse.computedValues["totalDiffs"]).toBe(0);
     });
   });
 });

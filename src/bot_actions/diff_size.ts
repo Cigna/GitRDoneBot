@@ -101,10 +101,8 @@ export abstract class DiffSize {
     if (changes.length !== 0) {
       const parsedDiffsArray: number[] = [];
       changes.map((change: Change) => {
-        if (change.hasOwnProperty("diff")) {
-          const parsedDiff = this.customParser(change.diff);
-          parsedDiffsArray.push(parsedDiff);
-        }
+        const parsedDiff = this.customParser(change.diff);
+        parsedDiffsArray.push(parsedDiff);
       });
 
       totalDiffs = parsedDiffsArray.reduce(
