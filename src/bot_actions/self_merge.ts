@@ -86,6 +86,7 @@ export abstract class SelfMerge {
         {
           assigneeId: assigneeId,
           authorId: authorId,
+          approversNeeded: approversNeeded,
         },
       );
     }
@@ -118,6 +119,7 @@ export abstract class SelfMerge {
             {
               assigneeId: assigneeId,
               authorId: authorId,
+              approversNeeded: approversNeeded,
             },
           );
         } else {
@@ -146,6 +148,7 @@ export abstract class SelfMerge {
               {
                 assigneeId: assigneeId,
                 authorId: authorId,
+                approversNeeded: approversNeeded,
               },
             );
           } else {
