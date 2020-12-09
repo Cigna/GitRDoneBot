@@ -1,23 +1,22 @@
 import * as HttpStatus from "http-status-codes";
-import {
-  FailedResponse,
-  MergeRequestApi,
-  NoRequestNeeded,
-  SuccessfulGetResponse,
-} from "../../src/gitlab";
+import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
   createNMergeRequestObjects,
-  not_found_404,
   fetch_network_error,
+  unauthorized_401,
 } from "../helpers";
-import { TooManyAssigned, BotActionNote } from "../../src/bot_actions";
+import {
+  AuthorizationFailureBotAction,
+  NetworkFailureBotAction,
+  SuccessfulBotAction,
+  SuccessfulBotActionWithNothingToSay,
+  TooManyAssigned,
+} from "../../src/bot_actions";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { TooManyAssignedDefaults } from "../../src/custom_config/action_config_defaults";
-import { TooManyAssignedNote } from "../../src/bot_actions/too_many_assigned/too_many_assigned_note";
 
 // TEST FIXTURES
 const customConfig = BotActionConfig.from(TooManyAssignedDefaults, {});
-const noRequestNeededResponse = new NoRequestNeeded();
 const defaultAssignedMRThreshold: number = 3;
 const getResponseWhereAssignedMRSBelowThreshold: SuccessfulGetResponse = new SuccessfulGetResponse(
   HttpStatus.OK,
@@ -45,14 +44,15 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
   );
   describe("Open State", (state = "open") => {
     describe("When too many assigned === false", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(
           getResponseWhereAssignedMRSBelowThreshold,
         );
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -61,32 +61,30 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
+      test("should return instance of SuccessfulBotActionWithNothingToSay", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithNothingToSay,
         );
       });
 
       test("should return goodGitPractice === true", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(true);
-      });
-
-      test("should return mrNote === noAction", async () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          BotActionNote.noActionMessage,
-        );
+        expect(
+          (<SuccessfulBotActionWithNothingToSay>tooManyAssignedResponse.action)
+            .goodGitPractice,
+        ).toBe(true);
       });
     });
 
     describe("When too many assigned === false and assigned MRs equals threshold", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(
           getResponseWhereAssignedMRSEqualsThreshold,
         );
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -95,32 +93,30 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
+      test("should return instance of SuccessfulBotActionWithNothingToSay", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithNothingToSay,
         );
       });
 
       test("should return goodGitPractice === true", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(true);
-      });
-
-      test("should return mrNote === noAction", async () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          BotActionNote.noActionMessage,
-        );
+        expect(
+          (<SuccessfulBotActionWithNothingToSay>tooManyAssignedResponse.action)
+            .goodGitPractice,
+        ).toBe(true);
       });
     });
 
     describe("When too many assigned === true", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(
           getResponseWhereAssignedMRSNotInThreshold,
         );
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -129,27 +125,30 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
+      test("should return instance of SuccessfulBotAction", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          SuccessfulBotAction,
         );
       });
 
       test("should return goodGitPractice === false", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(false);
+        expect(
+          (<SuccessfulBotAction>tooManyAssignedResponse.action).goodGitPractice,
+        ).toBe(false);
       });
 
-      test("should return mrNote === noAction", () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          `${TooManyAssignedNote.bad} ${TooManyAssignedNote.hashtag}`,
-        );
+      test("should return mrNote === bad", () => {
+        expect(
+          (<SuccessfulBotAction>tooManyAssignedResponse.action).mrNote,
+        ).toBe(`${TooManyAssigned.badNote} ${TooManyAssigned.hashtag}`);
       });
     });
 
     describe("When assigneeId === null", (assigneeId = null) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -157,31 +156,36 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
 
-        test("should return apiResponse state of NoRequestNeeded", () => {
-          expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-            NoRequestNeeded,
+        test("should return instance of SuccessfulBotActionWithNothingToSay", () => {
+          expect(tooManyAssignedResponse.action).toBeInstanceOf(
+            SuccessfulBotActionWithNothingToSay,
           );
         });
 
-        test("should return goodGitPractice === undefined", () => {
-          expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
+        test("should return statusCode 204 to indicated no API request needed", () => {
+          expect(tooManyAssignedResponse.statusCode).toBe(
+            HttpStatus.NO_CONTENT,
+          );
         });
 
-        test("should return mrNote === noAction", () => {
-          expect(tooManyAssignedResponse.mrNote).toBe(
-            BotActionNote.noActionMessage,
-          );
+        test("should return goodGitPractice === true", () => {
+          expect(
+            (<SuccessfulBotActionWithNothingToSay>(
+              tooManyAssignedResponse.action
+            )).goodGitPractice,
+          ).toBe(true);
         });
       });
     });
 
-    describe("When 3XX-5XX response received from GitLab", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+    describe("When the API request for getMergeRequestsByAssigneeId fails due to authorization failure", (assigneeId = 1) => {
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getMergeRequestsByAssigneeId.mockResolvedValue(not_found_404);
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        api.getMergeRequestsByAssigneeId.mockResolvedValue(unauthorized_401);
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -190,28 +194,21 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return apiResponse state of FailedResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          FailedResponse,
-        );
-      });
-      test("should return goodGitPractice === undefined", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
-      });
-      test("should return mrNote === checkPermissions", () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          BotActionNote.checkPermissionsMessage,
+      test("should return instance of AuthorizationFailureBotAction", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          AuthorizationFailureBotAction,
         );
       });
     });
 
-    describe("When fetch network error is received", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+    describe("When the API request for getMergeRequestsByAssigneeId fails due to network failure", (assigneeId = 1) => {
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(fetch_network_error);
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -219,9 +216,10 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return apiResponse state of FailedResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          FailedResponse,
+
+      test("should return instance of NetworkFailureBotAction", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          NetworkFailureBotAction,
         );
       });
     });
@@ -229,14 +227,15 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
 
   describe("Update State", (state = "update") => {
     describe("When too many assigned === false", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(
           getResponseWhereAssignedMRSBelowThreshold,
         );
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -244,30 +243,30 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
+      test("should return instance of SuccessfulBotActionWithNothingToSay", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithNothingToSay,
         );
       });
+
       test("should return goodGitPractice === true", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(true);
-      });
-      test("should return mrNote === noAction", () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          BotActionNote.noActionMessage,
-        );
+        expect(
+          (<SuccessfulBotActionWithNothingToSay>tooManyAssignedResponse.action)
+            .goodGitPractice,
+        ).toBe(true);
       });
     });
 
     describe("When too many assigned === true", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(
           getResponseWhereAssignedMRSNotInThreshold,
         );
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -275,25 +274,31 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
+
+      test("should return instance of SuccessfulBotAction", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          SuccessfulBotAction,
         );
       });
+
       test("should return goodGitPractice === false", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(false);
+        expect(
+          (<SuccessfulBotAction>tooManyAssignedResponse.action).goodGitPractice,
+        ).toBe(false);
       });
+
       test("should return mrNote === bad", () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          `${TooManyAssignedNote.bad} ${TooManyAssignedNote.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotAction>tooManyAssignedResponse.action).mrNote,
+        ).toBe(`${TooManyAssigned.badNote} ${TooManyAssigned.hashtag}`);
       });
     });
 
     describe("When assigneeId === null", (assigneeId = null) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -302,30 +307,32 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return apiResponse state of NoRequestNeeded", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          NoRequestNeeded,
+      test("should return instance of SuccessfulBotActionWithNothingToSay", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithNothingToSay,
         );
       });
 
-      test("should return goodGitPractice === undefined", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
+      test("should return statusCode 204 to indicated no API request needed", () => {
+        expect(tooManyAssignedResponse.statusCode).toBe(HttpStatus.NO_CONTENT);
       });
 
-      test("should return mrNote === noAction", () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          BotActionNote.noActionMessage,
-        );
+      test("should return goodGitPractice === true", () => {
+        expect(
+          (<SuccessfulBotActionWithNothingToSay>tooManyAssignedResponse.action)
+            .goodGitPractice,
+        ).toBe(true);
       });
     });
 
-    describe("When 3XX-5XX response received from GitLab", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+    describe("When the API request for getMergeRequestsByAssigneeId fails due to authorization failure", (assigneeId = 1) => {
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
-        api.getMergeRequestsByAssigneeId.mockResolvedValue(not_found_404);
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        api.getMergeRequestsByAssigneeId.mockResolvedValue(unauthorized_401);
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -334,28 +341,21 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return apiResponse state of FailedResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          FailedResponse,
-        );
-      });
-      test("should return goodGitPractice === undefined", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
-      });
-      test("should return mrNote === checkPermissions", () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          BotActionNote.checkPermissionsMessage,
+      test("should return instance of AuthorizationFailureBotAction", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          AuthorizationFailureBotAction,
         );
       });
     });
 
-    describe("When fetch network error is received", (assigneeId = 1) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+    describe("When the API request for getMergeRequestsByAssigneeId fails due to network failure", (assigneeId = 1) => {
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getMergeRequestsByAssigneeId.mockResolvedValue(fetch_network_error);
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -363,9 +363,10 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return apiResponse state of FailedResponse", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          FailedResponse,
+
+      test("should return instance of NetworkFailureBotAction", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          NetworkFailureBotAction,
         );
       });
     });
@@ -373,9 +374,10 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
 
   describe("Merge State", (state = "merge") => {
     describe("any property values", (assigneeId = null) => {
-      let tooManyAssignedResponse: TooManyAssigned;
+      let tooManyAssignedResponse;
+
       beforeAll(async (done) => {
-        tooManyAssignedResponse = await TooManyAssigned.from(
+        tooManyAssignedResponse = await TooManyAssigned.analyze(
           state,
           api,
           customConfig,
@@ -383,20 +385,21 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         );
         done();
       });
-      test("should return apiResponse state of NoRequestNeeded", () => {
-        expect(tooManyAssignedResponse.apiResponse).toBeInstanceOf(
-          NoRequestNeeded,
+      test("should return instance of SuccessfulBotActionWithNothingToSay", () => {
+        expect(tooManyAssignedResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithNothingToSay,
         );
       });
 
-      test("should return goodGitPractice === undefined", () => {
-        expect(tooManyAssignedResponse.goodGitPractice).toBe(undefined);
+      test("should return statusCode 204 to indicated no API request needed", () => {
+        expect(tooManyAssignedResponse.statusCode).toBe(HttpStatus.NO_CONTENT);
       });
 
-      test("should return mrNote === noAction", () => {
-        expect(tooManyAssignedResponse.mrNote).toBe(
-          BotActionNote.noActionMessage,
-        );
+      test("should return goodGitPractice === true", () => {
+        expect(
+          (<SuccessfulBotActionWithNothingToSay>tooManyAssignedResponse.action)
+            .goodGitPractice,
+        ).toBe(true);
       });
     });
   });

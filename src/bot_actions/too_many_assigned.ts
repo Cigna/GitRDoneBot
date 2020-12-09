@@ -87,9 +87,6 @@ export abstract class TooManyAssigned {
         this.botActionName,
         new NoRequestNeeded().statusCode,
         action,
-        {
-          assigneeId: assigneeId,
-        },
       );
     }
 
