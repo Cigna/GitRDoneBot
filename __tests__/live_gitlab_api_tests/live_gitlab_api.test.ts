@@ -8,6 +8,9 @@ import {
   GitLabCommit,
   ApprovalsResponse,
   LambdaResponse,
+  CommentSuccessResponse,
+  ErrorResponse,
+  IncorrectPermissionsResponse,
 } from "../../src/interfaces";
 import {
   mockNote,
@@ -21,13 +24,13 @@ import {
   mockGitLabWebhookEvent,
 } from "../helpers";
 import {
-  FailedResponse,
+  AuthorizationFailureResponse,
   MergeRequestApi,
+  NetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
 import { handleGitLabWebhook } from "../../handler";
-import { BotActionsResponse } from "../../src/merge_request";
 import * as mod from "../../handler";
 import * as jestPlugin from "serverless-jest-plugin";
 import { Context } from "aws-lambda";
@@ -118,7 +121,7 @@ beforeAll(async (done) => {
 
 describe("Live Integration Tests: mergeRequestApi.postEmoji", () => {
   describe("When GitLab API is called", () => {
-    let postEmojiResponse: SuccessfulPostORPutResponse | FailedResponse;
+    let postEmojiResponse: SuccessfulPostORPutResponse | NetworkFailureResponse;
 
     beforeAll(async (done) => {
       postEmojiResponse = await api.postEmoji("trophy");
@@ -132,7 +135,10 @@ describe("Live Integration Tests: mergeRequestApi.postEmoji", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getAllMRNotes", () => {
-  let getAllMRNotesResponse: SuccessfulGetResponse | FailedResponse;
+  let getAllMRNotesResponse:
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse;
   let resultNoteArray: Array<Note>;
 
   beforeAll(async (done) => {
@@ -177,7 +183,7 @@ describe("Live Integration Tests: mergeRequestApi.newMRNote", () => {
   describe("When GitLab API is called", () => {
     const NEW_NOTE_MESSAGE = "New note message";
 
-    let newMRNoteResponse: SuccessfulPostORPutResponse | FailedResponse;
+    let newMRNoteResponse: SuccessfulPostORPutResponse | NetworkFailureResponse;
 
     beforeAll(async (done) => {
       newMRNoteResponse = await api.newMRNote(NEW_NOTE_MESSAGE);
@@ -201,7 +207,9 @@ describe("Live Integration Tests: mergeRequestApi.editMRNote", () => {
   describe("When GitLab API is called", () => {
     const UPDATED_NOTE_MESSAGE = "New updated note message";
 
-    let editMRNoteResponse: SuccessfulPostORPutResponse | FailedResponse;
+    let editMRNoteResponse:
+      | SuccessfulPostORPutResponse
+      | NetworkFailureResponse;
 
     beforeAll(async (done) => {
       editMRNoteResponse = await api.editMRNote(
@@ -225,7 +233,10 @@ describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId",
   describe("Happy Path", () => {
     const THRESHOLD = 3;
 
-    let allMRSByAssigneeIDResponse: SuccessfulGetResponse | FailedResponse;
+    let allMRSByAssigneeIDResponse:
+      | SuccessfulGetResponse
+      | NetworkFailureResponse
+      | AuthorizationFailureResponse;
     let resultMRsByAssigneeID: Array<MergeRequest>;
 
     beforeAll(async (done) => {
@@ -264,7 +275,10 @@ describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId",
 });
 
 describe("Live Integration Tests: mergeRequestApi.getMRApprovalConfig", () => {
-  let getMRApprovalConfigResponse: SuccessfulGetResponse | FailedResponse;
+  let getMRApprovalConfigResponse:
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse;
   let resultMRApproval: ApprovalsResponse;
 
   beforeAll(async (done) => {
@@ -301,7 +315,10 @@ describe("Live Integration Tests: mergeRequestApi.getMRApprovalConfig", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMRChanges", () => {
-  let getSingleMRChangesResponse: SuccessfulGetResponse | FailedResponse;
+  let getSingleMRChangesResponse:
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse;
   let resultSingleMRChanges: { changes: Array<Change> };
 
   beforeAll(async (done) => {
@@ -337,7 +354,10 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMRChanges", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMRCommits", () => {
-  let getSingleMRCommitsResponse: SuccessfulGetResponse | FailedResponse;
+  let getSingleMRCommitsResponse:
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse;
   let resultSingleMRCommits: Array<GitLabCommit>;
 
   beforeAll(async (done) => {
@@ -370,7 +390,10 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMRCommits", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
-  let getSingleMRResponse: SuccessfulGetResponse | FailedResponse;
+  let getSingleMRResponse:
+    | SuccessfulGetResponse
+    | NetworkFailureResponse
+    | AuthorizationFailureResponse;
   let resultSingleMR;
 
   beforeAll(async (done) => {
@@ -422,16 +445,13 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
     response = await handleGitLabWebhook(openEvent);
     done();
   });
-  test("Open State: returns MergeRequestHandler response", () => {
-    expect(response).toBeInstanceOf(BotActionsResponse);
-    expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.statusCode,
-    );
+  test("Open State: returns CommentSuccessResponse", () => {
+    expect(response).toBeInstanceOf(CommentSuccessResponse);
   });
 });
 
 describe("Live Integration API Tests: handler.handleGitLabWebhook responses", () => {
-  test("Merged State: returns MergeRequestHandler response", async () => {
+  test.only("Merged State: returns CommentSuccessResponse", async () => {
     const mergedEvent = {
       body: JSON.stringify(
         mockGitLabWebhookEvent(
@@ -446,13 +466,10 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
     };
 
     const response = await handleGitLabWebhook(mergedEvent);
-    expect(response).toBeInstanceOf(BotActionsResponse);
-    expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.statusCode,
-    );
+    expect(response).toBeInstanceOf(CommentSuccessResponse);
   }, 30000);
 
-  test("Updated State: returns MergeRequestHandler response when toggle is true", async () => {
+  test("Updated State: returns CommentSuccessResponse when toggle is true", async () => {
     const updateEvent = {
       body: JSON.stringify(
         mockGitLabWebhookEvent(
@@ -466,10 +483,7 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
       ),
     };
     const response = await handleGitLabWebhook(updateEvent);
-    expect(response).toBeInstanceOf(BotActionsResponse);
-    expect([HttpStatus.OK, HttpStatus.MULTI_STATUS]).toContain(
-      response.statusCode,
-    );
+    expect(response).toBeInstanceOf(CommentSuccessResponse);
   }, 30000);
 });
 
@@ -484,7 +498,7 @@ describe("Live lambda handler response with mocked Infra (Error Cases)", () => {
     process.env.GITLAB_BOT_ACCOUNT_API_TOKEN = tempToken;
   });
 
-  test("Bad GitLab API token: returns 207 status from handler", () => {
+  test("Bad GitLab API token: returns IncorrectPermissionsResponse", () => {
     // test fixture needs to be created within test scope to make sure it has access to dynamic values
     openEvent = {
       body: JSON.stringify(
@@ -500,7 +514,7 @@ describe("Live lambda handler response with mocked Infra (Error Cases)", () => {
     };
 
     return wrapped.runHandler(openEvent, context, null).then((response) => {
-      expect(response.statusCode).toBe(HttpStatus.MULTI_STATUS);
+      expect(response).toBeInstanceOf(IncorrectPermissionsResponse);
     });
   }, 30000);
 });

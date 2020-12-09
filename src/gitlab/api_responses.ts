@@ -102,7 +102,10 @@ export function BuildGetResponse<T>(
 
   if (ApiResponse.computeSuccess(statusCode) && body !== undefined) {
     response = new SuccessfulGetResponse(statusCode, body);
-  } else if (statusCode === (HttpStatus.FORBIDDEN || HttpStatus.UNAUTHORIZED)) {
+  } else if (
+    statusCode === HttpStatus.UNAUTHORIZED ||
+    statusCode === HttpStatus.FORBIDDEN
+  ) {
     response = new AuthorizationFailureResponse(statusCode);
   } else {
     response = new NetworkFailureResponse(statusCode);

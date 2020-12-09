@@ -18,8 +18,8 @@
                 "--runInBand",
                 "--verbose",
                 // "${current relative file path of test you want to run}"
-                "__tests__/component_builder_tests_with_mocks/diff_size.test.ts",
-                "__tests__/unit_tests/diff_size.test.ts"
+                "__tests__/unit_tests/custom_config",
+                "__tests__/component_builder_tests_with_mocks/custom_config.test.ts"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
