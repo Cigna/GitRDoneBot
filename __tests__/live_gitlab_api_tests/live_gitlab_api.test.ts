@@ -1,5 +1,4 @@
 import * as request from "supertest";
-import * as HttpStatus from "http-status-codes";
 import {
   Note,
   User,
@@ -7,9 +6,7 @@ import {
   Change,
   GitLabCommit,
   ApprovalsResponse,
-  LambdaResponse,
   CommentSuccessResponse,
-  ErrorResponse,
   IncorrectPermissionsResponse,
 } from "../../src/interfaces";
 import {
@@ -24,9 +21,7 @@ import {
   mockGitLabWebhookEvent,
 } from "../helpers";
 import {
-  AuthorizationFailureResponse,
   MergeRequestApi,
-  NetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
@@ -91,7 +86,6 @@ const mockCommitInstance: GitLabCommit = mockGitLabCommit(
 const commitProperties = Object.keys(mockCommitInstance);
 
 let PROJECT_ID: number;
-let EDIT_MR_NOTE_ID: number;
 let api: MergeRequestApi;
 let openEvent: any;
 
@@ -115,42 +109,25 @@ beforeAll(async (done) => {
   );
   await cleanUpEmojis(api);
   await cleanUpMRNotes(api);
-
   done();
 }, 50000);
 
 describe("Live Integration Tests: mergeRequestApi.postEmoji", () => {
-  describe("When GitLab API is called", () => {
-    let postEmojiResponse: SuccessfulPostORPutResponse | NetworkFailureResponse;
-
-    beforeAll(async (done) => {
-      postEmojiResponse = await api.postEmoji("trophy");
-      done();
-    });
-
-    test("request is successful", () => {
-      expect(postEmojiResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
-    });
+  test("SuccessfulPostORPutResponse is received", async () => {
+    const postEmojiResponse = await api.postEmoji("trophy");
+    expect(postEmojiResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
   });
 });
 
 describe("Live Integration Tests: mergeRequestApi.getAllMRNotes", () => {
-  let getAllMRNotesResponse:
-    | SuccessfulGetResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse;
   let resultNoteArray: Array<Note>;
 
-  beforeAll(async (done) => {
-    getAllMRNotesResponse = await api.getAllMRNotes(1);
-    if (getAllMRNotesResponse instanceof SuccessfulGetResponse) {
-      resultNoteArray = getAllMRNotesResponse.result;
-    }
-    done();
-  });
-
   describe("When GitLab API is called", () => {
-    test("request is successful", () => {
+    test("SuccessfulGetResponse is received", async () => {
+      const getAllMRNotesResponse = await api.getAllMRNotes(1);
+      if (getAllMRNotesResponse instanceof SuccessfulGetResponse) {
+        resultNoteArray = getAllMRNotesResponse.result;
+      }
       expect(getAllMRNotesResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
   });
@@ -179,118 +156,66 @@ describe("Live Integration Tests: mergeRequestApi.getAllMRNotes", () => {
   );
 });
 
-describe("Live Integration Tests: mergeRequestApi.newMRNote", () => {
-  describe("When GitLab API is called", () => {
-    const NEW_NOTE_MESSAGE = "New note message";
-
-    let newMRNoteResponse: SuccessfulPostORPutResponse | NetworkFailureResponse;
-
-    beforeAll(async (done) => {
-      newMRNoteResponse = await api.newMRNote(NEW_NOTE_MESSAGE);
+describe("Live Integration Tests: mergeRequestApi.newMRNote & mergeRequestApi.editMRNote", () => {
+  let EDIT_MR_NOTE_ID: number;
+  describe("When posting NEW note", (message = "New note message") => {
+    test("SuccessfulPostORPutResponse is received", async () => {
+      const newMRNoteResponse = await api.newMRNote(message);
       if (newMRNoteResponse instanceof SuccessfulPostORPutResponse) {
         EDIT_MR_NOTE_ID = newMRNoteResponse.id;
       }
-      done();
-    });
-
-    test("request is successful", () => {
       expect(newMRNoteResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
     });
-
-    test("note id is returned", () => {
-      expect(EDIT_MR_NOTE_ID).not.toBe(-1);
-    });
   });
-});
 
-describe("Live Integration Tests: mergeRequestApi.editMRNote", () => {
-  describe("When GitLab API is called", () => {
-    const UPDATED_NOTE_MESSAGE = "New updated note message";
-
-    let editMRNoteResponse:
-      | SuccessfulPostORPutResponse
-      | NetworkFailureResponse;
-
-    beforeAll(async (done) => {
-      editMRNoteResponse = await api.editMRNote(
-        EDIT_MR_NOTE_ID,
-        UPDATED_NOTE_MESSAGE,
-      );
-      done();
-    });
-
-    test("request is successful", () => {
+  describe("When posting UPDATED note", (message = "Updated note message") => {
+    test("SuccessfulPostORPutResponse is received", async () => {
+      const editMRNoteResponse = await api.editMRNote(EDIT_MR_NOTE_ID, message);
       expect(editMRNoteResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
     });
-
-    test("note id is returned", () => {
-      expect(EDIT_MR_NOTE_ID).not.toBe(-1);
-    });
   });
 });
 
-describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId", () => {
-  describe("Happy Path", () => {
-    const THRESHOLD = 3;
+describe("Live Integration Tests: mergeRequestApi.getMergeRequestsByAssigneeId", (threshold = 3) => {
+  let resultMRsByAssigneeID: Array<MergeRequest>;
 
-    let allMRSByAssigneeIDResponse:
-      | SuccessfulGetResponse
-      | NetworkFailureResponse
-      | AuthorizationFailureResponse;
-    let resultMRsByAssigneeID: Array<MergeRequest>;
-
-    beforeAll(async (done) => {
-      allMRSByAssigneeIDResponse = await api.getMergeRequestsByAssigneeId(
+  describe("When GitLab API is called", () => {
+    test("SuccessfulGetResponse is received", async () => {
+      const allMRSByAssigneeIDResponse = await api.getMergeRequestsByAssigneeId(
         GRDB_SVP_USER_ID,
-        THRESHOLD,
+        threshold,
       );
       if (allMRSByAssigneeIDResponse instanceof SuccessfulGetResponse) {
         resultMRsByAssigneeID = allMRSByAssigneeIDResponse.result;
       }
-      done();
+      expect(allMRSByAssigneeIDResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
-
-    describe("When GitLab API is called", () => {
-      test("request is successful", () => {
-        expect(allMRSByAssigneeIDResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
-        );
-      });
-    });
-
-    describe.each(mergeRequestProperties)(
-      "API response contains property %p and it is the correct type",
-      (expectedProperty) => {
-        test("for each merge request object", () => {
-          resultMRsByAssigneeID.forEach((mr) => {
-            expect(mr[expectedProperty]).toBeDefined();
-            expect(typeof mr[expectedProperty]).toEqual(
-              typeof mockMergeRequestInstance[expectedProperty],
-            );
-          });
-        });
-      },
-    );
   });
+
+  describe.each(mergeRequestProperties)(
+    "API response contains property %p and it is the correct type",
+    (expectedProperty) => {
+      test("for each merge request object", () => {
+        resultMRsByAssigneeID.forEach((mr) => {
+          expect(mr[expectedProperty]).toBeDefined();
+          expect(typeof mr[expectedProperty]).toEqual(
+            typeof mockMergeRequestInstance[expectedProperty],
+          );
+        });
+      });
+    },
+  );
 });
 
 describe("Live Integration Tests: mergeRequestApi.getMRApprovalConfig", () => {
-  let getMRApprovalConfigResponse:
-    | SuccessfulGetResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse;
   let resultMRApproval: ApprovalsResponse;
 
-  beforeAll(async (done) => {
-    getMRApprovalConfigResponse = await api.getMRApprovalConfig();
-    if (getMRApprovalConfigResponse instanceof SuccessfulGetResponse) {
-      resultMRApproval = getMRApprovalConfigResponse.result;
-    }
-    done();
-  });
-
   describe("When GitLab API is called", () => {
-    test("request is successful", () => {
+    test("SuccessfulGetResponse is received", async () => {
+      const getMRApprovalConfigResponse = await api.getMRApprovalConfig();
+      if (getMRApprovalConfigResponse instanceof SuccessfulGetResponse) {
+        resultMRApproval = getMRApprovalConfigResponse.result;
+      }
       expect(getMRApprovalConfigResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
 
@@ -315,21 +240,14 @@ describe("Live Integration Tests: mergeRequestApi.getMRApprovalConfig", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMRChanges", () => {
-  let getSingleMRChangesResponse:
-    | SuccessfulGetResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse;
   let resultSingleMRChanges: { changes: Array<Change> };
 
-  beforeAll(async (done) => {
-    getSingleMRChangesResponse = await api.getSingleMRChanges();
-    if (getSingleMRChangesResponse instanceof SuccessfulGetResponse) {
-      resultSingleMRChanges = getSingleMRChangesResponse.result;
-    }
-    done();
-  });
   describe("When GitLab API is called", () => {
-    test("request is successful", () => {
+    test("SuccessfulGetResponse is received", async () => {
+      const getSingleMRChangesResponse = await api.getSingleMRChanges();
+      if (getSingleMRChangesResponse instanceof SuccessfulGetResponse) {
+        resultSingleMRChanges = getSingleMRChangesResponse.result;
+      }
       expect(getSingleMRChangesResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
 
@@ -354,22 +272,14 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMRChanges", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMRCommits", () => {
-  let getSingleMRCommitsResponse:
-    | SuccessfulGetResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse;
   let resultSingleMRCommits: Array<GitLabCommit>;
 
-  beforeAll(async (done) => {
-    getSingleMRCommitsResponse = await api.getSingleMRCommits();
-    if (getSingleMRCommitsResponse instanceof SuccessfulGetResponse) {
-      resultSingleMRCommits = getSingleMRCommitsResponse.result;
-    }
-    done();
-  });
-
   describe("When GitLab API is called", () => {
-    test("request is successful", () => {
+    test("SuccessfulGetResponse is received", async () => {
+      const getSingleMRCommitsResponse = await api.getSingleMRCommits();
+      if (getSingleMRCommitsResponse instanceof SuccessfulGetResponse) {
+        resultSingleMRCommits = getSingleMRCommitsResponse.result;
+      }
       expect(getSingleMRCommitsResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
   });
@@ -390,21 +300,14 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMRCommits", () => {
 });
 
 describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
-  let getSingleMRResponse:
-    | SuccessfulGetResponse
-    | NetworkFailureResponse
-    | AuthorizationFailureResponse;
   let resultSingleMR;
 
-  beforeAll(async (done) => {
-    getSingleMRResponse = await api.getSingleMR();
-    if (getSingleMRResponse instanceof SuccessfulGetResponse) {
-      resultSingleMR = getSingleMRResponse.result;
-    }
-    done();
-  });
   describe("When GitLab API is called", () => {
-    test("request is successful", () => {
+    test("SuccessfulGetResponse is received", async () => {
+      const getSingleMRResponse = await api.getSingleMR();
+      if (getSingleMRResponse instanceof SuccessfulGetResponse) {
+        resultSingleMR = getSingleMRResponse.result;
+      }
       expect(getSingleMRResponse).toBeInstanceOf(SuccessfulGetResponse);
     });
 
@@ -427,9 +330,7 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
 });
 
 describe("Live Integration API Tests: handler.handleGitLabWebhook responses", () => {
-  let response: LambdaResponse;
-
-  beforeAll(async (done) => {
+  test("Open State: returns CommentSuccessResponse", async () => {
     const openEvent = {
       body: JSON.stringify(
         mockGitLabWebhookEvent(
@@ -442,59 +343,19 @@ describe("Live Integration API Tests: handler.handleGitLabWebhook responses", ()
         ),
       ),
     };
-    response = await handleGitLabWebhook(openEvent);
-    done();
-  });
-  test("Open State: returns CommentSuccessResponse", () => {
+    const response = await handleGitLabWebhook(openEvent);
     expect(response).toBeInstanceOf(CommentSuccessResponse);
   });
-});
-
-describe("Live Integration API Tests: handler.handleGitLabWebhook responses", () => {
-  test.only("Merged State: returns CommentSuccessResponse", async () => {
-    const mergedEvent = {
-      body: JSON.stringify(
-        mockGitLabWebhookEvent(
-          USER_ID,
-          PROJECT_ID,
-          null,
-          MERGE_REQ_ID,
-          "merge",
-          "merge_request",
-        ),
-      ),
-    };
-
-    const response = await handleGitLabWebhook(mergedEvent);
-    expect(response).toBeInstanceOf(CommentSuccessResponse);
-  }, 30000);
-
-  test("Updated State: returns CommentSuccessResponse when toggle is true", async () => {
-    const updateEvent = {
-      body: JSON.stringify(
-        mockGitLabWebhookEvent(
-          USER_ID,
-          PROJECT_ID,
-          null,
-          MERGE_REQ_ID,
-          "update",
-          "merge_request",
-        ),
-      ),
-    };
-    const response = await handleGitLabWebhook(updateEvent);
-    expect(response).toBeInstanceOf(CommentSuccessResponse);
-  }, 30000);
 });
 
 describe("Live lambda handler response with mocked Infra (Error Cases)", () => {
   let tempToken = process.env.GITLAB_BOT_ACCOUNT_API_TOKEN;
 
-  beforeAll(() => {
+  beforeEach(() => {
     process.env.GITLAB_BOT_ACCOUNT_API_TOKEN = "BAD_TOKEN";
   });
 
-  afterAll(() => {
+  afterEach(() => {
     process.env.GITLAB_BOT_ACCOUNT_API_TOKEN = tempToken;
   });
 
