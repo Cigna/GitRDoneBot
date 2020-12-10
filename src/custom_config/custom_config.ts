@@ -1,5 +1,5 @@
 import {
-  NetworkFailureResponse,
+  NotFoundORNetworkFailureResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
   AuthorizationFailureResponse,
@@ -24,7 +24,7 @@ export class CustomConfig {
     readonly updateMergeRequestComment: boolean,
     readonly apiResponse:
       | AuthorizationFailureResponse
-      | NetworkFailureResponse
+      | NotFoundORNetworkFailureResponse
       | SuccessfulGetResponse,
   ) {}
 

@@ -44,12 +44,11 @@ export class SuccessfulGetResponse extends ApiResponse {
 /**
  * Subclass of ApiResponse. Used for all API requests that respond with codes indicating network failure.
  */
-export class NetworkFailureResponse extends ApiResponse {
-  // unique property to ensure safe static type-checking
-  // required due to how TS implements structural subtyping
-  private _networkFailure = true;
+export class NotFoundORNetworkFailureResponse extends ApiResponse {
+  readonly isNotFound: boolean;
   constructor(readonly statusCode: number) {
     super(statusCode);
+    this.isNotFound = statusCode === HttpStatus.NOT_FOUND;
   }
 }
 
@@ -96,7 +95,7 @@ export function BuildGetResponse<T>(
   body: T[] | T | undefined,
 ):
   | SuccessfulGetResponse
-  | NetworkFailureResponse
+  | NotFoundORNetworkFailureResponse
   | AuthorizationFailureResponse {
   let response;
 
@@ -108,7 +107,7 @@ export function BuildGetResponse<T>(
   ) {
     response = new AuthorizationFailureResponse(statusCode);
   } else {
-    response = new NetworkFailureResponse(statusCode);
+    response = new NotFoundORNetworkFailureResponse(statusCode);
   }
   return response;
 }
@@ -121,7 +120,7 @@ export function BuildGetResponse<T>(
 export function BuildPostORPutResponse(
   statusCode: number,
   body?: any,
-): SuccessfulPostORPutResponse | NetworkFailureResponse {
+): SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse {
   let response;
 
   if (
@@ -131,7 +130,7 @@ export function BuildPostORPutResponse(
   ) {
     response = new SuccessfulPostORPutResponse(statusCode, body.id);
   } else {
-    response = new NetworkFailureResponse(statusCode);
+    response = new NotFoundORNetworkFailureResponse(statusCode);
   }
   return response;
 }

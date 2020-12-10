@@ -1,6 +1,6 @@
 import {
   MergeRequestApi,
-  NetworkFailureResponse,
+  NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
 import { not_found_404 } from "../helpers";
@@ -228,11 +228,15 @@ describe("Mock API Test: CustomConfig Class", () => {
       done();
     });
 
-    // TODO: Should we add another response state specifically to capture 404? This isn't really a network failure
-    test("should return apiResponse state of NetworkFailureResponse", () => {
+    test("should return apiResponse state of NotFoundORNotFoundORNetworkFailureResponse", () => {
       expect(customConfigResponse.apiResponse).toBeInstanceOf(
-        NetworkFailureResponse,
+        NotFoundORNetworkFailureResponse,
       );
+      expect(
+        (<NotFoundORNetworkFailureResponse>(
+          customConfigResponse.apiResponse
+        )).isNotFound,
+      ).toBe(true);
     });
 
     test("branchAge uses default values when custom values do not exist", () => {

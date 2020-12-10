@@ -1,7 +1,7 @@
 import * as HttpStatus from "http-status-codes";
 import {
   MergeRequestApi,
-  NetworkFailureResponse,
+  NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
@@ -128,7 +128,7 @@ describe("Mock API Test: Comment Class", () => {
 
       // NOTE: This function should never be invoked when state === update && updateToggle === false
       describe("When updateToggle === false", (updateToggle = false) => {
-        test("Unknown State will be encountered and NetworkFailureResponse will be returned", async () => {
+        test("Unknown State will be encountered and NotFoundORNetworkFailureResponse will be returned", async () => {
           const commentResponse = await BotComment.post(
             api,
             state,
@@ -136,7 +136,9 @@ describe("Mock API Test: Comment Class", () => {
             sampleMessage,
           );
 
-          expect(commentResponse).toBeInstanceOf(NetworkFailureResponse);
+          expect(commentResponse).toBeInstanceOf(
+            NotFoundORNetworkFailureResponse,
+          );
           expect(api.newMRNote).toHaveBeenCalledTimes(0);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);

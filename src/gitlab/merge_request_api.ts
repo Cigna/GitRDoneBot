@@ -1,7 +1,7 @@
 import { URI } from "./uri";
 import {
   AuthorizationFailureResponse,
-  NetworkFailureResponse,
+  NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "./api_responses";
@@ -35,7 +35,7 @@ export class MergeRequestApi {
 
   public postEmoji(
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
+  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makePostRequest(uri, {
       name: qs,
@@ -47,7 +47,7 @@ export class MergeRequestApi {
     awardId: number,
   ): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forSingleEmoji(awardId);
@@ -57,7 +57,7 @@ export class MergeRequestApi {
   /** HELPER METHOD FOR TESTS ONLY */
   public getAllEmojis(): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forEmojis();
@@ -75,7 +75,7 @@ export class MergeRequestApi {
     page: number,
   ): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forNotesFilterByPage(page);
@@ -85,14 +85,14 @@ export class MergeRequestApi {
   public editMRNote(
     noteId: number,
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
+  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.makePutRequest(uri, { body: qs });
   }
 
   public newMRNote(
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
+  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
     const uri: string = this.uriBuilder.forNotes();
     return this.fetchWrapper.makePostRequest(uri, { body: qs });
   }
@@ -107,7 +107,7 @@ export class MergeRequestApi {
     noteId: number,
   ): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
@@ -121,7 +121,7 @@ export class MergeRequestApi {
     threshold: number,
   ): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forMRsFilterByAssigneeId(
@@ -133,7 +133,7 @@ export class MergeRequestApi {
 
   public getMRApprovalConfig(): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forMRApprovals();
@@ -143,7 +143,7 @@ export class MergeRequestApi {
   // this method is used by multiple Bot Actions, so the first successful response is cached
   public async getSingleMRChanges(): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forMRChanges();
@@ -159,7 +159,7 @@ export class MergeRequestApi {
   // this method is used by multiple Bot Actions, so the first successful response is cached
   public async getSingleMRCommits(): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forSingleMRCommits();
@@ -174,7 +174,7 @@ export class MergeRequestApi {
 
   public getSingleMR(): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forSingleMR();
@@ -185,7 +185,7 @@ export class MergeRequestApi {
 
   public getConfigurationFile(): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     const uri: string = this.uriBuilder.forSingleProjectRepoRawConfigFile();

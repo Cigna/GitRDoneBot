@@ -3,7 +3,7 @@ import * as HttpStatus from "http-status-codes";
 import { BuildGetResponse, BuildPostORPutResponse } from ".";
 import {
   AuthorizationFailureResponse,
-  NetworkFailureResponse,
+  NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "./api_responses";
@@ -49,7 +49,7 @@ export class FetchWrapper {
     uri: string,
   ): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     let response;
@@ -75,7 +75,7 @@ export class FetchWrapper {
   public async makePutRequest(
     uri: string,
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
+  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
     let response;
     const putOptions = {
       body: JSON.stringify(qs),
@@ -102,7 +102,7 @@ export class FetchWrapper {
   public async makePostRequest(
     uri: string,
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
+  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
     let response;
     const postOptions = {
       body: JSON.stringify(qs),
@@ -138,7 +138,7 @@ export class FetchWrapper {
     uri: string,
   ): Promise<
     | SuccessfulGetResponse
-    | NetworkFailureResponse
+    | NotFoundORNetworkFailureResponse
     | AuthorizationFailureResponse
   > {
     let response;

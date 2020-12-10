@@ -1,7 +1,7 @@
 import {
   MergeRequestApi,
   SuccessfulGetResponse,
-  NetworkFailureResponse,
+  NotFoundORNetworkFailureResponse,
   SuccessfulPostORPutResponse,
 } from "../gitlab";
 import { Note } from "../interfaces";
@@ -42,8 +42,10 @@ export abstract class BotComment {
     state: string,
     updateToggle: boolean,
     comment: string,
-  ): Promise<SuccessfulPostORPutResponse | NetworkFailureResponse> {
-    let response: SuccessfulPostORPutResponse | NetworkFailureResponse;
+  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
+    let response:
+      | SuccessfulPostORPutResponse
+      | NotFoundORNetworkFailureResponse;
 
     switch (true) {
       case this.caseForNewNote(state, updateToggle): {
@@ -60,7 +62,7 @@ export abstract class BotComment {
         break;
       }
       default: {
-        response = new NetworkFailureResponse(500);
+        response = new NotFoundORNetworkFailureResponse(500);
         logger.error(`comment.post: Encountered Unknown State`);
       }
     }

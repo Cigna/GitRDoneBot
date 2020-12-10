@@ -10,7 +10,7 @@ import {
 import { CustomConfig } from "../custom_config/custom_config";
 import {
   MergeRequestApi,
-  NetworkFailureResponse,
+  NotFoundORNetworkFailureResponse,
   SuccessfulPostORPutResponse,
 } from "../gitlab";
 import {
@@ -169,14 +169,14 @@ export async function runBotActions(
       // POST logic must be performed only after all Bot Action promises have resolved
       const commentResponse:
         | SuccessfulPostORPutResponse
-        | NetworkFailureResponse = await BotComment.post(
+        | NotFoundORNetworkFailureResponse = await BotComment.post(
         api,
         state,
         customConfig.updateMergeRequestComment,
         note,
       );
 
-      if (commentResponse instanceof NetworkFailureResponse) {
+      if (commentResponse instanceof NotFoundORNetworkFailureResponse) {
         lambdaResponse = new CommentFailedResponse(
           mergeRequestEvent,
           customConfig,
