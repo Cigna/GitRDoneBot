@@ -1,4 +1,4 @@
-import { URI } from "../../../src/gitlab";
+import { URI } from "../../src/gitlab";
 
 const GITLAB_BASE_URI = "fake-uri";
 const uriBuilder = new URI(GITLAB_BASE_URI, 0, 1);

@@ -17,9 +17,7 @@
                 "${workspaceRoot}/node_modules/.bin/jest", 
                 "--runInBand",
                 "--verbose",
-                // "${current relative file path of test you want to run}"
-                "__tests__/unit_tests/custom_config",
-                "__tests__/component_builder_tests_with_mocks/custom_config.test.ts"
+                "${current relative file path of test you want to run}"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
