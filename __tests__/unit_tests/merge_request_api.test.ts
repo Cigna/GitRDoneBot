@@ -2,7 +2,7 @@ import {
   AuthorizationFailureResponse,
   MergeRequestApi,
   SuccessfulGetResponse,
-} from "../../src/gitlab/";
+} from "../../src/gitlab";
 
 jest.mock("../../src/gitlab/fetch_wrapper");
 

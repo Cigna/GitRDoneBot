@@ -115,7 +115,7 @@ export function BuildGetResponse<T>(
 /**
  * @param statusCode HTTP status code
  * @param body (Optional) Data payload received from HTTP PUT/POST request
- * @returns `SuccessfulPostORPutResponse` or `FailedResponse`
+ * @returns `SuccessfulPostORPutResponse` or `NotFoundORNetworkFailureResponse`
  */
 export function BuildPostORPutResponse(
   statusCode: number,
