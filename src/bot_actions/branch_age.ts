@@ -14,8 +14,8 @@ import {
 } from "./bot_action";
 
 /**
- * This class extends the `BotActionNote` class by analyzing different state combinations unique to the Branch Age action.
- * Each instance of this class contains a message string that provides feedback to the end-user about the age of the commits contained in the GitLab Merge Request.
+ * This Bot Action class analyzes the age of the Commits contained in the GitLab Merge Request,
+ * and determines what, if any, feedback to provide to user.
  */
 export abstract class BranchAge {
   static readonly botActionName = "BranchAge";
@@ -27,6 +27,10 @@ export abstract class BranchAge {
     `You should try and merge more frequently to keep your commits on branches fresh.`;
   static readonly hashtag = `[#BranchAgeAnalysis](https://github.com/Cigna/GitRDoneBot#2-branch-age)`;
 
+  /**
+   * @param commits Array of all Commits associated with the Merge Request
+   * @returns the oldest Commit in the array
+   */
   static getOldestCommit(commits: Array<GitLabCommit>): GitLabCommit {
     const oldestCommit: GitLabCommit = commits.reduce(
       (prevCommit, currCommit) => {
@@ -39,6 +43,11 @@ export abstract class BranchAge {
     return oldestCommit;
   }
 
+  /**
+   * @param oldestCommit a single Commit object
+   * @param threshold the number of days to compare the age of the Commit to
+   * @returns `true` if age of oldestCommit is less than threshold
+   */
   static isBranchYoungerThanThreshold(
     oldestCommit: GitLabCommit,
     threshold: number,
@@ -50,6 +59,12 @@ export abstract class BranchAge {
     return Math.floor(oldestCommitAge / 8.64e7) <= threshold;
   }
 
+  /**
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param api an instance of `MergeRequestApi`
+   * @param customConfig an instance of `BotActionConfig`
+   * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Branch Age analysis
+   */
   static async analyze(
     state: string,
     api: MergeRequestApi,
@@ -124,6 +139,13 @@ export abstract class BranchAge {
     return goodGitPractice === false;
   }
 
+  /**
+   * Invoked when Bot Action analysis was successful.
+   * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Branch Age practice
+   * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
+   */
   static buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,
