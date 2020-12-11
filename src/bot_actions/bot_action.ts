@@ -23,13 +23,12 @@ import {
 import { getMergeRequestEventData, BotComment } from "../merge_request";
 
 /**
- * This interface defines the core properties that are dynamically
+ * This class defines the core properties that are dynamically
  * calculated by each distinct Bot Action:
- * 1. `apiResponse` can be of subtype SuccessfulGetResponse, FailedResponse, or NoRequestNeeded to represent the success or failure of the api call to GitLab
- * 1. `goodGitPractice` represents whether or not the Merge Request event meets the criteria for good behavior
- * 1. `mrNote` is a message that will be included in the comment GitRDoneBot posts to the end-user's Merge Request
- * @remarks 'goodGitPractice' will be undefined when Bot Action logic couldn't be performed due to api
- * failure in order to distinguish from when its value is explicitly set to false after performing some logic.
+ * @param name is the name of the Bot Action
+ * @param statusCode is the HTTP code returned by the GitLab API request made by the Bot Action. Will be 204 if no API request is required by that Bot Action.
+ * @param action type of this object will indicate whether the Bot Action succeeded or failed, and if successful, contains standard properties computed by all successful Bot Actions
+ * @param computedValues optional object that may contain one or more properties specific to a particular Bot Action
  * */
 export class BotActionResponse {
   // Note, not all bot actions have additional computed values.
@@ -45,17 +44,27 @@ export class BotActionResponse {
   ) {}
 }
 
+/**
+ * This class is constructed by a Bot Action if GitLab API request fails with code 401 or 403
+ */
 export class AuthorizationFailureBotAction {
   authorizationFailure = true;
 }
 
+/**
+ * This class is constructed by a Bot Action if GitLab API request fails with any code other than 401 or 403
+ */
 export class NetworkFailureBotAction {
   networkFailure = true;
 }
 
-// Note: a successfulBotAction can have bad or good git practice.
-// The successful part of it means we were able to compute the good git practice and the message,
-// independent of whether that message contains positive or constructive feedback.
+/**
+ * This class is constructed by Bot Actions to indicate that analysis of git practice was successful,
+ * and there is feedback to provide to end user.
+ * @param goodGitPractice boolean indicating whether or not user followed good git practice as defined by a particular Bot Action
+ * @param message string containing positive or constructive feedback that will be posted for end user to see
+ * @param hashtag string indicating the name of the Bot Action providing feedback
+ */
 export class SuccessfulBotAction {
   mrNote: string;
   constructor(
@@ -67,17 +76,23 @@ export class SuccessfulBotAction {
   }
 }
 
+/**
+ * This class is constructed by Bot Actions to indicate that analysis of git practice was successful,
+ * and there is no feedback to provide to end user.
+ * @param goodGitPractice boolean indicating whether or not user followed good git practice as defined by a particular Bot Action
+ */
 export class SuccessfulBotActionWithNothingToSay {
   constructor(readonly goodGitPractice: boolean) {}
 }
 
 /**
- * Uses information from Merge Request webhook event to invoke Bot Actions. Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request.
+ * Uses information from Merge Request webhook event to invoke Bot Actions.
+ * Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request that generated webhook event.
  * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
  * @param customConfig defines threshold values for each of the Bot Actions
  * @param gitLabEvent GitLab webhook body
  * @param state the state of the incoming Merge Request event from GitLab
- * @returns `BotActionsResponse` object
+ * @returns object that implements `LambdaResponse` interface which uses specific types to indicate success or failure of posting comment on GitLab Merge Request
  * */
 export async function runBotActions(
   api: MergeRequestApi,
