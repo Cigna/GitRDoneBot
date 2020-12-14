@@ -13,9 +13,9 @@ import {
 } from "./bot_action";
 
 /**
- * This class checks for log files in the changes contained in the GitLab Merge Request.
- * This class implements the `BotAction` interface.
- * */
+ * This Bot Action class checks for log files in the Changes contained in the GitLab Merge Request
+ * and determines what, if any, feedback to provide to user.
+ */
 export abstract class GitOuttaHere {
   static readonly botActionName = "GitOuttaHere";
   static readonly badNote =
@@ -23,15 +23,9 @@ export abstract class GitOuttaHere {
   static readonly hashtag = `[#GitOuttaHere](https://github.com/Cigna/GitRDoneBot#7-git-outta-here)`;
 
   /**
-   * Constructs a complete Bot Action object by making an HTTP call and analyzing response.
-   *
-   * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
-   *
-   * @returns BotAction object constructed after checking for log files in the Merge Request changes,
-   * determining goodGitPractice based on that check, and instantiating a new note object.
-   *
-   * @remarks If api call fails, returns BotAction where `goodGitPractice` will be undefined.
-   * */
+   * @param api an instance of `MergeRequestApi`
+   * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Git Outta Here analysis
+   */
   static async analyze(api: MergeRequestApi): Promise<BotActionResponse> {
     let action:
       | AuthorizationFailureBotAction
@@ -74,7 +68,7 @@ export abstract class GitOuttaHere {
   /**
    * @param changes array of GitLab Change objects
    * @returns true if none of the `changes` reflect an update to or creation of a log file
-   * */
+   */
   private static noLogFiles(changes: Array<Change>): boolean {
     let thereAreNoLogs = true;
     if (changes.length !== 0) {
@@ -90,6 +84,12 @@ export abstract class GitOuttaHere {
     return thereAreNoLogs;
   }
 
+  /**
+   * Invoked when Bot Action analysis was successful.
+   * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
+   * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Git Outta Here practice
+   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   */
   static buildSuccessfulAction(
     goodGitPractice: boolean,
   ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {

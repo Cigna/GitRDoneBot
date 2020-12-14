@@ -13,9 +13,8 @@ import {
 import { GitLabCommit } from "../interfaces";
 
 /**
- * This class analyzes the titles of the commits contained in the GitLab Merge Request.
- * This class implements the `BotAction` interface and also contains the property:
- * 1. `calculatedThreshold`: `number` the number of failing commit titles that will result in bad practice for an individual commit message criteria
+ * This Bot Action class analyzes the titles of the Commits contained in the GitLab Merge Request
+ * and determines what, if any, feedback to provide to user.
  */
 export abstract class CommitMessages {
   private static minimumThreshold = 2;
@@ -25,16 +24,10 @@ export abstract class CommitMessages {
   static readonly badNote = `:loudspeaker: Keep commits descriptive and concise - more than one word and between 3 and 50 characters`;
 
   /**
-   * Constructs a complete Commit Message object by making an HTTP call and analyzing response.
-   *
-   * @param state the state of the incoming Merge Request event from GitLab
-   * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
-   *
-   * @returns CommitMessage object constructed after testing the number of failing commit titles against calculated threshold for each good practice criteria,
-   * determining overall goodGitPractice based on individual tests, and instantiating a new note object.
-   *
-   * @remarks If api call fails, returns CommitMessage where `goodGitPractice` and `thresholdTestedNudges` will be undefined.
-   * */
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param api an instance of `MergeRequestApi`
+   * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Commit Messages analysis
+   */
   static async analyze(
     state: string,
     api: MergeRequestApi,
@@ -144,6 +137,13 @@ export abstract class CommitMessages {
     return goodGitPractice === false;
   }
 
+  /**
+   * Invoked when Bot Action analysis was successful.
+   * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Commit Messages practice
+   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   */
   static buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,

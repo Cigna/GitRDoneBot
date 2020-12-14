@@ -14,8 +14,8 @@ import {
 } from "./bot_action";
 
 /**
- * This class analyzes the number of merge requests assigned to the assignee of the GitLab Merge Request.
- * This class implements the `BotAction` interface.
+ * This Bot Action class analyzes the number of Merge Requests assigned to the assignee of the GitLab Merge Request
+ * and determines what, if any, feedback to provide to user.
  * */
 export abstract class TooManyAssigned {
   static readonly botActionName = "TooManyAssigned";
@@ -24,16 +24,11 @@ export abstract class TooManyAssigned {
   static readonly hashtag = `[#TooManyAssignedAnalysis](https://github.com/Cigna/GitRDoneBot#4-too-many-assigned)`;
 
   /**
-   * Constructs a complete Bot Action object by making an HTTP call and analyzing response when the state is "merge" and the assigneeId is not null.
-   *
-   * @param state the state of the incoming Merge Request event from GitLab
-   * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
-   * @param customConfig an instance of the BotActionConfig class that defines too many assigned threshold
-   * @param assigneeId GitLab user id of merge request assignee
-   *
-   * @returns BotAction object constructed after getting number of merge requests already assigned to assignee, determining goodGitPractice based on that value, and instantiating a new note object.
-   *
-   * @remarks If api call fails, returns BotAction where `goodGitPractice` will be undefined.
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param api an instance of `MergeRequestApi`
+   * @param customConfig an instance of `BotActionConfig`
+   * @param assigneeId GitLab user id of Merge Request assignee
+   * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Too Many Assigned analysis
    * */
   static async analyze(
     state: string,

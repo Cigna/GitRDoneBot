@@ -14,7 +14,7 @@ import {
 } from "./bot_action";
 
 /**
- * This Bot Action class analyzes the age of the Commits contained in the GitLab Merge Request,
+ * This Bot Action class analyzes the age of the Commits contained in the GitLab Merge Request
  * and determines what, if any, feedback to provide to user.
  */
 export abstract class BranchAge {
@@ -145,6 +145,7 @@ export abstract class BranchAge {
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
    * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Branch Age practice
    * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
+   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    */
   static buildSuccessfulAction(
     state: string,

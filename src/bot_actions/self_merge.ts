@@ -14,11 +14,9 @@ import {
 import { User } from "../interfaces/gitlab_api_types";
 
 /**
- * This class analyzes the assignee or the approvers and the user who merged the GitLab Merge Request.
- * This class implements the `BotAction` interface and also contains the property:
- * 1. `approversNeeded`: `boolean` If true, Merge Request is merged with approvers. If false, Merge Request is merged without approvers.
- * If undefined, Merge Request is not merged.
- */
+ * This Bot Action class analyzes the assignee or the approvers and the user who merged the GitLab Merge Request
+ * and determines what, if any, feedback to provide to user.
+ * */
 export abstract class SelfMerge {
   static readonly botActionName = "SelfMerge";
   static readonly goodNote = `:star: Thanks for following good git practice and not assigning your merge request to yourself!`;
@@ -42,15 +40,12 @@ export abstract class SelfMerge {
   static readonly hashtag = `[#SelfMergeAnalysis](https://github.com/Cigna/GitRDoneBot#3-self-merge)`;
 
   /**
-   * Constructs a complete Self Merge object by analyzing the assignee id and author id or by analyzing the response(s) of HTTP call(s).
-   *
-   * @param state the state of the incoming Merge Request event from GitLab
-   * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param api an instance of `MergeRequestApi`
    * @param assigneeId GitLab user id of the Merge Request assignee
    * @param authorId GitLab user id of the Merge Request author
    *
-   * @returns SelfMerge object constructed after checking the assignee or the approvers and the user who merged the Merge Request,
-   * determining goodGitPractice based on that check, and instantiating a new note object.
+   * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Self Merge analysis
    * */
   static async analyze(
     state: string,
@@ -261,11 +256,12 @@ export abstract class SelfMerge {
   }
 
   /**
-   * Constructs a `SelfMergeNote` object by identifying one of eight cases: standard case for permissions check,
-   * case for bad self-assigned message, case for bad self-approved message, case for bad self-merged message,
-   * case for no approvals message, case for no actions, or case for unknown state.
-   *
-   * @returns `message` of the `SelfMergeNote` object
+   * Invoked when Bot Action analysis was successful.
+   * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Self Merge practice
+   * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
+   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    * */
   static buildSuccessfulAction(
     state: string,

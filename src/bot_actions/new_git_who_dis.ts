@@ -6,9 +6,9 @@ import {
 import { NoRequestNeeded } from "../gitlab";
 
 /**
- * This class analyzes the name of the author of the GitLab Merge Request.
- * This class implements the `BotAction` interface.
- * */
+ * This Bot Action class analyzes the name of the author of the GitLab Merge Request
+ * and determines what, if any, feedback to provide to user.
+ */
 export abstract class NewGitWhoDis {
   static readonly botActionName = "NewGitWhoDis";
   static readonly badNote = `it's really hard to see who you are! Would you please make your Git account names human readable?`;
@@ -16,11 +16,10 @@ export abstract class NewGitWhoDis {
   static readonly hashtag = `[#NewGitWhoDis](https://github.com/Cigna/GitRDoneBot#6-new-git-who-dis)`;
 
   /**
-   * Constructs a complete Bot Action object by analyzing the author name.
    * @param authorName the name of the GitLab user who authored the Merge Request
-   * @returns BotAction object constructed after checking that the author name is not a LAN ID,
-   * determining goodGitPractice based on that check, and instantiating a new note object
-   * */
+   * @returns data about properties calculated by New Git Who Dis analysis
+   * @remarks this function never requires an API call
+   */
   static async analyze(authorName: string): Promise<BotActionResponse> {
     const goodGitPractice = this.authorNameIsNotLanId(authorName);
 
@@ -40,6 +39,12 @@ export abstract class NewGitWhoDis {
     return !authorNameIsLanId;
   }
 
+  /**
+   * Invoked when Bot Action analysis was successful.
+   * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
+   * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good New Git Who Dis practice
+   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   */
   static buildSuccessfulAction(
     authorName: string,
     goodGitPractice: boolean,

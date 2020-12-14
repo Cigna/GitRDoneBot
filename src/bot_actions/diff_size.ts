@@ -14,10 +14,9 @@ import {
 import { Change } from "../interfaces";
 
 /**
- * This class analyzes how many lines of diff are contained in the GitLab Merge Request.
- * This class implements the `BotAction` interface and also contains the property:
- * 1. `totalDiffs`: `number` lines of diff contained in the Merge Request
- * */
+ * This Bot Action class analyzes how many lines of diff are contained in the GitLab Merge Request
+ * and determines what, if any, feedback to provide to user.
+ */
 export abstract class DiffSize {
   static readonly botActionName = "DiffSize";
   static readonly zeroNote = `:star: Great idea creating a MR right away from a branch/issue!`;
@@ -28,15 +27,10 @@ export abstract class DiffSize {
   static readonly hashtag = `[#DiffAnalysis](https://github.com/Cigna/GitRDoneBot#1-diff-size)`;
 
   /**
-   * Constructs a complete DiffSize object by making an HTTP call and analyzing response.
-   *
-   * @param state the state of the incoming Merge Request event from GitLab
-   * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
-   * @param customConfig an instance of the BotActionConfig class that defines diff size threshold
-   *
-   * @returns DiffSize object constructed after calculating lines of diff, determining goodGitPractice based on that value, and instantiating a new note object.
-   *
-   * @remarks If api call fails, returns DiffSize where `goodGitPractice` and `thresholdTestedNudges` will be undefined.
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param api an instance of `MergeRequestApi`
+   * @param customConfig an instance of `BotActionConfig`
+   * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Diff Size analysis
    * */
   static async analyze(
     state: string,
@@ -94,7 +88,7 @@ export abstract class DiffSize {
    * Calculates the total lines of diff as the sum of additions and deletions across all of the Change objects.
    * @param changes array of GitLab Change objects
    * @returns total lines of diff across all of the `changes`
-   * */
+   */
   private static calculateDiffs(changes: Array<Change>): number {
     let totalDiffs = 0;
 
@@ -155,6 +149,15 @@ export abstract class DiffSize {
     );
   }
 
+  /**
+   * Invoked when Bot Action analysis was successful.
+   * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param totalDiffs total lines of diff in the Merge Request
+   * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Diff Size practice
+   * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
+   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   * */
   static buildSuccessfulAction(
     state: string,
     totalDiffs: number,
