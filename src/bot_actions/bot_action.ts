@@ -86,6 +86,23 @@ export class SuccessfulBotActionWithNothingToSay {
   constructor(readonly goodGitPractice: boolean) {}
 }
 
+export function composeNote(chattyBotActions: SuccessfulBotAction[]): string {
+  return chattyBotActions
+    .map((action) => {
+      return action.mrNote;
+    })
+    .join("<br /><br />");
+}
+
+export function allGoodGitPractice(
+  chattyBotActions: SuccessfulBotAction[],
+  silentBotActions: SuccessfulBotActionWithNothingToSay[],
+): boolean {
+  return [...chattyBotActions, ...silentBotActions].every(
+    (action) => action.goodGitPractice === true,
+  );
+}
+
 /**
  * Uses information from Merge Request webhook event to invoke Bot Actions.
  * Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request that generated webhook event.
@@ -167,19 +184,12 @@ export async function runBotActions(
         botActionResponses,
       );
     } else {
-      // use map and join for less mutability
-      const note: string = chattyBotActions.reduce(
-        (note: string, action: SuccessfulBotAction) =>
-          note.concat(`${action.mrNote}<br /><br />`),
-        "",
-      );
+      const note = composeNote(chattyBotActions);
 
-      const allGoodGitPractice: boolean = [
-        ...chattyBotActions,
-        ...silentBotActions,
-      ].every((action) => action.goodGitPractice === true);
+      const emoji = allGoodGitPractice(chattyBotActions, silentBotActions)
+        ? "trophy"
+        : "eyes";
 
-      const emoji = allGoodGitPractice ? "trophy" : "eyes";
       // How does lambda handle this if we return before this finishes?
       api.postEmoji(emoji);
 
