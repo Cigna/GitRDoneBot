@@ -18,7 +18,7 @@ import {
  * This Bot Action class analyzes the age of the Commits contained in the GitLab Merge Request
  * and determines what, if any, feedback to provide to user.
  */
-// make this a const
+// TODO: make all abstract Bot Action classes const objects?
 export abstract class BranchAge {
   static readonly botActionName = "BranchAge";
   static readonly goodNote =

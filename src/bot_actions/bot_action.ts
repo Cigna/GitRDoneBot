@@ -190,7 +190,7 @@ export async function runBotActions(
         ? "trophy"
         : "eyes";
 
-      // How does lambda handle this if we return before this finishes?
+      // TODO: How does lambda handle this if we return before this finishes?
       api.postEmoji(emoji);
 
       // POST logic must be performed only after all Bot Action promises have resolved
