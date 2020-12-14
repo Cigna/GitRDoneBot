@@ -6,6 +6,7 @@ import {
 } from "../gitlab";
 import { GitLabCommit } from "../interfaces/gitlab_api_types";
 import {
+  Action,
   AuthorizationFailureBotAction,
   BotActionResponse,
   NetworkFailureBotAction,
@@ -17,6 +18,7 @@ import {
  * This Bot Action class analyzes the age of the Commits contained in the GitLab Merge Request
  * and determines what, if any, feedback to provide to user.
  */
+// make this a const
 export abstract class BranchAge {
   static readonly botActionName = "BranchAge";
   static readonly goodNote =
@@ -70,11 +72,7 @@ export abstract class BranchAge {
     api: MergeRequestApi,
     customConfig: BotActionConfig,
   ): Promise<BotActionResponse> {
-    let action:
-      | AuthorizationFailureBotAction
-      | NetworkFailureBotAction
-      | SuccessfulBotAction
-      | SuccessfulBotActionWithNothingToSay;
+    let action: Action;
     let actionResponse: BotActionResponse;
 
     const response = await api.getSingleMRCommits();

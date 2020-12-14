@@ -35,14 +35,15 @@ export class BotActionResponse {
   constructor(
     readonly name: string,
     readonly statusCode: number,
-    readonly action:
-      | AuthorizationFailureBotAction
-      | NetworkFailureBotAction
-      | SuccessfulBotAction
-      | SuccessfulBotActionWithNothingToSay,
+    readonly action: Action,
     readonly computedValues?: {},
   ) {}
 }
+export type Action =
+  | AuthorizationFailureBotAction
+  | NetworkFailureBotAction
+  | SuccessfulBotAction
+  | SuccessfulBotActionWithNothingToSay;
 
 /**
  * This class is constructed by a Bot Action if GitLab API request fails with code 401 or 403
@@ -166,6 +167,7 @@ export async function runBotActions(
         botActionResponses,
       );
     } else {
+      // use map and join for less mutability
       const note: string = chattyBotActions.reduce(
         (note: string, action: SuccessfulBotAction) =>
           note.concat(`${action.mrNote}<br /><br />`),
@@ -178,7 +180,7 @@ export async function runBotActions(
       ].every((action) => action.goodGitPractice === true);
 
       const emoji = allGoodGitPractice ? "trophy" : "eyes";
-      // we don't really care whether this succeeds or fails
+      // How does lambda handle this if we return before this finishes?
       api.postEmoji(emoji);
 
       // POST logic must be performed only after all Bot Action promises have resolved
