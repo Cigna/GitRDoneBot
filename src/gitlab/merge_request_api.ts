@@ -1,11 +1,11 @@
 import { URI } from "./uri";
 import {
   AuthorizationFailureResponse,
+  FetchWrapper,
   NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "./api_responses";
-import { FetchWrapper } from "./fetch_wrapper";
 
 /**
  * This class aggregates the logic to interact with the GitLab API.

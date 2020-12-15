@@ -4,7 +4,7 @@ import {
   SuccessfulGetResponse,
 } from "../../src/gitlab";
 
-jest.mock("../../src/gitlab/fetch_wrapper");
+jest.mock("../../src/gitlab/api_responses");
 
 describe("Caching for get requests behave right", () => {
   const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
