@@ -17,14 +17,14 @@ import { Change } from "../interfaces";
  * This Bot Action class analyzes how many lines of diff are contained in the GitLab Merge Request
  * and determines what, if any, feedback to provide to user.
  */
-export const DiffSize = {
-  botActionName: "DiffSize",
-  zeroNote: `:star: Great idea creating a MR right away from a branch/issue!`,
-  goodNote: `:star: Great job keeping your merge requests manageable!`,
-  badNote:
+export abstract class DiffSize {
+  static readonly botActionName = "DiffSize";
+  static readonly zeroNote = `:star: Great idea creating a MR right away from a branch/issue!`;
+  static readonly goodNote = `:star: Great job keeping your merge requests manageable!`;
+  static readonly badNote =
     `:loudspeaker: This merge request is larger than one person can handle. ` +
-    `Why not call in a partner and keep your branches smaller?`,
-  hashtag: `[#DiffAnalysis](https://github.com/Cigna/GitRDoneBot#1-diff-size)`,
+    `Why not call in a partner and keep your branches smaller?`;
+  static readonly hashtag = `[#DiffAnalysis](https://github.com/Cigna/GitRDoneBot#1-diff-size)`;
 
   /**
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
@@ -32,7 +32,7 @@ export const DiffSize = {
    * @param customConfig an instance of `BotActionConfig`
    * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Diff Size analysis
    * */
-  async analyze(
+  static async analyze(
     state: string,
     api: MergeRequestApi,
     customConfig: BotActionConfig,
@@ -82,14 +82,14 @@ export const DiffSize = {
       );
     }
     return actionResponse;
-  },
+  }
 
   /**
    * Calculates the total lines of diff as the sum of additions and deletions across all of the Change objects.
    * @param changes array of GitLab Change objects
    * @returns total lines of diff across all of the `changes`
    */
-  calculateDiffs(changes: Array<Change>): number {
+  private static calculateDiffs(changes: Array<Change>): number {
     let totalDiffs = 0;
 
     if (changes.length !== 0) {
@@ -105,9 +105,9 @@ export const DiffSize = {
     }
 
     return totalDiffs;
-  },
+  }
 
-  customParser(diff: string): number {
+  private static customParser(diff: string): number {
     const diffNewlines: Array<string> = diff.split("\n");
     // only keep lines that start with exactly 1 '+' and/or '-'
     const diffFinder = new RegExp("^[-+]{1}", "m");
@@ -115,9 +115,9 @@ export const DiffSize = {
       return line.match(diffFinder);
     });
     return noContextLines.length;
-  },
+  }
 
-  caseForZeroMessage(
+  static caseForZeroMessage(
     state: string,
     totalDiffs: number,
     goodGitPractice: boolean,
@@ -129,13 +129,13 @@ export const DiffSize = {
       goodGitPractice === true &&
       !constructiveFeedbackOnlyToggle
     );
-  },
+  }
 
-  caseForBadMessage(goodGitPractice: boolean): boolean {
+  static caseForBadMessage(goodGitPractice: boolean): boolean {
     return !goodGitPractice;
-  },
+  }
 
-  caseForGoodMessage(
+  static caseForGoodMessage(
     state: string,
     totalDiffs: number,
     goodGitPractice: boolean,
@@ -147,7 +147,7 @@ export const DiffSize = {
       goodGitPractice === true &&
       !constructiveFeedbackOnlyToggle
     );
-  },
+  }
 
   /**
    * Invoked when Bot Action analysis was successful.
@@ -158,7 +158,7 @@ export const DiffSize = {
    * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
    * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    * */
-  buildSuccessfulAction(
+  static buildSuccessfulAction(
     state: string,
     totalDiffs: number,
     goodGitPractice: boolean,
@@ -206,5 +206,5 @@ export const DiffSize = {
       }
     }
     return action;
-  },
-};
+  }
+}

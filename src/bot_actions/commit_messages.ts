@@ -16,19 +16,19 @@ import { GitLabCommit } from "../interfaces";
  * This Bot Action class analyzes the titles of the Commits contained in the GitLab Merge Request
  * and determines what, if any, feedback to provide to user.
  */
-export const CommitMessages = {
-  minimumThreshold: 2,
-  botActionName: "CommitMessages",
-  goodNote: `:star: Nice work following your team's commit message style conventions!`,
-  hashtag: `[#CommitMessage](https://github.com/Cigna/GitRDoneBot#5-commit-messages)`,
-  badNote: `:loudspeaker: Keep commits descriptive and concise - more than one word and between 3 and 50 characters`,
+export abstract class CommitMessages {
+  private static minimumThreshold = 2;
+  static botActionName = "CommitMessages";
+  static readonly goodNote = `:star: Nice work following your team's commit message style conventions!`;
+  static readonly hashtag = `[#CommitMessage](https://github.com/Cigna/GitRDoneBot#5-commit-messages)`;
+  static readonly badNote = `:loudspeaker: Keep commits descriptive and concise - more than one word and between 3 and 50 characters`;
 
   /**
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
    * @param api an instance of `MergeRequestApi`
    * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Commit Messages analysis
    */
-  async analyze(
+  static async analyze(
     state: string,
     api: MergeRequestApi,
   ): Promise<BotActionResponse> {
@@ -80,7 +80,7 @@ export const CommitMessages = {
     }
 
     return actionResponse;
-  },
+  }
 
   /**
    *
@@ -96,43 +96,46 @@ export const CommitMessages = {
    *
    * @param totalCommits Number of commits used in this merge request
    */
-  calculateThreshold(totalCommits: number): number {
+  private static calculateThreshold(totalCommits: number): number {
     const PERCENT = 0.2;
     const THRESHOLD_FOR_PERCENT = CommitMessages.minimumThreshold / PERCENT;
 
     return totalCommits >= THRESHOLD_FOR_PERCENT
       ? Math.floor(totalCommits * PERCENT)
       : CommitMessages.minimumThreshold;
-  },
+  }
 
   /**
    *
    * @param grammarParam Ordered array indicating whether each commit followed (true) or violated (false) this convention
    * @param threshold Obtained by the `calculateThreshold` function
    */
-  testThreshold(grammarParam: Array<boolean>, threshold: number): boolean {
+  private static testThreshold(
+    grammarParam: Array<boolean>,
+    threshold: number,
+  ): boolean {
     return grammarParam.filter((bool) => bool === false).length <= threshold;
-  },
+  }
 
   /**
    * Returns whether a string follows the length convention
    * @returns True if the string has at least 4 alphanumeric characters and at most 50 of any type of character.
    */
-  lengthValid(message: string): boolean {
+  private static lengthValid(message: string): boolean {
     return message.replace(/[\W_]+/g, "").length >= 4 && message.length <= 50;
-  },
+  }
 
-  isOneWord(title: string): boolean {
+  private static isOneWord(title: string): boolean {
     return title.trim().split(" ").length === 1;
-  },
+  }
 
-  caseForGoodMessage(state: string, goodGitPractice: boolean): boolean {
+  static caseForGoodMessage(state: string, goodGitPractice: boolean): boolean {
     return state !== "merge" && goodGitPractice === true;
-  },
+  }
 
-  caseForBadMessage(goodGitPractice: boolean): boolean {
+  static caseForBadMessage(goodGitPractice: boolean): boolean {
     return goodGitPractice === false;
-  },
+  }
 
   /**
    * Invoked when Bot Action analysis was successful.
@@ -141,7 +144,7 @@ export const CommitMessages = {
    * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Commit Messages practice
    * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    */
-  buildSuccessfulAction(
+  static buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,
   ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
@@ -169,5 +172,5 @@ export const CommitMessages = {
       }
     }
     return action;
-  },
-};
+  }
+}
