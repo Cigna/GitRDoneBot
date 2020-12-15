@@ -1,5 +1,5 @@
 import {
-  MergeRequestApi,
+  GitLabApi,
   NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
@@ -49,10 +49,10 @@ const validKeysInvalidValues = new SuccessfulGetResponse(200, {
 
 // TESTS
 
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Test: CustomConfig Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   describe("when a retrieved custom config has valid keys with valid values", () => {
     let customConfigResponse: CustomConfig;
@@ -233,9 +233,8 @@ describe("Mock API Test: CustomConfig Class", () => {
         NotFoundORNetworkFailureResponse,
       );
       expect(
-        (<NotFoundORNetworkFailureResponse>(
-          customConfigResponse.apiResponse
-        )).isNotFound,
+        (<NotFoundORNetworkFailureResponse>customConfigResponse.apiResponse)
+          .isNotFound,
       ).toBe(true);
     });
 

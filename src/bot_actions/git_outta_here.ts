@@ -1,5 +1,5 @@
 import {
-  MergeRequestApi,
+  GitLabApi,
   SuccessfulGetResponse,
   AuthorizationFailureResponse,
 } from "../gitlab";
@@ -23,10 +23,10 @@ export abstract class GitOuttaHere {
   static readonly hashtag = `[#GitOuttaHere](https://github.com/Cigna/GitRDoneBot#7-git-outta-here)`;
 
   /**
-   * @param api an instance of `MergeRequestApi`
+   * @param api an instance of `GitLabApi`
    * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Git Outta Here analysis
    */
-  static async analyze(api: MergeRequestApi): Promise<BotActionResponse> {
+  static async analyze(api: GitLabApi): Promise<BotActionResponse> {
     let action:
       | AuthorizationFailureBotAction
       | NetworkFailureBotAction

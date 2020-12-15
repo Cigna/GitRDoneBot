@@ -1,5 +1,5 @@
 import * as HttpStatus from "http-status-codes";
-import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
+import { GitLabApi, SuccessfulGetResponse } from "../../src/gitlab";
 import { mockUser, fetch_network_error, unauthorized_401 } from "../helpers";
 import {
   AuthorizationFailureBotAction,
@@ -38,15 +38,10 @@ const get_single_mr_not_self_merged = new SuccessfulGetResponse(HttpStatus.OK, {
 
 // TESTS
 
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Test: SelfMerge Class", () => {
-  const api: MergeRequestApi = new MergeRequestApi(
-    "fake-token",
-    0,
-    1,
-    "fake-uri",
-  );
+  const api: GitLabApi = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   describe("Open State", (state = "open") => {
     describe("When MR is self-assigned", () => {

@@ -9,7 +9,7 @@ import {
 } from "../bot_actions";
 import { CustomConfig } from "../custom_config/custom_config";
 import {
-  MergeRequestApi,
+  GitLabApi,
   NotFoundORNetworkFailureResponse,
   SuccessfulPostORPutResponse,
 } from "../gitlab";
@@ -106,14 +106,14 @@ export function allGoodGitPractice(
 /**
  * Uses information from Merge Request webhook event to invoke Bot Actions.
  * Uses Bot Action response data to post user-facing comment and emoji on GitLab Merge Request that generated webhook event.
- * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
+ * @param api an instance of the `GitLabApi` class that wraps HTTP requests to and responses from the GitLab API
  * @param customConfig defines threshold values for each of the Bot Actions
  * @param gitLabEvent GitLab webhook body
  * @param state the state of the incoming Merge Request event from GitLab
  * @returns object that implements `LambdaResponse` interface which uses specific types to indicate success or failure of posting comment on GitLab Merge Request
  * */
 export async function runBotActions(
-  api: MergeRequestApi,
+  api: GitLabApi,
   customConfig: CustomConfig,
   gitLabEvent: any,
   state: string,

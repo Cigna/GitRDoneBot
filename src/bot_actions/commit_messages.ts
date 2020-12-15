@@ -7,7 +7,7 @@ import {
 } from "./bot_action";
 import {
   AuthorizationFailureResponse,
-  MergeRequestApi,
+  GitLabApi,
   SuccessfulGetResponse,
 } from "../gitlab";
 import { GitLabCommit } from "../interfaces";
@@ -25,12 +25,12 @@ export abstract class CommitMessages {
 
   /**
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
-   * @param api an instance of `MergeRequestApi`
+   * @param api an instance of `GitLabApi`
    * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Commit Messages analysis
    */
   static async analyze(
     state: string,
-    api: MergeRequestApi,
+    api: GitLabApi,
   ): Promise<BotActionResponse> {
     let action:
       | AuthorizationFailureBotAction

@@ -1,5 +1,5 @@
 import * as HttpStatus from "http-status-codes";
-import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
+import { GitLabApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
   createNMergeRequestObjects,
   fetch_network_error,
@@ -33,15 +33,10 @@ const getResponseWhereAssignedMRSNotInThreshold: SuccessfulGetResponse = new Suc
 
 // TESTS
 
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Tests: TooManyAssigned Class", () => {
-  const api: MergeRequestApi = new MergeRequestApi(
-    "fake-token",
-    0,
-    1,
-    "fake-uri",
-  );
+  const api: GitLabApi = new GitLabApi("fake-token", 0, 1, "fake-uri");
   describe("Open State", (state = "open") => {
     describe("When too many assigned === false", (assigneeId = 1) => {
       let tooManyAssignedResponse;

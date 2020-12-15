@@ -1,7 +1,7 @@
 import { BotActionConfig } from "../custom_config/bot_action_config";
 import {
   AuthorizationFailureResponse,
-  MergeRequestApi,
+  GitLabApi,
   SuccessfulGetResponse,
 } from "../gitlab";
 import { GitLabCommit } from "../interfaces/gitlab_api_types";
@@ -62,13 +62,13 @@ export abstract class BranchAge {
 
   /**
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
-   * @param api an instance of `MergeRequestApi`
+   * @param api an instance of `GitLabApi`
    * @param customConfig an instance of `BotActionConfig`
    * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Branch Age analysis
    */
   static async analyze(
     state: string,
-    api: MergeRequestApi,
+    api: GitLabApi,
     customConfig: BotActionConfig,
   ): Promise<BotActionResponse> {
     let action: Action;

@@ -1,5 +1,5 @@
 import * as HttpStatus from "http-status-codes";
-import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
+import { GitLabApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
   mockGitLabCommit,
   createNGitLabCommits,
@@ -53,10 +53,10 @@ const too_many_one_word_commits = new SuccessfulGetResponse(HttpStatus.OK, [
   mockGitLabCommit("bug::fix", Date.now().toString()),
 ]);
 
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Test: CommitMessages Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   describe("open state", (state = "open") => {
     describe("when there is a single commit", () => {

@@ -15,7 +15,7 @@ import {
  *
  * Each instance of this class constructs instances of the utility classes URI and FetchWrapper.
  */
-export class MergeRequestApi {
+export class GitLabApi {
   private MRChanges!: SuccessfulGetResponse;
   private MRCommits!: SuccessfulGetResponse;
   readonly uriBuilder!: URI;

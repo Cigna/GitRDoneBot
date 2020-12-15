@@ -8,7 +8,7 @@ import {
 import { BotActionConfig } from "../custom_config/bot_action_config";
 import {
   AuthorizationFailureResponse,
-  MergeRequestApi,
+  GitLabApi,
   SuccessfulGetResponse,
 } from "../gitlab";
 import { Change } from "../interfaces";
@@ -28,13 +28,13 @@ export abstract class DiffSize {
 
   /**
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
-   * @param api an instance of `MergeRequestApi`
+   * @param api an instance of `GitLabApi`
    * @param customConfig an instance of `BotActionConfig`
    * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Diff Size analysis
    * */
   static async analyze(
     state: string,
-    api: MergeRequestApi,
+    api: GitLabApi,
     customConfig: BotActionConfig,
   ): Promise<BotActionResponse> {
     let action:

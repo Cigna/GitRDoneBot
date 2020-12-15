@@ -6,7 +6,7 @@ import {
   NoActionResponse,
   NotSupportedResponse,
 } from "./src/interfaces";
-import { MergeRequestApi } from "./src/gitlab";
+import { GitLabApi } from "./src/gitlab";
 import {
   getMrId,
   getObjectKind,
@@ -64,7 +64,7 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
           const projectId = getProjectId(gitLabEvent);
           const mrId = getMrId(gitLabEvent);
 
-          const api = new MergeRequestApi(
+          const api = new GitLabApi(
             token as string,
             projectId,
             mrId,

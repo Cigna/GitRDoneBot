@@ -21,7 +21,7 @@ import {
   mockGitLabWebhookEvent,
 } from "../helpers";
 import {
-  MergeRequestApi,
+  GitLabApi,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
@@ -86,7 +86,7 @@ const mockCommitInstance: GitLabCommit = mockGitLabCommit(
 const commitProperties = Object.keys(mockCommitInstance);
 
 let PROJECT_ID: number;
-let api: MergeRequestApi;
+let api: GitLabApi;
 let openEvent: any;
 
 beforeAll(async (done) => {
@@ -101,7 +101,7 @@ beforeAll(async (done) => {
     PROJECT_ID = await importTestProjectToGitlab();
   }
 
-  api = new MergeRequestApi(
+  api = new GitLabApi(
     API_TOKEN as string,
     PROJECT_ID,
     MERGE_REQ_ID,

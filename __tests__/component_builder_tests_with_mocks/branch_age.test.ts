@@ -1,5 +1,5 @@
 import * as HttpStatus from "http-status-codes";
-import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
+import { GitLabApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
   mockGitLabCommit,
   fetch_network_error,
@@ -39,10 +39,10 @@ const threshold_commits_gitlab_response = new SuccessfulGetResponse(
 );
 
 // TESTS
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Test: BranchAge Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   describe("open state", (state = "open") => {
     describe("when oldest commit is greater than threshold", () => {

@@ -1,6 +1,6 @@
 import {
   NotFoundORNetworkFailureResponse,
-  MergeRequestApi,
+  GitLabApi,
   SuccessfulGetResponse,
   AuthorizationFailureResponse,
 } from "../gitlab";
@@ -31,10 +31,10 @@ export class CustomConfig {
   /**
    * Loads in user-configured values for all valid config properties & property thresholds if api call is successful. If api call fails,
    * or for any invalid user-configured values, uses default values.
-   * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
+   * @param api an instance of the GitLabApi class that wraps HTTP requests to and responses from the GitLab API
    * @returns CustomConfig with loaded values
    * */
-  static async from(api: MergeRequestApi): Promise<CustomConfig> {
+  static async from(api: GitLabApi): Promise<CustomConfig> {
     const response = await api.getConfigurationFile();
 
     let result: any;

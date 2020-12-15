@@ -1,13 +1,13 @@
 import {
   AuthorizationFailureResponse,
-  MergeRequestApi,
+  GitLabApi,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
 
 jest.mock("../../src/gitlab/api_responses");
 
 describe("Caching for get requests behave right", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   beforeAll(async (done) => {
     jest.clearAllMocks();
@@ -35,7 +35,7 @@ describe("Caching for get requests behave right", () => {
 });
 
 describe("Don't set cache if failed request", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   beforeAll(async (done) => {
     jest.clearAllMocks();

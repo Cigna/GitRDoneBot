@@ -1,4 +1,4 @@
-import { MergeRequestApi, SuccessfulGetResponse } from "../../src/gitlab";
+import { GitLabApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
   AuthorizationFailureBotAction,
   DiffSize,
@@ -63,10 +63,10 @@ const changes_equal_zero = new SuccessfulGetResponse(200, {
 
 // TESTS
 
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Test: DiffSize Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   describe("(Any state) When the API request fails due to authorization failure", (state = "any") => {
     let diffSizeResponse;

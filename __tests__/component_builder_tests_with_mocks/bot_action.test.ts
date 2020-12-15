@@ -14,7 +14,7 @@ import {
   NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
-import { MergeRequestApi } from "../../src/gitlab/merge_request_api";
+import { GitLabApi } from "../../src/gitlab/gitlab_api";
 import {
   CommentFailedResponse,
   NoCommentNeededResponse,
@@ -33,7 +33,7 @@ jest.mock("../../src/bot_actions/git_outta_here");
 jest.mock("../../src/bot_actions/new_git_who_dis");
 jest.mock("../../src/bot_actions/self_merge");
 jest.mock("../../src/bot_actions/too_many_assigned");
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 jest.mock("../../src/merge_request/comment");
 
 const fakeCustomConfig: CustomConfig = {
@@ -66,7 +66,7 @@ const fakeGitLabEvent = mockGitLabWebhookEvent(
   "merge_request",
 );
 
-const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
 describe("Mock API Test: runBotActions(api, customConfig, gitLabEvent, state", () => {
   describe("When all Bot Actions have nothing to say", () => {

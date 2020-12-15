@@ -6,7 +6,7 @@ import {
   SuccessfulBotActionWithNothingToSay,
 } from "./bot_action";
 import {
-  MergeRequestApi,
+  GitLabApi,
   NoRequestNeeded,
   SuccessfulGetResponse,
   AuthorizationFailureResponse,
@@ -41,7 +41,7 @@ export abstract class SelfMerge {
 
   /**
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
-   * @param api an instance of `MergeRequestApi`
+   * @param api an instance of `GitLabApi`
    * @param assigneeId GitLab user id of the Merge Request assignee
    * @param authorId GitLab user id of the Merge Request author
    *
@@ -49,7 +49,7 @@ export abstract class SelfMerge {
    * */
   static async analyze(
     state: string,
-    api: MergeRequestApi,
+    api: GitLabApi,
     assigneeId: number,
     authorId: number,
   ): Promise<BotActionResponse> {
