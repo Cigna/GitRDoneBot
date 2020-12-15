@@ -19,21 +19,21 @@ import {
  * and determines what, if any, feedback to provide to user.
  */
 // TODO: make all abstract Bot Action classes const objects?
-export abstract class BranchAge {
-  static readonly botActionName = "BranchAge";
-  static readonly goodNote =
+export const BranchAge = {
+  botActionName: "BranchAge",
+  goodNote:
     `:star: It’s great that you’re committing and merging code frequently` +
-    ` - the commits on this branch aren’t old or stale. Good job!`;
-  static readonly badNote =
+    ` - the commits on this branch aren’t old or stale. Good job!`,
+  badNote:
     `:loudspeaker: This merge request has a pretty old commit. ` +
-    `You should try and merge more frequently to keep your commits on branches fresh.`;
-  static readonly hashtag = `[#BranchAgeAnalysis](https://github.com/Cigna/GitRDoneBot#2-branch-age)`;
+    `You should try and merge more frequently to keep your commits on branches fresh.`,
+  hashtag: `[#BranchAgeAnalysis](https://github.com/Cigna/GitRDoneBot#2-branch-age)`,
 
   /**
    * @param commits Array of all Commits associated with the Merge Request
    * @returns the oldest Commit in the array
    */
-  static getOldestCommit(commits: Array<GitLabCommit>): GitLabCommit {
+  getOldestCommit(commits: Array<GitLabCommit>): GitLabCommit {
     const oldestCommit: GitLabCommit = commits.reduce(
       (prevCommit, currCommit) => {
         return new Date(prevCommit.created_at).getTime() <
@@ -43,14 +43,14 @@ export abstract class BranchAge {
       },
     );
     return oldestCommit;
-  }
+  },
 
   /**
    * @param oldestCommit a single Commit object
    * @param threshold the number of days to compare the age of the Commit to
    * @returns `true` if age of oldestCommit is less than threshold
    */
-  static isBranchYoungerThanThreshold(
+  isBranchYoungerThanThreshold(
     oldestCommit: GitLabCommit,
     threshold: number,
   ): boolean {
@@ -59,7 +59,7 @@ export abstract class BranchAge {
       Date.now() - new Date(oldestCommit.created_at).getTime();
     // divide oldestCommitAge by milliseconds/day to compare int num of days with threshold
     return Math.floor(oldestCommitAge / 8.64e7) <= threshold;
-  }
+  },
 
   /**
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
@@ -67,7 +67,7 @@ export abstract class BranchAge {
    * @param customConfig an instance of `BotActionConfig`
    * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Branch Age analysis
    */
-  static async analyze(
+  async analyze(
     state: string,
     api: MergeRequestApi,
     customConfig: BotActionConfig,
@@ -119,9 +119,9 @@ export abstract class BranchAge {
       );
     }
     return actionResponse;
-  }
+  },
 
-  static caseForGoodMessage(
+  caseForGoodMessage(
     state: string,
     goodGitPractice: boolean,
     constructiveFeedbackOnlyToggle: boolean,
@@ -131,11 +131,11 @@ export abstract class BranchAge {
       goodGitPractice === true &&
       !constructiveFeedbackOnlyToggle
     );
-  }
+  },
 
-  static caseForBadMessage(goodGitPractice: boolean): boolean {
+  caseForBadMessage(goodGitPractice: boolean): boolean {
     return goodGitPractice === false;
-  }
+  },
 
   /**
    * Invoked when Bot Action analysis was successful.
@@ -145,7 +145,7 @@ export abstract class BranchAge {
    * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
    * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    */
-  static buildSuccessfulAction(
+  buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,
     constructiveFeedbackOnlyToggle: boolean,
@@ -178,5 +178,5 @@ export abstract class BranchAge {
       }
     }
     return action;
-  }
-}
+  },
+};

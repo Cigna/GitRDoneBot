@@ -72,31 +72,31 @@ describe("Mock API Test: runBotActions(api, customConfig, gitLabEvent, state", (
   describe("When all Bot Actions have nothing to say", () => {
     // @ts-ignore
     BranchAge.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotActionWithNothingToSay(BranchAge.name),
+      mockSuccessfulBotActionWithNothingToSay(BranchAge.botActionName),
     );
     // @ts-ignore
     CommitMessages.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotActionWithNothingToSay(CommitMessages.name),
+      mockSuccessfulBotActionWithNothingToSay(CommitMessages.botActionName),
     );
     // @ts-ignore
     DiffSize.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotActionWithNothingToSay(DiffSize.name),
+      mockSuccessfulBotActionWithNothingToSay(DiffSize.botActionName),
     );
     // @ts-ignore
     GitOuttaHere.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotActionWithNothingToSay(GitOuttaHere.name),
+      mockSuccessfulBotActionWithNothingToSay(GitOuttaHere.botActionName),
     );
     // @ts-ignore
     NewGitWhoDis.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotActionWithNothingToSay(NewGitWhoDis.name),
+      mockSuccessfulBotActionWithNothingToSay(NewGitWhoDis.botActionName),
     );
     // @ts-ignore
     SelfMerge.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotActionWithNothingToSay(SelfMerge.name),
+      mockSuccessfulBotActionWithNothingToSay(SelfMerge.botActionName),
     );
     // @ts-ignore
     TooManyAssigned.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotActionWithNothingToSay(TooManyAssigned.name),
+      mockSuccessfulBotActionWithNothingToSay(TooManyAssigned.botActionName),
     );
     test("NoCommentNeededResponse is returned", async () => {
       const response = await runBotActions(
@@ -112,31 +112,31 @@ describe("Mock API Test: runBotActions(api, customConfig, gitLabEvent, state", (
   describe("When comment posting fails", () => {
     // @ts-ignore
     BranchAge.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotAction(BranchAge.name),
+      mockSuccessfulBotAction(BranchAge.botActionName),
     );
     // @ts-ignore
     CommitMessages.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotAction(CommitMessages.name),
+      mockSuccessfulBotAction(CommitMessages.botActionName),
     );
     // @ts-ignore
     DiffSize.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotAction(DiffSize.name),
+      mockSuccessfulBotAction(DiffSize.botActionName),
     );
     // @ts-ignore
     GitOuttaHere.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotAction(GitOuttaHere.name),
+      mockSuccessfulBotAction(GitOuttaHere.botActionName),
     );
     // @ts-ignore
     NewGitWhoDis.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotAction(NewGitWhoDis.name),
+      mockSuccessfulBotAction(NewGitWhoDis.botActionName),
     );
     // @ts-ignore
     SelfMerge.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotAction(SelfMerge.name),
+      mockSuccessfulBotAction(SelfMerge.botActionName),
     );
     // @ts-ignore
     TooManyAssigned.analyze.mockResolvedValueOnce(
-      mockSuccessfulBotAction(TooManyAssigned.name),
+      mockSuccessfulBotAction(TooManyAssigned.botActionName),
     );
     // @ts-ignore
     api.postEmoji.mockResolvedValueOnce(
