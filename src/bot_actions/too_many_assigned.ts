@@ -99,10 +99,12 @@ export abstract class TooManyAssigned {
   }
 
   /**
-   * Constructs a `TooManyAssignedNote` object by identifying one of four cases: custom case for permissions check,
-   * case for bad message, case for no actions, or case for unknown state.
-   *
-   * @returns `message` of the `TooManyAssignedNote` object
+   * Invoked when Bot Action analysis was successful.
+   * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
+   * @param state the state of the Merge Request: `open`, `update`, or `merge`
+   * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Too Many Assigned practice
+   * @param assigneeId the user ID of the person who is assigned to review this Merge Request
+   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    * */
   static buildSuccessfulAction(
     state: string,
