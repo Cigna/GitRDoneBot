@@ -5,7 +5,7 @@ import {
   AuthorizationFailureBotAction,
   NetworkFailureBotAction,
   SelfMerge,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 
@@ -69,19 +69,22 @@ describe("Mock API Test: SelfMerge Class", () => {
         expect(api.getSingleMR).toHaveBeenCalledTimes(0);
       });
 
-      test("should return instance of SuccessfulBotAction", () => {
-        expect(selfMergeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+      test("should return instance of SuccessfulBotActionWithMessage", () => {
+        expect(selfMergeResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
+        );
       });
       test("should return goodGitPractice === true", () => {
         expect(
-          (<SuccessfulBotAction>selfMergeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action)
+            .goodGitPractice,
         ).toBe(true);
       });
 
       test("should return mrNote === good", () => {
-        expect((<SuccessfulBotAction>selfMergeResponse.action).mrNote).toBe(
-          `${SelfMerge.goodNote} ${SelfMerge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action).mrNote,
+        ).toBe(`${SelfMerge.goodNote} ${SelfMerge.hashtag}`);
       });
     });
   });
@@ -114,14 +117,15 @@ describe("Mock API Test: SelfMerge Class", () => {
 
       test("should return goodGitPractice === false", () => {
         expect(
-          (<SuccessfulBotAction>selfMergeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
       test("should return mrNote === bad (new)", () => {
-        expect((<SuccessfulBotAction>selfMergeResponse.action).mrNote).toBe(
-          `${SelfMerge.badAssignedNote} ${SelfMerge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action).mrNote,
+        ).toBe(`${SelfMerge.badAssignedNote} ${SelfMerge.hashtag}`);
       });
     });
   });
@@ -160,7 +164,8 @@ describe("Mock API Test: SelfMerge Class", () => {
 
       test("should return goodGitPractice === true", () => {
         expect(
-          (<SuccessfulBotAction>selfMergeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action)
+            .goodGitPractice,
         ).toBe(true);
       });
 
@@ -189,8 +194,10 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return instance of SuccessfulBotAction", () => {
-        expect(selfMergeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+      test("should return instance of SuccessfulBotActionWithMessage", () => {
+        expect(selfMergeResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
+        );
       });
 
       test("should call API methods correct number of times", () => {
@@ -200,7 +207,8 @@ describe("Mock API Test: SelfMerge Class", () => {
 
       test("should return goodGitPractice === false", () => {
         expect(
-          (<SuccessfulBotAction>selfMergeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
@@ -209,9 +217,9 @@ describe("Mock API Test: SelfMerge Class", () => {
       });
 
       test("should return mrNote === badApproved", () => {
-        expect((<SuccessfulBotAction>selfMergeResponse.action).mrNote).toBe(
-          `${SelfMerge.badApprovedNote} ${SelfMerge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action).mrNote,
+        ).toBe(`${SelfMerge.badApprovedNote} ${SelfMerge.hashtag}`);
       });
     });
 
@@ -235,8 +243,10 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return instance of SuccessfulBotAction", () => {
-        expect(selfMergeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+      test("should return instance of SuccessfulBotActionWithMessage", () => {
+        expect(selfMergeResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
+        );
       });
 
       test("should call API methods correct number of times", () => {
@@ -246,7 +256,8 @@ describe("Mock API Test: SelfMerge Class", () => {
 
       test("should return goodGitPractice === true", () => {
         expect(
-          (<SuccessfulBotAction>selfMergeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action)
+            .goodGitPractice,
         ).toBe(true);
       });
 
@@ -255,9 +266,9 @@ describe("Mock API Test: SelfMerge Class", () => {
       });
 
       test("should return mrNote === noApprovals", () => {
-        expect((<SuccessfulBotAction>selfMergeResponse.action).mrNote).toBe(
-          `${SelfMerge.noApprovalsNote} ${SelfMerge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action).mrNote,
+        ).toBe(`${SelfMerge.noApprovalsNote} ${SelfMerge.hashtag}`);
       });
     });
 
@@ -281,8 +292,10 @@ describe("Mock API Test: SelfMerge Class", () => {
         done();
       });
 
-      test("should return instance of SuccessfulBotAction", () => {
-        expect(selfMergeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+      test("should return instance of SuccessfulBotActionWithMessage", () => {
+        expect(selfMergeResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
+        );
       });
 
       test("should call API methods correct number of times", () => {
@@ -292,7 +305,8 @@ describe("Mock API Test: SelfMerge Class", () => {
 
       test("should return goodGitPractice === false", () => {
         expect(
-          (<SuccessfulBotAction>selfMergeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
@@ -301,9 +315,9 @@ describe("Mock API Test: SelfMerge Class", () => {
       });
 
       test("should return mrNote === badMerged", () => {
-        expect((<SuccessfulBotAction>selfMergeResponse.action).mrNote).toBe(
-          `${SelfMerge.badMergedNote} ${SelfMerge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>selfMergeResponse.action).mrNote,
+        ).toBe(`${SelfMerge.badMergedNote} ${SelfMerge.hashtag}`);
       });
     });
 

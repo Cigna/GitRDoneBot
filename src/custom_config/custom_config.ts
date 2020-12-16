@@ -1,9 +1,4 @@
-import {
-  NotFoundORNetworkFailureResponse,
-  GitLabApi,
-  SuccessfulGetResponse,
-  AuthorizationFailureResponse,
-} from "../gitlab";
+import { GitLabApi, SuccessfulGetResponse, GetResponse } from "../gitlab";
 import { BotActionConfig } from "./bot_action_config";
 import {
   BranchAgeDefaults,
@@ -22,10 +17,7 @@ export class CustomConfig {
     readonly diffSize: BotActionConfig,
     readonly tooManyMergeRequests: BotActionConfig,
     readonly updateMergeRequestComment: boolean,
-    readonly apiResponse:
-      | AuthorizationFailureResponse
-      | NotFoundORNetworkFailureResponse
-      | SuccessfulGetResponse,
+    readonly apiResponse: GetResponse,
   ) {}
 
   /**

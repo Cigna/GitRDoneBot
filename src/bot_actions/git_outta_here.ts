@@ -1,3 +1,4 @@
+import { Action, SuccessfulBotAction } from ".";
 import {
   GitLabApi,
   SuccessfulGetResponse,
@@ -8,7 +9,7 @@ import {
   AuthorizationFailureBotAction,
   BotActionResponse,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "./bot_action";
 
@@ -27,11 +28,7 @@ export abstract class GitOuttaHere {
    * @returns data about the success or failure of the GitLab API request and resulting properties calculated by Git Outta Here analysis
    */
   static async analyze(api: GitLabApi): Promise<BotActionResponse> {
-    let action:
-      | AuthorizationFailureBotAction
-      | NetworkFailureBotAction
-      | SuccessfulBotAction
-      | SuccessfulBotActionWithNothingToSay;
+    let action: Action;
     let actionResponse: BotActionResponse;
 
     const response = await api.getSingleMRChanges();
@@ -88,16 +85,14 @@ export abstract class GitOuttaHere {
    * Invoked when Bot Action analysis was successful.
    * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
    * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Git Outta Here practice
-   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   * @returns SuccessfulBotActionWithMessage instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    */
-  static buildSuccessfulAction(
-    goodGitPractice: boolean,
-  ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
+  static buildSuccessfulAction(goodGitPractice: boolean): SuccessfulBotAction {
+    let action: SuccessfulBotAction;
 
     switch (goodGitPractice) {
       case false: {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.badNote,
           this.hashtag,

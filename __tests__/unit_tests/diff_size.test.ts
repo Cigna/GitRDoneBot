@@ -1,6 +1,6 @@
 import {
   DiffSize,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 
@@ -1518,30 +1518,30 @@ describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, con
 
       describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
         describe("totalDiffs === 0", (totalDiffs = 0) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/zeroNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/zeroNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.zeroNote} ${DiffSize.hashtag}`,
             );
           });
         });
 
         describe("totalDiffs !== 0", (totalDiffs = -1) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.goodNote} ${DiffSize.hashtag}`,
             );
           });
@@ -1552,30 +1552,30 @@ describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, con
     describe("goodGitPractice === false", (goodGitPractice = false) => {
       describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
         describe("totalDiffs === 0", (totalDiffs = 0) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
         });
 
         describe("totalDiffs !== 0", (totalDiffs = -1) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
@@ -1584,30 +1584,30 @@ describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, con
 
       describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
         describe("totalDiffs === 0", (totalDiffs = 0) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
         });
 
         describe("totalDiffs !== 0", (totalDiffs = -1) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
@@ -1648,30 +1648,30 @@ describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, con
 
       describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
         describe("totalDiffs === 0", (totalDiffs = 0) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/zeroNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/zeroNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.zeroNote} ${DiffSize.hashtag}`,
             );
           });
         });
 
         describe("totalDiffs !== 0", (totalDiffs = -1) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.goodNote} ${DiffSize.hashtag}`,
             );
           });
@@ -1682,30 +1682,30 @@ describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, con
     describe("goodGitPractice === false", (goodGitPractice = false) => {
       describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
         describe("totalDiffs === 0", (totalDiffs = 0) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
         });
 
         describe("totalDiffs !== 0", (totalDiffs = -1) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
@@ -1714,30 +1714,30 @@ describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, con
 
       describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
         describe("totalDiffs === 0", (totalDiffs = 0) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
         });
 
         describe("totalDiffs !== 0", (totalDiffs = -1) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
@@ -1808,30 +1808,30 @@ describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, con
     describe("goodGitPractice === false", (goodGitPractice = false) => {
       describe("constructiveFeedbackOnlyToggle === true", (constructiveFeedbackOnlyToggle = true) => {
         describe("totalDiffs === 0", (totalDiffs = 0) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
         });
 
         describe("totalDiffs !== 0", (totalDiffs = -1) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
@@ -1840,30 +1840,30 @@ describe("DiffSize.buildSuccessfulAction(state, totalDiffs, goodGitPractice, con
 
       describe("constructiveFeedbackOnlyToggle === false", (constructiveFeedbackOnlyToggle = false) => {
         describe("totalDiffs === 0", (totalDiffs = 0) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });
         });
 
         describe("totalDiffs !== 0", (totalDiffs = -1) => {
-          test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+          test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
             const action = DiffSize.buildSuccessfulAction(
               state,
               totalDiffs,
               goodGitPractice,
               constructiveFeedbackOnlyToggle,
             );
-            expect(action).toBeInstanceOf(SuccessfulBotAction);
-            expect((<SuccessfulBotAction>action).mrNote).toBe(
+            expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+            expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
               `${DiffSize.badNote} ${DiffSize.hashtag}`,
             );
           });

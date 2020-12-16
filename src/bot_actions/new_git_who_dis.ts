@@ -1,9 +1,10 @@
 import {
   BotActionResponse,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "./bot_action";
 import { NoRequestNeeded } from "../gitlab";
+import { SuccessfulBotAction } from ".";
 
 /**
  * This Bot Action class analyzes the name of the author of the GitLab Merge Request
@@ -43,17 +44,17 @@ export abstract class NewGitWhoDis {
    * Invoked when Bot Action analysis was successful.
    * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
    * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good New Git Who Dis practice
-   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   * @returns SuccessfulBotActionWithMessage instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    */
   static buildSuccessfulAction(
     authorName: string,
     goodGitPractice: boolean,
-  ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
+  ): SuccessfulBotAction {
+    let action: SuccessfulBotAction;
 
     switch (goodGitPractice) {
       case false: {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           `${this.badIcon} Hi @${authorName}, ${this.badNote}`,
           this.hashtag,

@@ -1,6 +1,6 @@
 import {
   GitOuttaHere,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 
@@ -84,10 +84,10 @@ describe("GitOuttaHere.buildSuccessfulAction(goodGitPractice)", () => {
   });
 
   describe("goodGitPractice === false", (goodGitPractice = false) => {
-    test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+    test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
       const action = GitOuttaHere.buildSuccessfulAction(goodGitPractice);
-      expect(action).toBeInstanceOf(SuccessfulBotAction);
-      expect((<SuccessfulBotAction>action).mrNote).toBe(
+      expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+      expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
         `${GitOuttaHere.badNote} ${GitOuttaHere.hashtag}`,
       );
     });

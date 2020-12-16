@@ -1,5 +1,5 @@
 import {
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
   TooManyAssigned,
 } from "../../src/bot_actions";
@@ -210,14 +210,14 @@ describe("TooManyAssigned.buildSuccessfulAction(apiResponse, state, goodGitPract
       });
 
       describe("assigneeId !== null", (assigneeId = 1) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
           const action = TooManyAssigned.buildSuccessfulAction(
             state,
             goodGitPractice,
             assigneeId,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${TooManyAssigned.badNote} ${TooManyAssigned.hashtag}`,
           );
         });
@@ -266,14 +266,14 @@ describe("TooManyAssigned.buildSuccessfulAction(apiResponse, state, goodGitPract
       });
 
       describe("assigneeId !== null", (assigneeId = 1) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
           const action = TooManyAssigned.buildSuccessfulAction(
             state,
             goodGitPractice,
             assigneeId,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${TooManyAssigned.badNote} ${TooManyAssigned.hashtag}`,
           );
         });

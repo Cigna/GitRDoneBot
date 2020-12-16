@@ -89,6 +89,15 @@ export class SuccessfulPostORPutResponse extends ApiResponse {
   }
 }
 
+export type GetResponse =
+  | SuccessfulGetResponse
+  | NotFoundORNetworkFailureResponse
+  | AuthorizationFailureResponse;
+
+export type PostORPutResponse =
+  | SuccessfulPostORPutResponse
+  | NotFoundORNetworkFailureResponse;
+
 /**
  * @param statusCode HTTP status code
  * @param body Data payload received from HTTP GET request
@@ -97,10 +106,7 @@ export class SuccessfulPostORPutResponse extends ApiResponse {
 export function BuildGetResponse<T>(
   statusCode: number,
   body: T[] | T | undefined,
-):
-  | SuccessfulGetResponse
-  | NotFoundORNetworkFailureResponse
-  | AuthorizationFailureResponse {
+): GetResponse {
   let response;
 
   if (ApiResponse.computeSuccess(statusCode) && body !== undefined) {
@@ -124,7 +130,7 @@ export function BuildGetResponse<T>(
 export function BuildPostORPutResponse(
   statusCode: number,
   body?: any,
-): SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse {
+): PostORPutResponse {
   let response;
 
   if (
@@ -175,13 +181,7 @@ export class FetchWrapper {
    * @param uri The specific API endpoint to send a request to
    * @returns `ApiResponse` subclass instance that indicates whether the call succeeded or failed
    */
-  public async makeGetRequest(
-    uri: string,
-  ): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public async makeGetRequest(uri: string): Promise<GetResponse> {
     let response;
     try {
       const result: RawFetchResponse = await this.handleFetch(
@@ -205,7 +205,7 @@ export class FetchWrapper {
   public async makePutRequest(
     uri: string,
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
+  ): Promise<PostORPutResponse> {
     let response;
     const putOptions = {
       body: JSON.stringify(qs),
@@ -232,7 +232,7 @@ export class FetchWrapper {
   public async makePostRequest(
     uri: string,
     qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
+  ): Promise<PostORPutResponse> {
     let response;
     const postOptions = {
       body: JSON.stringify(qs),
@@ -264,13 +264,7 @@ export class FetchWrapper {
    * @remarks
    * If DELETE is successful, will return a 204 code as result.
    */
-  public async makeDeleteRequest(
-    uri: string,
-  ): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public async makeDeleteRequest(uri: string): Promise<GetResponse> {
     let response;
     try {
       const statusCode: number = await this.handleDeleteFetch(

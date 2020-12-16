@@ -2,7 +2,7 @@ import {
   AuthorizationFailureBotAction,
   BotActionResponse,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "./bot_action";
 import { BotActionConfig } from "../custom_config/bot_action_config";
@@ -12,6 +12,7 @@ import {
   SuccessfulGetResponse,
 } from "../gitlab";
 import { Change } from "../interfaces";
+import { Action, SuccessfulBotAction } from ".";
 
 /**
  * This Bot Action class analyzes how many lines of diff are contained in the GitLab Merge Request
@@ -37,11 +38,7 @@ export abstract class DiffSize {
     api: GitLabApi,
     customConfig: BotActionConfig,
   ): Promise<BotActionResponse> {
-    let action:
-      | AuthorizationFailureBotAction
-      | NetworkFailureBotAction
-      | SuccessfulBotAction
-      | SuccessfulBotActionWithNothingToSay;
+    let action: Action;
     let actionResponse: BotActionResponse;
 
     const response = await api.getSingleMRChanges();
@@ -156,15 +153,15 @@ export abstract class DiffSize {
    * @param totalDiffs total lines of diff in the Merge Request
    * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Diff Size practice
    * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
-   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   * @returns SuccessfulBotActionWithMessage instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    * */
   static buildSuccessfulAction(
     state: string,
     totalDiffs: number,
     goodGitPractice: boolean,
     constructiveFeedbackOnlyToggle: boolean,
-  ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
+  ): SuccessfulBotAction {
+    let action: SuccessfulBotAction;
 
     switch (true) {
       case this.caseForZeroMessage(
@@ -173,7 +170,7 @@ export abstract class DiffSize {
         goodGitPractice,
         constructiveFeedbackOnlyToggle,
       ): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.zeroNote,
           this.hashtag,
@@ -181,7 +178,7 @@ export abstract class DiffSize {
         break;
       }
       case this.caseForBadMessage(goodGitPractice): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.badNote,
           this.hashtag,
@@ -194,7 +191,7 @@ export abstract class DiffSize {
         goodGitPractice,
         constructiveFeedbackOnlyToggle,
       ): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.goodNote,
           this.hashtag,

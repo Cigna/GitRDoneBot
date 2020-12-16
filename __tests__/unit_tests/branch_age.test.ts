@@ -2,7 +2,7 @@ import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { BranchAgeDefaults } from "../../src/custom_config/action_config_defaults";
 import {
   BranchAge,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 import { GitLabCommit } from "../../src/interfaces";
@@ -268,14 +268,14 @@ describe("BranchAge.buildSuccessfulAction(state, goodGitPractice, constructiveFe
       });
 
       describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
           const action = BranchAge.buildSuccessfulAction(
             state,
             goodGitPractice,
             customConfig.constructiveFeedbackOnlyToggle,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${BranchAge.badNote} ${BranchAge.hashtag}`,
           );
         });
@@ -284,28 +284,28 @@ describe("BranchAge.buildSuccessfulAction(state, goodGitPractice, constructiveFe
 
     describe("customConfig.constructiveFeedbackOnlyToggle === false", (customConfig = falseCustomConfig) => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
           const action = BranchAge.buildSuccessfulAction(
             state,
             goodGitPractice,
             customConfig.constructiveFeedbackOnlyToggle,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${BranchAge.goodNote} ${BranchAge.hashtag}`,
           );
         });
       });
 
       describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
           const action = BranchAge.buildSuccessfulAction(
             state,
             goodGitPractice,
             customConfig.constructiveFeedbackOnlyToggle,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${BranchAge.badNote} ${BranchAge.hashtag}`,
           );
         });
@@ -328,14 +328,14 @@ describe("BranchAge.buildSuccessfulAction(state, goodGitPractice, constructiveFe
       });
 
       describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
           const action = BranchAge.buildSuccessfulAction(
             state,
             goodGitPractice,
             customConfig.constructiveFeedbackOnlyToggle,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${BranchAge.badNote} ${BranchAge.hashtag}`,
           );
         });
@@ -344,28 +344,28 @@ describe("BranchAge.buildSuccessfulAction(state, goodGitPractice, constructiveFe
 
     describe("customConfig.constructiveFeedbackOnlyToggle === false", (customConfig = falseCustomConfig) => {
       describe("goodGitPractice === true", (goodGitPractice = true) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
           const action = BranchAge.buildSuccessfulAction(
             state,
             goodGitPractice,
             customConfig.constructiveFeedbackOnlyToggle,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${BranchAge.goodNote} ${BranchAge.hashtag}`,
           );
         });
       });
 
       describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
           const action = BranchAge.buildSuccessfulAction(
             state,
             goodGitPractice,
             customConfig.constructiveFeedbackOnlyToggle,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${BranchAge.badNote} ${BranchAge.hashtag}`,
           );
         });
@@ -388,14 +388,14 @@ describe("BranchAge.buildSuccessfulAction(state, goodGitPractice, constructiveFe
       });
 
       describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
           const action = BranchAge.buildSuccessfulAction(
             state,
             goodGitPractice,
             customConfig.constructiveFeedbackOnlyToggle,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${BranchAge.badNote} ${BranchAge.hashtag}`,
           );
         });
@@ -416,14 +416,14 @@ describe("BranchAge.buildSuccessfulAction(state, goodGitPractice, constructiveFe
       });
 
       describe("goodGitPractice === false", (goodGitPractice = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
           const action = BranchAge.buildSuccessfulAction(
             state,
             goodGitPractice,
             customConfig.constructiveFeedbackOnlyToggle,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${BranchAge.badNote} ${BranchAge.hashtag}`,
           );
         });

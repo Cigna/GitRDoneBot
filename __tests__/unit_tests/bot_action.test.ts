@@ -1,7 +1,7 @@
 import {
   allGoodGitPractice,
   composeNote,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 
@@ -12,10 +12,10 @@ describe("Bot Action unit tests", () => {
   const hash2 = "#FauxAction";
 
   describe("composeNote function", () => {
-    describe("when an array of SuccessfulBotAction is passed in", () => {
+    describe("when an array of SuccessfulBotActionWithMessage is passed in", () => {
       const chattyBotActions = [
-        new SuccessfulBotAction(true, msg1, hash1),
-        new SuccessfulBotAction(true, msg2, hash2),
+        new SuccessfulBotActionWithMessage(true, msg1, hash1),
+        new SuccessfulBotActionWithMessage(true, msg2, hash2),
       ];
       test("a single string composed of all mrNotes is returned", () => {
         expect(composeNote(chattyBotActions)).toBe(
@@ -28,8 +28,8 @@ describe("Bot Action unit tests", () => {
   describe("allGoodGitPractice function", () => {
     describe("When all goodGitPractice bools are true", () => {
       const chattyBotActions = [
-        new SuccessfulBotAction(true, msg1, hash1),
-        new SuccessfulBotAction(true, msg2, hash2),
+        new SuccessfulBotActionWithMessage(true, msg1, hash1),
+        new SuccessfulBotActionWithMessage(true, msg2, hash2),
       ];
 
       const silentBotActions = [
@@ -45,8 +45,8 @@ describe("Bot Action unit tests", () => {
 
     describe("When at least one chatty goodGitPractice bool is false", () => {
       const chattyBotActions = [
-        new SuccessfulBotAction(false, msg1, hash1),
-        new SuccessfulBotAction(true, msg2, hash2),
+        new SuccessfulBotActionWithMessage(false, msg1, hash1),
+        new SuccessfulBotActionWithMessage(true, msg2, hash2),
       ];
 
       const silentBotActions = [
@@ -62,8 +62,8 @@ describe("Bot Action unit tests", () => {
 
     describe("When at least one silent goodGitPractice bool is false", () => {
       const chattyBotActions = [
-        new SuccessfulBotAction(true, msg1, hash1),
-        new SuccessfulBotAction(true, msg2, hash2),
+        new SuccessfulBotActionWithMessage(true, msg1, hash1),
+        new SuccessfulBotActionWithMessage(true, msg2, hash2),
       ];
 
       const silentBotActions = [

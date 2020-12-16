@@ -1,7 +1,7 @@
 import { mockUser } from "../helpers";
 import {
   SelfMerge,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 
@@ -640,27 +640,27 @@ describe("SelfMerge.buildSuccessfulAction(state, goodGitPractice, approversNeede
   describe("'open' state", (state = "open") => {
     describe("goodGitPractice === true", (goodGitPractice = true) => {
       describe("approversNeeded === true", (approversNeeded = true) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.goodNote} ${SelfMerge.hashtag}`,
           );
         });
       });
       describe("approversNeeded === false", (approversNeeded = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.goodNote} ${SelfMerge.hashtag}`,
           );
         });
@@ -669,27 +669,27 @@ describe("SelfMerge.buildSuccessfulAction(state, goodGitPractice, approversNeede
 
     describe("goodGitPractice === false", (goodGitPractice = false) => {
       describe("approversNeeded === true", (approversNeeded = true) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badAssignedNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badAssignedNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.badAssignedNote} ${SelfMerge.hashtag}`,
           );
         });
       });
       describe("approversNeeded === false", (approversNeeded = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badAssignedNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badAssignedNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.badAssignedNote} ${SelfMerge.hashtag}`,
           );
         });
@@ -700,27 +700,27 @@ describe("SelfMerge.buildSuccessfulAction(state, goodGitPractice, approversNeede
   describe("'update' state", (state = "update") => {
     describe("goodGitPractice === true", (goodGitPractice = true) => {
       describe("approversNeeded === true", (approversNeeded = true) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.goodNote} ${SelfMerge.hashtag}`,
           );
         });
       });
       describe("approversNeeded === false", (approversNeeded = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.goodNote} ${SelfMerge.hashtag}`,
           );
         });
@@ -729,27 +729,27 @@ describe("SelfMerge.buildSuccessfulAction(state, goodGitPractice, approversNeede
 
     describe("goodGitPractice === false", (goodGitPractice = false) => {
       describe("approversNeeded === true", (approversNeeded = true) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badAssignedNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badAssignedNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.badAssignedNote} ${SelfMerge.hashtag}`,
           );
         });
       });
       describe("approversNeeded === false", (approversNeeded = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badAssignedNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badAssignedNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.badAssignedNote} ${SelfMerge.hashtag}`,
           );
         });
@@ -760,14 +760,14 @@ describe("SelfMerge.buildSuccessfulAction(state, goodGitPractice, approversNeede
   describe("'merge' state", (state = "merge") => {
     describe("goodGitPractice === true", (goodGitPractice = true) => {
       describe("approversNeeded === true", (approversNeeded = true) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/noApprovalsNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/noApprovalsNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.noApprovalsNote} ${SelfMerge.hashtag}`,
           );
         });
@@ -787,27 +787,27 @@ describe("SelfMerge.buildSuccessfulAction(state, goodGitPractice, approversNeede
 
     describe("goodGitPractice === false", (goodGitPractice = false) => {
       describe("approversNeeded === true", (approversNeeded = true) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badMergedNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badMergedNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.badMergedNote} ${SelfMerge.hashtag}`,
           );
         });
       });
       describe("approversNeeded === false", (approversNeeded = false) => {
-        test("RETURNS INSTANCE: SuccessfulBotAction w/badApprovedNote", () => {
+        test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badApprovedNote", () => {
           const action = SelfMerge.buildSuccessfulAction(
             state,
             goodGitPractice,
             approversNeeded,
           );
-          expect(action).toBeInstanceOf(SuccessfulBotAction);
-          expect((<SuccessfulBotAction>action).mrNote).toBe(
+          expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+          expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
             `${SelfMerge.badApprovedNote} ${SelfMerge.hashtag}`,
           );
         });

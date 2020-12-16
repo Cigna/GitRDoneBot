@@ -1,7 +1,7 @@
 import {
   BotActionResponse,
   NewGitWhoDis,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 
@@ -29,13 +29,16 @@ describe("NewGitWhoDis.analyze(authorName)", () => {
     beforeEach(async () => {
       botActionResponse = await NewGitWhoDis.analyze(authorName);
     });
-    test("Should return instance of SuccessfulBotAction", () => {
-      expect(botActionResponse.action).toBeInstanceOf(SuccessfulBotAction);
+    test("Should return instance of SuccessfulBotActionWithMessage", () => {
+      expect(botActionResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithMessage,
+      );
     });
 
     test("Should return goodGitPractice === false", () => {
       expect(
-        (<SuccessfulBotAction>botActionResponse.action).goodGitPractice,
+        (<SuccessfulBotActionWithMessage>botActionResponse.action)
+          .goodGitPractice,
       ).toBe(false);
     });
   });
@@ -69,13 +72,13 @@ describe("NewGitWhoDis.buildSuccessfulAction(goodGitPractice)", (authorName = "A
   });
 
   describe("goodGitPractice === false", (goodGitPractice = false) => {
-    test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+    test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
       const action = NewGitWhoDis.buildSuccessfulAction(
         authorName,
         goodGitPractice,
       );
-      expect(action).toBeInstanceOf(SuccessfulBotAction);
-      expect((<SuccessfulBotAction>action).mrNote).toBe(
+      expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+      expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
         `${NewGitWhoDis.badIcon} Hi @${authorName}, ${NewGitWhoDis.badNote} ${NewGitWhoDis.hashtag}`,
       );
     });

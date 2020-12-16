@@ -11,7 +11,7 @@ import {
   BotActionResponse,
   BranchAge,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
 } from "../../src/bot_actions";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
 import { BranchAgeDefaults } from "../../src/custom_config/action_config_defaults";
@@ -56,20 +56,23 @@ describe("Mock API Test: BranchAge Class", () => {
         done();
       });
 
-      test("should return an instance of SuccessfulBotAction", () => {
-        expect(branchAgeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+      test("should return an instance of SuccessfulBotActionWithMessage", () => {
+        expect(branchAgeResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
+        );
       });
 
       test("goodGitPractice is false", () => {
         expect(
-          (<SuccessfulBotAction>branchAgeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>branchAgeResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
       test("mrNote is bad with hashtag", () => {
-        expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
-          `${BranchAge.badNote} ${BranchAge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>branchAgeResponse.action).mrNote,
+        ).toBe(`${BranchAge.badNote} ${BranchAge.hashtag}`);
       });
 
       test("oldestCommit title is 'Oldest Commit'", () => {
@@ -91,7 +94,9 @@ describe("Mock API Test: BranchAge Class", () => {
       });
 
       test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(branchAgeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+        expect(branchAgeResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
+        );
       });
 
       test("oldestCommit title is 'Oldest Commit'", () => {
@@ -102,14 +107,15 @@ describe("Mock API Test: BranchAge Class", () => {
 
       test("goodGitPractice is true", () => {
         expect(
-          (<SuccessfulBotAction>branchAgeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>branchAgeResponse.action)
+            .goodGitPractice,
         ).toBe(true);
       });
 
       test("mrNote is good with hashtag", () => {
-        expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
-          `${BranchAge.goodNote} ${BranchAge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>branchAgeResponse.action).mrNote,
+        ).toBe(`${BranchAge.goodNote} ${BranchAge.hashtag}`);
       });
     });
 
@@ -127,7 +133,9 @@ describe("Mock API Test: BranchAge Class", () => {
       });
 
       test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(branchAgeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+        expect(branchAgeResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
+        );
       });
 
       test("oldestCommit title is 'Oldest Commit'", () => {
@@ -138,14 +146,15 @@ describe("Mock API Test: BranchAge Class", () => {
 
       test("goodGitPractice is true", () => {
         expect(
-          (<SuccessfulBotAction>branchAgeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>branchAgeResponse.action)
+            .goodGitPractice,
         ).toBe(true);
       });
 
       test("mrNote is good with hashtag", () => {
-        expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
-          `${BranchAge.goodNote} ${BranchAge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>branchAgeResponse.action).mrNote,
+        ).toBe(`${BranchAge.goodNote} ${BranchAge.hashtag}`);
       });
     });
 
@@ -163,19 +172,22 @@ describe("Mock API Test: BranchAge Class", () => {
       });
 
       test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(branchAgeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+        expect(branchAgeResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
+        );
       });
 
       test("goodGitPractice is true", () => {
         expect(
-          (<SuccessfulBotAction>branchAgeResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>branchAgeResponse.action)
+            .goodGitPractice,
         ).toBe(true);
       });
 
       test("mrNote is good with hashtag", () => {
-        expect((<SuccessfulBotAction>branchAgeResponse.action).mrNote).toBe(
-          `${BranchAge.goodNote} ${BranchAge.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>branchAgeResponse.action).mrNote,
+        ).toBe(`${BranchAge.goodNote} ${BranchAge.hashtag}`);
       });
     });
 

@@ -11,7 +11,7 @@ import {
   BotActionResponse,
   CommitMessages,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
 } from "../../src/bot_actions";
 
 // TEST FIXTURES
@@ -71,7 +71,7 @@ describe("Mock API Test: CommitMessages Class", () => {
 
       test("should return an instance of SuccessfulBotAction", () => {
         expect(commitMessageResponse.action).toBeInstanceOf(
-          SuccessfulBotAction,
+          SuccessfulBotActionWithMessage,
         );
       });
 
@@ -83,13 +83,14 @@ describe("Mock API Test: CommitMessages Class", () => {
 
       test("goodGitPractice is true", () => {
         expect(
-          (<SuccessfulBotAction>commitMessageResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
         ).toBe(true);
       });
       test("mrNote is good with hashtag", () => {
-        expect((<SuccessfulBotAction>commitMessageResponse.action).mrNote).toBe(
-          `${CommitMessages.goodNote} ${CommitMessages.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.goodNote} ${CommitMessages.hashtag}`);
       });
     });
 
@@ -105,9 +106,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return an instance of SuccessfulBotAction", () => {
+      test("should return an instance of SuccessfulBotActionWithMessage", () => {
         expect(commitMessageResponse.action).toBeInstanceOf(
-          SuccessfulBotAction,
+          SuccessfulBotActionWithMessage,
         );
       });
 
@@ -120,15 +121,16 @@ describe("Mock API Test: CommitMessages Class", () => {
       // because test fixture has all empty strings as commit messages
       test("goodGitPractice is false", () => {
         expect(
-          (<SuccessfulBotAction>commitMessageResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
       // not checking full message here because of the complexity of this Bot Action's message
       test("mrNote is bad with hashtag", () => {
-        expect((<SuccessfulBotAction>commitMessageResponse.action).mrNote).toBe(
-          `${CommitMessages.badNote} ${CommitMessages.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.badNote} ${CommitMessages.hashtag}`);
       });
     });
 
@@ -144,9 +146,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return an instance of SuccessfulBotAction", () => {
+      test("should return an instance of SuccessfulBotActionWithMessage", () => {
         expect(commitMessageResponse.action).toBeInstanceOf(
-          SuccessfulBotAction,
+          SuccessfulBotActionWithMessage,
         );
       });
 
@@ -159,15 +161,16 @@ describe("Mock API Test: CommitMessages Class", () => {
       // because test fixture has all empty strings as commit messages
       test("goodGitPractice is false", () => {
         expect(
-          (<SuccessfulBotAction>commitMessageResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
       // not checking full message here because of the complexity of this Bot Action's message
       test("mrNote is bad with hashtag", () => {
-        expect((<SuccessfulBotAction>commitMessageResponse.action).mrNote).toBe(
-          `${CommitMessages.badNote} ${CommitMessages.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.badNote} ${CommitMessages.hashtag}`);
       });
     });
 
@@ -215,9 +218,9 @@ describe("Mock API Test: CommitMessages Class", () => {
         commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return instance of SuccessfulBotAction", () => {
+      test("should return instance of SuccessfulBotActionWithMessage", () => {
         expect(commitMessageResponse.action).toBeInstanceOf(
-          SuccessfulBotAction,
+          SuccessfulBotActionWithMessage,
         );
       });
 
@@ -229,15 +232,16 @@ describe("Mock API Test: CommitMessages Class", () => {
 
       test("goodGitPractice is true", () => {
         expect(
-          (<SuccessfulBotAction>commitMessageResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
         ).toBe(true);
       });
 
       // not checking full message here because of the complexity of this Bot Action's message
       test("mrNote is good with hashtag", () => {
-        expect((<SuccessfulBotAction>commitMessageResponse.action).mrNote).toBe(
-          `${CommitMessages.goodNote} ${CommitMessages.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.goodNote} ${CommitMessages.hashtag}`);
       });
     });
 
@@ -251,22 +255,23 @@ describe("Mock API Test: CommitMessages Class", () => {
         commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return an instance of SuccessfulBotAction", () => {
+      test("should return an instance of SuccessfulBotActionWithMessage", () => {
         expect(commitMessageResponse.action).toBeInstanceOf(
-          SuccessfulBotAction,
+          SuccessfulBotActionWithMessage,
         );
       });
 
       test("goodGitPractice is false", () => {
         expect(
-          (<SuccessfulBotAction>commitMessageResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
       test("mrNote is bad with hashtag", () => {
-        expect((<SuccessfulBotAction>commitMessageResponse.action).mrNote).toBe(
-          `${CommitMessages.badNote} ${CommitMessages.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.badNote} ${CommitMessages.hashtag}`);
       });
     });
   });

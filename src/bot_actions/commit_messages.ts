@@ -1,8 +1,10 @@
 import {
+  Action,
   AuthorizationFailureBotAction,
   BotActionResponse,
   NetworkFailureBotAction,
   SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "./bot_action";
 import {
@@ -32,11 +34,7 @@ export abstract class CommitMessages {
     state: string,
     api: GitLabApi,
   ): Promise<BotActionResponse> {
-    let action:
-      | AuthorizationFailureBotAction
-      | NetworkFailureBotAction
-      | SuccessfulBotAction
-      | SuccessfulBotActionWithNothingToSay;
+    let action: Action;
     let actionResponse: BotActionResponse;
 
     const response = await api.getSingleMRCommits();
@@ -142,17 +140,17 @@ export abstract class CommitMessages {
    * Constructs a BotAction object containing goodGitPractice and conditional feedback message.
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
    * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Commit Messages practice
-   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   * @returns SuccSuccessfulBotActionWithMessageessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    */
   static buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,
-  ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
+  ): SuccessfulBotAction {
+    let action: SuccessfulBotAction;
 
     switch (true) {
       case this.caseForBadMessage(goodGitPractice): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.badNote,
           this.hashtag,
@@ -160,7 +158,7 @@ export abstract class CommitMessages {
         break;
       }
       case this.caseForGoodMessage(state, goodGitPractice): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.goodNote,
           this.hashtag,

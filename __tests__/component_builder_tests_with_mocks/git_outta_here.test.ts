@@ -4,7 +4,7 @@ import {
   AuthorizationFailureBotAction,
   GitOuttaHere,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 import { unauthorized_401, fetch_network_error } from "../helpers";
@@ -111,20 +111,23 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
       done();
     });
 
-    test("should return instance of SuccessfulBotAction", () => {
-      expect(gitOuttaHereResponse.action).toBeInstanceOf(SuccessfulBotAction);
+    test("should return instance of SuccessfulBotActionWithMessage", () => {
+      expect(gitOuttaHereResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithMessage,
+      );
     });
 
     test("goodGitPractice is false", () => {
       expect(
-        (<SuccessfulBotAction>gitOuttaHereResponse.action).goodGitPractice,
+        (<SuccessfulBotActionWithMessage>gitOuttaHereResponse.action)
+          .goodGitPractice,
       ).toBe(false);
     });
 
     test("mrNote is bad with hashtag", () => {
-      expect((<SuccessfulBotAction>gitOuttaHereResponse.action).mrNote).toBe(
-        `${GitOuttaHere.badNote} ${GitOuttaHere.hashtag}`,
-      );
+      expect(
+        (<SuccessfulBotActionWithMessage>gitOuttaHereResponse.action).mrNote,
+      ).toBe(`${GitOuttaHere.badNote} ${GitOuttaHere.hashtag}`);
     });
   });
 
@@ -147,7 +150,8 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
 
     test("goodGitPractice is true", () => {
       expect(
-        (<SuccessfulBotAction>gitOuttaHereResponse.action).goodGitPractice,
+        (<SuccessfulBotActionWithMessage>gitOuttaHereResponse.action)
+          .goodGitPractice,
       ).toBe(true);
     });
   });
@@ -171,7 +175,8 @@ describe("Mock API Tests: GitOuttaHere Class", () => {
 
     test("goodGitPractice is true", () => {
       expect(
-        (<SuccessfulBotAction>gitOuttaHereResponse.action).goodGitPractice,
+        (<SuccessfulBotActionWithMessage>gitOuttaHereResponse.action)
+          .goodGitPractice,
       ).toBe(true);
     });
   });

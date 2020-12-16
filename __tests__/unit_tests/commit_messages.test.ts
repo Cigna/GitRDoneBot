@@ -1,6 +1,6 @@
 import {
   CommitMessages,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 
@@ -171,26 +171,26 @@ describe("CommitMessages.caseForGoodMessage(state, goodGitPractice", () => {
 describe("CommitMessages.buildSuccessfulAction(state, goodGitPractice)", () => {
   describe("state === 'open'", (state = "open") => {
     describe("goodGitPractice === 'true'", (goodGitPractice = true) => {
-      test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+      test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
         const action = CommitMessages.buildSuccessfulAction(
           state,
           goodGitPractice,
         );
-        expect(action).toBeInstanceOf(SuccessfulBotAction);
-        expect((<SuccessfulBotAction>action).mrNote).toBe(
+        expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+        expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
           `${CommitMessages.goodNote} ${CommitMessages.hashtag}`,
         );
       });
     });
 
     describe("goodGitPractice === 'false'", (goodGitPractice = false) => {
-      test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+      test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
         const action = CommitMessages.buildSuccessfulAction(
           state,
           goodGitPractice,
         );
-        expect(action).toBeInstanceOf(SuccessfulBotAction);
-        expect((<SuccessfulBotAction>action).mrNote).toBe(
+        expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+        expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
           `${CommitMessages.badNote} ${CommitMessages.hashtag}`,
         );
       });
@@ -199,26 +199,26 @@ describe("CommitMessages.buildSuccessfulAction(state, goodGitPractice)", () => {
 
   describe("state === 'update'", (state = "update") => {
     describe("goodGitPractice === 'true'", (goodGitPractice = true) => {
-      test("RETURNS INSTANCE: SuccessfulBotAction w/goodNote", () => {
+      test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/goodNote", () => {
         const action = CommitMessages.buildSuccessfulAction(
           state,
           goodGitPractice,
         );
-        expect(action).toBeInstanceOf(SuccessfulBotAction);
-        expect((<SuccessfulBotAction>action).mrNote).toBe(
+        expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+        expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
           `${CommitMessages.goodNote} ${CommitMessages.hashtag}`,
         );
       });
     });
 
     describe("goodGitPractice === 'false'", (goodGitPractice = false) => {
-      test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+      test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
         const action = CommitMessages.buildSuccessfulAction(
           state,
           goodGitPractice,
         );
-        expect(action).toBeInstanceOf(SuccessfulBotAction);
-        expect((<SuccessfulBotAction>action).mrNote).toBe(
+        expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+        expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
           `${CommitMessages.badNote} ${CommitMessages.hashtag}`,
         );
       });
@@ -235,13 +235,13 @@ describe("CommitMessages.buildSuccessfulAction(state, goodGitPractice)", () => {
     });
 
     describe("goodGitPractice === 'false'", (goodGitPractice = false) => {
-      test("RETURNS INSTANCE: SuccessfulBotAction w/badNote", () => {
+      test("RETURNS INSTANCE: SuccessfulBotActionWithMessage w/badNote", () => {
         const action = CommitMessages.buildSuccessfulAction(
           state,
           goodGitPractice,
         );
-        expect(action).toBeInstanceOf(SuccessfulBotAction);
-        expect((<SuccessfulBotAction>action).mrNote).toBe(
+        expect(action).toBeInstanceOf(SuccessfulBotActionWithMessage);
+        expect((<SuccessfulBotActionWithMessage>action).mrNote).toBe(
           `${CommitMessages.badNote} ${CommitMessages.hashtag}`,
         );
       });

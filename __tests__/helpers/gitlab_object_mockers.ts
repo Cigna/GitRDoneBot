@@ -1,6 +1,6 @@
 import {
   BotActionResponse,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "../../src/bot_actions";
 import {
@@ -124,7 +124,7 @@ export function mockSuccessfulBotAction(name: string): BotActionResponse {
   return {
     name: name,
     statusCode: 200,
-    action: new SuccessfulBotAction(true, `${name} msg`, `#${name}`),
+    action: new SuccessfulBotActionWithMessage(true, `${name} msg`, `#${name}`),
   };
 }
 

@@ -8,7 +8,7 @@ import {
 import {
   AuthorizationFailureBotAction,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
   TooManyAssigned,
 } from "../../src/bot_actions";
@@ -120,21 +120,23 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return instance of SuccessfulBotAction", () => {
+      test("should return instance of SuccessfulBotActionWithMessage", () => {
         expect(tooManyAssignedResponse.action).toBeInstanceOf(
-          SuccessfulBotAction,
+          SuccessfulBotActionWithMessage,
         );
       });
 
       test("should return goodGitPractice === false", () => {
         expect(
-          (<SuccessfulBotAction>tooManyAssignedResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>tooManyAssignedResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
       test("should return mrNote === bad", () => {
         expect(
-          (<SuccessfulBotAction>tooManyAssignedResponse.action).mrNote,
+          (<SuccessfulBotActionWithMessage>tooManyAssignedResponse.action)
+            .mrNote,
         ).toBe(`${TooManyAssigned.badNote} ${TooManyAssigned.hashtag}`);
       });
     });
@@ -270,21 +272,23 @@ describe("Mock API Tests: TooManyAssigned Class", () => {
         done();
       });
 
-      test("should return instance of SuccessfulBotAction", () => {
+      test("should return instance of SuccessfulBotActionWithMessage", () => {
         expect(tooManyAssignedResponse.action).toBeInstanceOf(
-          SuccessfulBotAction,
+          SuccessfulBotActionWithMessage,
         );
       });
 
       test("should return goodGitPractice === false", () => {
         expect(
-          (<SuccessfulBotAction>tooManyAssignedResponse.action).goodGitPractice,
+          (<SuccessfulBotActionWithMessage>tooManyAssignedResponse.action)
+            .goodGitPractice,
         ).toBe(false);
       });
 
       test("should return mrNote === bad", () => {
         expect(
-          (<SuccessfulBotAction>tooManyAssignedResponse.action).mrNote,
+          (<SuccessfulBotActionWithMessage>tooManyAssignedResponse.action)
+            .mrNote,
         ).toBe(`${TooManyAssigned.badNote} ${TooManyAssigned.hashtag}`);
       });
     });

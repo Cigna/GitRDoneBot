@@ -2,7 +2,7 @@ import {
   GitLabApi,
   SuccessfulGetResponse,
   NotFoundORNetworkFailureResponse,
-  SuccessfulPostORPutResponse,
+  PostORPutResponse,
 } from "../gitlab";
 import { Note } from "../interfaces";
 import { getBotUsername } from "../util/env_var_loader";
@@ -42,10 +42,8 @@ export abstract class BotComment {
     state: string,
     updateToggle: boolean,
     comment: string,
-  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
-    let response:
-      | SuccessfulPostORPutResponse
-      | NotFoundORNetworkFailureResponse;
+  ): Promise<PostORPutResponse> {
+    let response: PostORPutResponse;
 
     switch (true) {
       case this.caseForNewNote(state, updateToggle): {

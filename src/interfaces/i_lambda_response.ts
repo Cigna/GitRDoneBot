@@ -1,10 +1,7 @@
 import * as HttpStatus from "http-status-codes";
-import { BotActionResponse, SuccessfulBotAction } from "../bot_actions";
+import { BotActionResponse } from "../bot_actions";
 import { CustomConfig } from "../custom_config/custom_config";
-import {
-  NotFoundORNetworkFailureResponse,
-  SuccessfulPostORPutResponse,
-} from "../gitlab";
+import { PostORPutResponse } from "../gitlab";
 import { LoggerFactory } from "../util";
 import { MergeRequestEvent } from "./i_merge_request_event";
 
@@ -93,9 +90,7 @@ export class CommentFailedResponse implements LambdaResponse {
     botActionResponses: BotActionResponse[],
     emoji: {
       emoji: string;
-      apiResponse:
-        | SuccessfulPostORPutResponse
-        | NotFoundORNetworkFailureResponse;
+      apiResponse: PostORPutResponse;
     },
     comment: string,
   ) {
@@ -127,9 +122,7 @@ export class CommentSuccessResponse implements LambdaResponse {
     botActionResponses: BotActionResponse[],
     emoji: {
       emoji: string;
-      apiResponse:
-        | SuccessfulPostORPutResponse
-        | NotFoundORNetworkFailureResponse;
+      apiResponse: PostORPutResponse;
     },
     comment: string,
   ) {

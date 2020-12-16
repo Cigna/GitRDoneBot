@@ -2,7 +2,7 @@ import {
   AuthorizationFailureBotAction,
   BotActionResponse,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "./bot_action";
 import {
@@ -12,6 +12,7 @@ import {
   AuthorizationFailureResponse,
 } from "../gitlab";
 import { User } from "../interfaces/gitlab_api_types";
+import { Action, SuccessfulBotAction } from ".";
 
 /**
  * This Bot Action class analyzes the assignee or the approvers and the user who merged the GitLab Merge Request
@@ -53,11 +54,7 @@ export abstract class SelfMerge {
     assigneeId: number,
     authorId: number,
   ): Promise<BotActionResponse> {
-    let action:
-      | AuthorizationFailureBotAction
-      | NetworkFailureBotAction
-      | SuccessfulBotAction
-      | SuccessfulBotActionWithNothingToSay;
+    let action: Action;
     let actionResponse!: BotActionResponse;
 
     // No API call required for open & update states
@@ -261,18 +258,18 @@ export abstract class SelfMerge {
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
    * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Self Merge practice
    * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
-   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   * @returns SuccessfulBotActionWithMessage instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    * */
   static buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,
     approversNeeded: boolean,
-  ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
+  ): SuccessfulBotAction {
+    let action: SuccessfulBotAction;
 
     switch (true) {
       case this.caseForBadSelfAssignedMessage(state, goodGitPractice): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.badAssignedNote,
           this.hashtag,
@@ -284,7 +281,7 @@ export abstract class SelfMerge {
         goodGitPractice,
         approversNeeded,
       ): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.badApprovedNote,
           this.hashtag,
@@ -296,7 +293,7 @@ export abstract class SelfMerge {
         goodGitPractice,
         approversNeeded,
       ): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.badMergedNote,
           this.hashtag,
@@ -308,7 +305,7 @@ export abstract class SelfMerge {
         goodGitPractice,
         approversNeeded,
       ): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.noApprovalsNote,
           this.hashtag,
@@ -316,7 +313,7 @@ export abstract class SelfMerge {
         break;
       }
       case this.caseForGoodMessage(state, goodGitPractice): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.goodNote,
           this.hashtag,

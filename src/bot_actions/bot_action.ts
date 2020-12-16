@@ -11,7 +11,7 @@ import { CustomConfig } from "../custom_config/custom_config";
 import {
   GitLabApi,
   NotFoundORNetworkFailureResponse,
-  SuccessfulPostORPutResponse,
+  PostORPutResponse,
 } from "../gitlab";
 import {
   IncorrectPermissionsResponse,
@@ -42,9 +42,18 @@ export class BotActionResponse {
 export type Action =
   | AuthorizationFailureBotAction
   | NetworkFailureBotAction
-  | SuccessfulBotAction
+  | SuccessfulBotActionWithMessage
   | SuccessfulBotActionWithNothingToSay;
 
+export type SuccessfulBotAction =
+  | SuccessfulBotActionWithMessage
+  | SuccessfulBotActionWithNothingToSay;
+
+export type CommentResponse =
+  | IncorrectPermissionsResponse
+  | CommentFailedResponse
+  | CommentSuccessResponse
+  | NoCommentNeededResponse;
 /**
  * This class is constructed by a Bot Action if GitLab API request fails with code 401 or 403
  */
@@ -66,7 +75,7 @@ export class NetworkFailureBotAction {
  * @param message string containing positive or constructive feedback that will be posted for end user to see
  * @param hashtag string indicating the name of the Bot Action providing feedback
  */
-export class SuccessfulBotAction {
+export class SuccessfulBotActionWithMessage {
   mrNote: string;
   constructor(
     readonly goodGitPractice: boolean,
@@ -86,7 +95,9 @@ export class SuccessfulBotActionWithNothingToSay {
   constructor(readonly goodGitPractice: boolean) {}
 }
 
-export function composeNote(chattyBotActions: SuccessfulBotAction[]): string {
+export function composeNote(
+  chattyBotActions: SuccessfulBotActionWithMessage[],
+): string {
   return chattyBotActions
     .map((action) => {
       return action.mrNote;
@@ -95,7 +106,7 @@ export function composeNote(chattyBotActions: SuccessfulBotAction[]): string {
 }
 
 export function allGoodGitPractice(
-  chattyBotActions: SuccessfulBotAction[],
+  chattyBotActions: SuccessfulBotActionWithMessage[],
   silentBotActions: SuccessfulBotActionWithNothingToSay[],
 ): boolean {
   return [...chattyBotActions, ...silentBotActions].every(
@@ -117,23 +128,14 @@ export async function runBotActions(
   customConfig: CustomConfig,
   gitLabEvent: any,
   state: string,
-): Promise<
-  | IncorrectPermissionsResponse
-  | CommentFailedResponse
-  | CommentSuccessResponse
-  | NoCommentNeededResponse
-> {
+): Promise<CommentResponse> {
   const mergeRequestEvent: MergeRequestEvent = getMergeRequestEventData(
     gitLabEvent,
   );
 
   // lambdaResponse is guaranteed to be set,
   // must declared here so it will be in scope for response constructor
-  let lambdaResponse!:
-    | IncorrectPermissionsResponse
-    | CommentFailedResponse
-    | CommentSuccessResponse
-    | NoCommentNeededResponse;
+  let lambdaResponse!: CommentResponse;
 
   // fire all Bot Actions in parallel - order does not matter
   const botActionResponses: Array<BotActionResponse> = await Promise.all([
@@ -156,7 +158,7 @@ export async function runBotActions(
     ),
   ]);
 
-  const chattyBotActions: Array<SuccessfulBotAction> = [];
+  const chattyBotActions: Array<SuccessfulBotActionWithMessage> = [];
   const silentBotActions: Array<SuccessfulBotActionWithNothingToSay> = [];
 
   botActionResponses.forEach(function (response) {
@@ -165,8 +167,10 @@ export async function runBotActions(
         lambdaResponse = new IncorrectPermissionsResponse(mergeRequestEvent);
         break;
       }
-      case response.action instanceof SuccessfulBotAction: {
-        chattyBotActions.push(response.action as SuccessfulBotAction);
+      case response.action instanceof SuccessfulBotActionWithMessage: {
+        chattyBotActions.push(
+          response.action as SuccessfulBotActionWithMessage,
+        );
       }
       case response.action instanceof SuccessfulBotActionWithNothingToSay: {
         silentBotActions.push(
@@ -191,9 +195,10 @@ export async function runBotActions(
         : "eyes";
 
       // POST logic must be performed only after all Bot Action promises have resolved
-      const [commentResponse, emojiResponse]: Array<
-        SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse
-      > = await Promise.all([
+      const [
+        commentResponse,
+        emojiResponse,
+      ]: Array<PostORPutResponse> = await Promise.all([
         BotComment.post(
           api,
           state,

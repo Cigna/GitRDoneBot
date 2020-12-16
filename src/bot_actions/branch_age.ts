@@ -7,10 +7,11 @@ import {
 import { GitLabCommit } from "../interfaces/gitlab_api_types";
 import {
   Action,
+  SuccessfulBotAction,
   AuthorizationFailureBotAction,
   BotActionResponse,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
   SuccessfulBotActionWithNothingToSay,
 } from "./bot_action";
 
@@ -142,18 +143,18 @@ export abstract class BranchAge {
    * @param state the state of the Merge Request: `open`, `update`, or `merge`
    * @param goodGitPractice represents whether or not the Merge Request event meets the criteria for good Branch Age practice
    * @param constructiveFeedbackOnlyToggle if true, positive feedback will not be provided
-   * @returns SuccessfulBotAction instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
+   * @returns SuccessfulBotActionWithMessage instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.
    */
   static buildSuccessfulAction(
     state: string,
     goodGitPractice: boolean,
     constructiveFeedbackOnlyToggle: boolean,
-  ): SuccessfulBotAction | SuccessfulBotActionWithNothingToSay {
-    let action: SuccessfulBotAction | SuccessfulBotActionWithNothingToSay;
+  ): SuccessfulBotAction {
+    let action: SuccessfulBotAction;
 
     switch (true) {
       case this.caseForBadMessage(goodGitPractice): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.badNote,
           this.hashtag,
@@ -165,7 +166,7 @@ export abstract class BranchAge {
         goodGitPractice,
         constructiveFeedbackOnlyToggle,
       ): {
-        action = new SuccessfulBotAction(
+        action = new SuccessfulBotActionWithMessage(
           goodGitPractice,
           this.goodNote,
           this.hashtag,

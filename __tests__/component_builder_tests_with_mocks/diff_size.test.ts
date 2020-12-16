@@ -3,7 +3,7 @@ import {
   AuthorizationFailureBotAction,
   DiffSize,
   NetworkFailureBotAction,
-  SuccessfulBotAction,
+  SuccessfulBotActionWithMessage,
 } from "../../src/bot_actions";
 import { unauthorized_401, fetch_network_error } from "../helpers";
 import { BotActionConfig } from "../../src/custom_config/bot_action_config";
@@ -113,20 +113,23 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("should return instance of SuccessfulBotAction", async () => {
-      expect(diffSizeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+    test("should return instance of SuccessfulBotActionWithMessage", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithMessage,
+      );
     });
 
     test("goodGitPractice is true", async () => {
       expect(
-        (<SuccessfulBotAction>diffSizeResponse.action).goodGitPractice,
+        (<SuccessfulBotActionWithMessage>diffSizeResponse.action)
+          .goodGitPractice,
       ).toBe(true);
     });
 
     test("mrNote is good with hashtag", async () => {
-      expect((<SuccessfulBotAction>diffSizeResponse.action).mrNote).toBe(
-        `${DiffSize.goodNote} ${DiffSize.hashtag}`,
-      );
+      expect(
+        (<SuccessfulBotActionWithMessage>diffSizeResponse.action).mrNote,
+      ).toBe(`${DiffSize.goodNote} ${DiffSize.hashtag}`);
     });
 
     test("totalDiffs value is between 0 and threshold", async () => {
@@ -152,20 +155,23 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("should return instance of SuccessfulBotAction", async () => {
-      expect(diffSizeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+    test("should return instance of SuccessfulBotActionWithMessage", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithMessage,
+      );
     });
 
     test("goodGitPractice is true", async () => {
       expect(
-        (<SuccessfulBotAction>diffSizeResponse.action).goodGitPractice,
+        (<SuccessfulBotActionWithMessage>diffSizeResponse.action)
+          .goodGitPractice,
       ).toBe(true);
     });
 
     test("mrNote is good with hashtag", async () => {
-      expect((<SuccessfulBotAction>diffSizeResponse.action).mrNote).toBe(
-        `${DiffSize.goodNote} ${DiffSize.hashtag}`,
-      );
+      expect(
+        (<SuccessfulBotActionWithMessage>diffSizeResponse.action).mrNote,
+      ).toBe(`${DiffSize.goodNote} ${DiffSize.hashtag}`);
     });
 
     test("totalDiffs value is equal to the threshold", async () => {
@@ -185,20 +191,23 @@ describe("Mock API Test: DiffSize Class", () => {
       diffSizeResponse = await DiffSize.analyze(state, api, customConfig);
       done();
     });
-    test("should return instance of SuccessfulBotAction", async () => {
-      expect(diffSizeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+    test("should return instance of SuccessfulBotActionWithMessage", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithMessage,
+      );
     });
 
     test("goodGitPractice is false", async () => {
       expect(
-        (<SuccessfulBotAction>diffSizeResponse.action).goodGitPractice,
+        (<SuccessfulBotActionWithMessage>diffSizeResponse.action)
+          .goodGitPractice,
       ).toBe(false);
     });
 
     test("mrNote is bad with hashtag", async () => {
-      expect((<SuccessfulBotAction>diffSizeResponse.action).mrNote).toBe(
-        `${DiffSize.badNote} ${DiffSize.hashtag}`,
-      );
+      expect(
+        (<SuccessfulBotActionWithMessage>diffSizeResponse.action).mrNote,
+      ).toBe(`${DiffSize.badNote} ${DiffSize.hashtag}`);
     });
 
     test("totalDiffs value is greater than threshold", async () => {
@@ -219,20 +228,23 @@ describe("Mock API Test: DiffSize Class", () => {
       done();
     });
 
-    test("should return instance of SuccessfulBotAction", async () => {
-      expect(diffSizeResponse.action).toBeInstanceOf(SuccessfulBotAction);
+    test("should return instance of SuccessfulBotActionWithMessage", async () => {
+      expect(diffSizeResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithMessage,
+      );
     });
 
     test("goodGitPractice is true", async () => {
       expect(
-        (<SuccessfulBotAction>diffSizeResponse.action).goodGitPractice,
+        (<SuccessfulBotActionWithMessage>diffSizeResponse.action)
+          .goodGitPractice,
       ).toBe(true);
     });
 
     test("mrNote is zeroline with hashtag", async () => {
-      expect((<SuccessfulBotAction>diffSizeResponse.action).mrNote).toBe(
-        `${DiffSize.zeroNote} ${DiffSize.hashtag}`,
-      );
+      expect(
+        (<SuccessfulBotActionWithMessage>diffSizeResponse.action).mrNote,
+      ).toBe(`${DiffSize.zeroNote} ${DiffSize.hashtag}`);
     });
 
     test("totalDiffs value is 0", async () => {

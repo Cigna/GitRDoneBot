@@ -1,10 +1,9 @@
 import { URI } from "./uri";
 import {
-  AuthorizationFailureResponse,
   FetchWrapper,
-  NotFoundORNetworkFailureResponse,
+  GetResponse,
+  PostORPutResponse,
   SuccessfulGetResponse,
-  SuccessfulPostORPutResponse,
 } from "./api_responses";
 
 /**
@@ -33,9 +32,7 @@ export class GitLabApi {
 
   // EMOJIS
 
-  public postEmoji(
-    qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
+  public postEmoji(qs: any): Promise<PostORPutResponse> {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makePostRequest(uri, {
       name: qs,
@@ -43,23 +40,13 @@ export class GitLabApi {
   }
 
   /** HELPER METHOD FOR TESTS ONLY */
-  public deleteEmoji(
-    awardId: number,
-  ): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public deleteEmoji(awardId: number): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forSingleEmoji(awardId);
     return this.fetchWrapper.makeDeleteRequest(uri);
   }
 
   /** HELPER METHOD FOR TESTS ONLY */
-  public getAllEmojis(): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public getAllEmojis(): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forEmojis();
     return this.fetchWrapper.makeGetRequest(uri);
   }
@@ -71,28 +58,17 @@ export class GitLabApi {
    * If api returns a page with less than 100 notes, that is the last page available.
    * This method should never use cached responses, as it may be called multiple times to get additional pages of results.
    * */
-  public getAllMRNotes(
-    page: number,
-  ): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public getAllMRNotes(page: number): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forNotesFilterByPage(page);
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
-  public editMRNote(
-    noteId: number,
-    qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
+  public editMRNote(noteId: number, qs: any): Promise<PostORPutResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.makePutRequest(uri, { body: qs });
   }
 
-  public newMRNote(
-    qs: any,
-  ): Promise<SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse> {
+  public newMRNote(qs: any): Promise<PostORPutResponse> {
     const uri: string = this.uriBuilder.forNotes();
     return this.fetchWrapper.makePostRequest(uri, { body: qs });
   }
@@ -103,13 +79,7 @@ export class GitLabApi {
    * This will only delete comments directly posted on the MR -
    * it will NOT delete comments that are listed on MR that come from commits or other sources -
    * if it's tried, a 403 Forbidden status will be returned :) */
-  public deleteMRNote(
-    noteId: number,
-  ): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public deleteMRNote(noteId: number): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forSingleNote(noteId);
     return this.fetchWrapper.makeDeleteRequest(uri);
   }
@@ -119,11 +89,7 @@ export class GitLabApi {
   public getMergeRequestsByAssigneeId(
     assigneeId: number,
     threshold: number,
-  ): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  ): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forMRsFilterByAssigneeId(
       assigneeId,
       threshold,
@@ -131,21 +97,13 @@ export class GitLabApi {
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
-  public getMRApprovalConfig(): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public getMRApprovalConfig(): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forMRApprovals();
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
   // this method is used by multiple Bot Actions, so the first successful response is cached
-  public async getSingleMRChanges(): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public async getSingleMRChanges(): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forMRChanges();
 
     const response =
@@ -157,11 +115,7 @@ export class GitLabApi {
   }
 
   // this method is used by multiple Bot Actions, so the first successful response is cached
-  public async getSingleMRCommits(): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public async getSingleMRCommits(): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forSingleMRCommits();
 
     const response =
@@ -172,22 +126,14 @@ export class GitLabApi {
     return response;
   }
 
-  public getSingleMR(): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public getSingleMR(): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forSingleMR();
     return this.fetchWrapper.makeGetRequest(uri);
   }
 
   // REPOSITORY FILES
 
-  public getConfigurationFile(): Promise<
-    | SuccessfulGetResponse
-    | NotFoundORNetworkFailureResponse
-    | AuthorizationFailureResponse
-  > {
+  public getConfigurationFile(): Promise<GetResponse> {
     const uri: string = this.uriBuilder.forSingleProjectRepoRawConfigFile();
     return this.fetchWrapper.makeGetRequest(uri);
   }
