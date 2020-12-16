@@ -137,18 +137,18 @@ export async function runBotActions(
 
   // fire all Bot Actions in parallel - order does not matter
   const botActionResponses: Array<BotActionResponse> = await Promise.all([
-    await BranchAge.analyze(state, api, customConfig.branchAge),
-    await CommitMessages.analyze(state, api),
-    await DiffSize.analyze(state, api, customConfig.diffSize),
-    await GitOuttaHere.analyze(api),
-    await NewGitWhoDis.analyze(mergeRequestEvent.authorName),
-    await SelfMerge.analyze(
+    BranchAge.analyze(state, api, customConfig.branchAge),
+    CommitMessages.analyze(state, api),
+    DiffSize.analyze(state, api, customConfig.diffSize),
+    GitOuttaHere.analyze(api),
+    NewGitWhoDis.analyze(mergeRequestEvent.authorName),
+    SelfMerge.analyze(
       state,
       api,
       mergeRequestEvent.assigneeId,
       mergeRequestEvent.authorId,
     ),
-    await TooManyAssigned.analyze(
+    TooManyAssigned.analyze(
       state,
       api,
       customConfig.tooManyMergeRequests,
@@ -190,25 +190,25 @@ export async function runBotActions(
         ? "trophy"
         : "eyes";
 
-      // TODO: How does lambda handle this if we return before this finishes?
-      api.postEmoji(emoji);
-
       // POST logic must be performed only after all Bot Action promises have resolved
-      const commentResponse:
-        | SuccessfulPostORPutResponse
-        | NotFoundORNetworkFailureResponse = await BotComment.post(
-        api,
-        state,
-        customConfig.updateMergeRequestComment,
-        note,
-      );
+      const [commentResponse, emojiResponse]: Array<
+        SuccessfulPostORPutResponse | NotFoundORNetworkFailureResponse
+      > = await Promise.all([
+        BotComment.post(
+          api,
+          state,
+          customConfig.updateMergeRequestComment,
+          note,
+        ),
+        api.postEmoji(emoji),
+      ]);
 
       if (commentResponse instanceof NotFoundORNetworkFailureResponse) {
         lambdaResponse = new CommentFailedResponse(
           mergeRequestEvent,
           customConfig,
           botActionResponses,
-          emoji,
+          { emoji: emoji, apiResponse: emojiResponse },
           note,
         );
       } else {
@@ -216,7 +216,7 @@ export async function runBotActions(
           mergeRequestEvent,
           customConfig,
           botActionResponses,
-          emoji,
+          { emoji: emoji, apiResponse: emojiResponse },
           note,
         );
       }

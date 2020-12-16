@@ -121,14 +121,9 @@ const webhook: Handler = async (
     containerId = context.awsRequestId;
   }
 
-  try {
-    // TODO: find out if event is already in JSON format or if it needs to be parsed
-    logger.info(JSON.parse(event));
-  } catch (err) {
-    logger.error(`Error parsing event: ${err.message}`);
-  }
+  logger.info(event);
 
-  // TODO: sophisticate this once we have better visibility on what GitLab events specifically look like
+  // TODO: sophisticate this once we have better visibility on what GitLab events vs CloudWatch events specifically look like
   // and filter out whatever the empty event.body event is
   const response = event.hasOwnProperty("body")
     ? await handleGitLabWebhook(event)
