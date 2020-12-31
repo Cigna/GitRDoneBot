@@ -7,7 +7,7 @@ export interface MergeRequestEvent {
   authorEmail: string;
 
   // event.object_attributes.author_id
-  authorGitId: number;
+  authorId: number;
 
   // event.user.name
   authorName: string;
