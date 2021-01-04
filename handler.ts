@@ -6,9 +6,8 @@ import {
   NoActionResponse,
   NotSupportedResponse,
 } from "./src/interfaces";
-import { MergeRequestApi } from "./src/gitlab";
+import { GitLabApi } from "./src/gitlab";
 import {
-  BotActionsResponse,
   getMrId,
   getObjectKind,
   getProjectId,
@@ -16,6 +15,7 @@ import {
 } from "./src/merge_request";
 import { getToken, getBaseURI, LoggerFactory } from "./src/util";
 import { CustomConfig } from "./src/custom_config/custom_config";
+import { runBotActions } from "./src/bot_actions";
 
 let containerId: string;
 const logger = LoggerFactory.getInstance();
@@ -40,7 +40,6 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   try {
     gitLabEvent = JSON.parse(event.body);
     objectKind = getObjectKind(gitLabEvent);
-    logger.info(gitLabEvent);
   } catch (err) {
     objectKind = undefined;
     response = new ErrorResponse(`Error parsing event.body: ${err.message}`);
@@ -65,7 +64,7 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
           const projectId = getProjectId(gitLabEvent);
           const mrId = getMrId(gitLabEvent);
 
-          const api = new MergeRequestApi(
+          const api = new GitLabApi(
             token as string,
             projectId,
             mrId,
@@ -82,7 +81,7 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
           ) {
             response = new NoActionResponse();
           } else {
-            response = await BotActionsResponse.from(
+            response = await runBotActions(
               api,
               customConfig,
               gitLabEvent,
@@ -122,6 +121,10 @@ const webhook: Handler = async (
     containerId = context.awsRequestId;
   }
 
+  logger.info(event);
+
+  // TODO: sophisticate this once we have better visibility on what GitLab events vs CloudWatch events specifically look like
+  // and filter out whatever the empty event.body event is
   const response = event.hasOwnProperty("body")
     ? await handleGitLabWebhook(event)
     : new HealthCheckResponse(containerId, event);

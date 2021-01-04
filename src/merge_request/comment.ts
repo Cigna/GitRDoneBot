@@ -1,9 +1,8 @@
 import {
-  MergeRequestApi,
+  GitLabApi,
   SuccessfulGetResponse,
-  FailedResponse,
-  NoRequestNeeded,
-  SuccessfulPostORPutResponse,
+  NotFoundORNetworkFailureResponse,
+  PostORPutResponse,
 } from "../gitlab";
 import { Note } from "../interfaces";
 import { getBotUsername } from "../util/env_var_loader";
@@ -12,47 +11,9 @@ import { LoggerFactory } from "../util";
 const logger = LoggerFactory.getInstance();
 
 /**
- * This class handles the logic for aggregating messages from individual Bot Actions into a single comment to be posted to end-user's Merge Request.
- * Each instance of this class contains the final message posted to a Merge Request, as well as HTTP status information about the POST request.
+ * This abstract class contains the logic for posting comments to end-user's Merge Request.
  */
-export class BotComment {
-  static readonly noActionContent: string = "No BotComment action required.";
-
-  private constructor(
-    readonly apiResponse:
-      | SuccessfulPostORPutResponse
-      | NoRequestNeeded
-      | FailedResponse,
-    readonly text: string,
-  ) {}
-
-  /**
-   * Composes single comment by aggregating all Bot Action `mrNote` properties. Filters out empty strings, no action strings ("NA"), and error message strings.
-   * @param messages Array of `mrNote` strings
-   * @returns Properly formatted GitLab MR note
-   * */
-  static compose(messages: Array<string>): string {
-    let comment: string = messages
-      .filter((msg) => {
-        return msg.match(
-          new RegExp(
-            /^((?!Unknown state encountered while composing note:)(?!NA).)+/,
-          ),
-        );
-      })
-      .join("<br /><br />");
-
-    if (comment === "") {
-      comment = this.noActionContent;
-    }
-    return comment;
-  }
-
-  /** This case MUST be listed first in the switch statement */
-  static caseForNoActions(comment: string): boolean {
-    return comment === this.noActionContent;
-  }
-
+export abstract class BotComment {
   static caseForNewNote(state: string, updateToggle: boolean): boolean {
     return state === "open" || (state === "merge" && updateToggle === false);
   }
@@ -63,7 +24,7 @@ export class BotComment {
 
   /**
    * Evaluates parameters to one of three outcomes: posts new note from GRDBot to GitLab Merge Request, updates existing GRDBot note, or takes no action.
-   * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
+   * @param api an instance of the GitLabApi class that wraps HTTP requests to and responses from the GitLab API
    * @param state the state of the incoming Merge Request event from GitLab
    * @param updateToggle `true` updates previous GRDBot comment if exists; `false` always posts new comment
    * @param messages Array of `mrNote` strings
@@ -77,22 +38,14 @@ export class BotComment {
    * 1. `BotComment` with update comment response when state is "merge", `updateToggle` is `true`, and previous GRDBot comment exists on MR
    * */
   static async post(
-    api: MergeRequestApi,
+    api: GitLabApi,
     state: string,
     updateToggle: boolean,
-    messages: Array<string>,
-  ): Promise<BotComment> {
-    let response:
-      | SuccessfulPostORPutResponse
-      | NoRequestNeeded
-      | FailedResponse;
-    const comment = this.compose(messages);
+    comment: string,
+  ): Promise<PostORPutResponse> {
+    let response: PostORPutResponse;
 
     switch (true) {
-      case this.caseForNoActions(comment): {
-        response = new NoRequestNeeded();
-        break;
-      }
       case this.caseForNewNote(state, updateToggle): {
         response = await api.newMRNote(comment);
         break;
@@ -107,20 +60,20 @@ export class BotComment {
         break;
       }
       default: {
-        response = new FailedResponse(500);
+        response = new NotFoundORNetworkFailureResponse(500);
         logger.error(`comment.post: Encountered Unknown State`);
       }
     }
 
-    return new BotComment(response, comment);
+    return response;
   }
 
   /**
    * Gets id of oldest merge request note where author's username matches GITLAB_BOT_ACCOUNT_NAME defined in env vars
-   * @param api an instance of the MergeRequestApi class that wraps HTTP requests to and responses from the GitLab API
+   * @param api an instance of the GitLabApi class that wraps HTTP requests to and responses from the GitLab API
    * @returns id of GRDBot note if it exists, or -1 if no GRDBot note exists
    * */
-  static async getMRNoteId(api: MergeRequestApi): Promise<number> {
+  static async getMRNoteId(api: GitLabApi): Promise<number> {
     const botName = getBotUsername(process.env.GITLAB_BOT_ACCOUNT_NAME);
     let noteId = -1;
     let noteCount = 100;

@@ -6,15 +6,17 @@ import { Context } from "aws-lambda";
 import { mockGitLabWebhookEvent } from "../helpers";
 import { getToken } from "../../src/util";
 import { handleGitLabWebhook } from "../../handler";
-import { BotActionsResponse } from "../../src/merge_request";
 import { CustomConfig } from "../../src/custom_config/custom_config";
 import { SuccessfulGetResponse } from "../../src/gitlab";
 import {
   ErrorResponse,
   HealthCheckResponse,
+  IncorrectPermissionsResponse,
   NoActionResponse,
   NotSupportedResponse,
 } from "../../src/interfaces";
+import { runBotActions } from "../../src/bot_actions";
+import { getMergeRequestEventData } from "../../src/merge_request/helpers";
 
 const context: Context = {
   awsRequestId: "abcdefghi-1234-jklm-5678-nopqrstuvxyz90",
@@ -134,10 +136,9 @@ const updateEvent = {
 
 // TESTS
 jest.mock("../../src/custom_config/custom_config");
+jest.mock("../../src/bot_actions/bot_action.ts");
 const lambdaWrapper = jestPlugin.lambdaWrapper;
 const wrapped = lambdaWrapper.wrap(mod, { handler: "webhook" });
-
-const noActionResponseBody = new NoActionResponse().body;
 
 describe("Mock API Integration Tests: Lambda Handler webhook function", () => {
   test("webhook returns a NoActionResponse when closed GitLab event received", () => {
@@ -183,6 +184,29 @@ describe("Mock API Integration Tests: Lamda Handler handleGitLabWebhook function
     expect(response).toBeDefined();
     expect(response).toBeInstanceOf(NoActionResponse);
   });
+
+  test("Open State: invokes runBotActions and returns appropriate response", async () => {
+    // @ts-ignore
+    CustomConfig.from.mockResolvedValue(customConfigUpdateToggleFalse);
+    // @ts-ignore
+    runBotActions.mockImplementationOnce(() => {
+      return new IncorrectPermissionsResponse(
+        getMergeRequestEventData(JSON.parse(openEvent.body)),
+      );
+    });
+    const response = await handleGitLabWebhook(openEvent);
+    expect(response).toBeDefined();
+    expect(response).toBeInstanceOf(IncorrectPermissionsResponse);
+  });
+});
+
+describe("Mock API Integration Tests: lambda handler response (Error Cases)", () => {
+  test("Unable to parse event.body: returns ErrorResponse", () => {
+    return wrapped.runHandler({ body: {} }, context, null).then((response) => {
+      expect(response).toBeDefined();
+      expect(response).toBeInstanceOf(ErrorResponse);
+    });
+  });
 });
 
 describe("Mock API Integration Tests: lambda handler response (Error Cases)", () => {
@@ -201,7 +225,7 @@ describe("Mock API Integration Tests: lambda handler response (Error Cases)", ()
     done();
   });
 
-  test("Missing GitLab API token: returns ErrorResponse handler", () => {
+  test("Missing GitLab API token: returns ErrorResponse", () => {
     return wrapped.runHandler(openEvent, context, null).then((response) => {
       expect(response).toBeDefined();
       expect(response).toBeInstanceOf(ErrorResponse);

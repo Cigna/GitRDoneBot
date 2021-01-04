@@ -1,4 +1,9 @@
 import {
+  BotActionResponse,
+  SuccessfulBotActionWithMessage,
+  SuccessfulBotActionWithNothingToSay,
+} from "../../src/bot_actions";
+import {
   Note,
   User,
   GitLabCommit,
@@ -102,6 +107,24 @@ export function mockChange(diff: string): Change {
     renamed_file: false,
     deleted_file: false,
     diff: diff,
+  };
+}
+
+export function mockSuccessfulBotActionWithNothingToSay(
+  name: string,
+): BotActionResponse {
+  return {
+    name: name,
+    statusCode: 200,
+    action: new SuccessfulBotActionWithNothingToSay(true),
+  };
+}
+
+export function mockSuccessfulBotAction(name: string): BotActionResponse {
+  return {
+    name: name,
+    statusCode: 200,
+    action: new SuccessfulBotActionWithMessage(true, `${name} msg`, `#${name}`),
   };
 }
 

@@ -1,16 +1,18 @@
 import * as HttpStatus from "http-status-codes";
-import {
-  FailedResponse,
-  MergeRequestApi,
-  SuccessfulGetResponse,
-} from "../../src/gitlab";
+import { GitLabApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
   mockGitLabCommit,
   createNGitLabCommits,
   internal_error_500,
+  unauthorized_401,
 } from "../helpers";
-import { CommitMessages } from "../../src/bot_actions";
-import { CommitMessagesNote } from "../../src/bot_actions/commit_messages/commit_message_note";
+import {
+  AuthorizationFailureBotAction,
+  BotActionResponse,
+  CommitMessages,
+  NetworkFailureBotAction,
+  SuccessfulBotActionWithMessage,
+} from "../../src/bot_actions";
 
 // TEST FIXTURES
 const DYNAMIC_TOTAL_COMMITS = 20;
@@ -51,229 +53,225 @@ const too_many_one_word_commits = new SuccessfulGetResponse(HttpStatus.OK, [
   mockGitLabCommit("bug::fix", Date.now().toString()),
 ]);
 
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Test: CommitMessages Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   describe("open state", (state = "open") => {
-    describe("when there is a single commit", (constructiveFeedbackOnlyToggle = false) => {
-      let commitMessageResponse: CommitMessages;
+    describe("when there is a single commit", () => {
+      let commitMessageResponse: BotActionResponse;
+
       beforeAll(async () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValueOnce(single_commit);
-        commitMessageResponse = await CommitMessages.from(
-          state,
-          api,
-          constructiveFeedbackOnlyToggle,
-        );
+        commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
+      test("should return an instance of SuccessfulBotAction", () => {
+        expect(commitMessageResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
         );
       });
 
       test("calculated threshold is correctly calculated to be default threshold", () => {
-        expect(commitMessageResponse.calculatedThreshold).toBe(
-          DEFAULT_THRESHOLD,
-        );
+        expect(
+          commitMessageResponse.computedValues["calculatedThreshold"],
+        ).toBe(DEFAULT_THRESHOLD);
       });
 
       test("goodGitPractice is true", () => {
-        expect(commitMessageResponse.goodGitPractice).toBe(true);
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
+        ).toBe(true);
       });
-
       test("mrNote is good with hashtag", () => {
-        expect(commitMessageResponse.mrNote).toBe(
-          `${CommitMessagesNote.good} ${CommitMessagesNote.hashtag}`,
-        );
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.goodNote} ${CommitMessages.hashtag}`);
       });
     });
 
-    describe("when total number of commits falls below dynamic calculation threshold", (constructiveFeedbackOnlyToggle = false) => {
-      let commitMessageResponse: CommitMessages;
+    describe("when total number of commits falls below dynamic calculation threshold", () => {
+      let commitMessageResponse: BotActionResponse;
+
       beforeAll(async () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValueOnce(
           less_than_dynamic_threshold_commits,
         );
-        commitMessageResponse = await CommitMessages.from(
-          state,
-          api,
-          constructiveFeedbackOnlyToggle,
-        );
+        commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", async () => {
-        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
+      test("should return an instance of SuccessfulBotActionWithMessage", () => {
+        expect(commitMessageResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
         );
       });
 
       test("calculated threshold is correctly calculated to be default threshold", () => {
-        expect(commitMessageResponse.calculatedThreshold).toBe(
-          DEFAULT_THRESHOLD,
-        );
+        expect(
+          commitMessageResponse.computedValues["calculatedThreshold"],
+        ).toBe(DEFAULT_THRESHOLD);
       });
 
       // because test fixture has all empty strings as commit messages
-      test("goodGitPractice is false", async () => {
-        expect(commitMessageResponse.goodGitPractice).toBe(false);
+      test("goodGitPractice is false", () => {
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
+        ).toBe(false);
       });
 
       // not checking full message here because of the complexity of this Bot Action's message
-      test("mrNote is bad with hashtag", async () => {
-        expect(commitMessageResponse.mrNote).toContain(
-          `${CommitMessagesNote.bad}`,
-        );
+      test("mrNote is bad with hashtag", () => {
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.badNote} ${CommitMessages.hashtag}`);
       });
     });
 
-    describe("when total number of commits triggers dynamic calculation", (constructiveFeedbackOnlyToggle = false) => {
-      let commitMessageResponse: CommitMessages;
+    describe("when total number of commits triggers dynamic calculation", () => {
+      let commitMessageResponse: BotActionResponse;
+
       beforeAll(async () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValueOnce(
           more_than_dynamic_threshold_commits,
         );
-        commitMessageResponse = await CommitMessages.from(
-          state,
-          api,
-          constructiveFeedbackOnlyToggle,
-        );
+        commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", async () => {
-        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
+      test("should return an instance of SuccessfulBotActionWithMessage", () => {
+        expect(commitMessageResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
         );
       });
 
       test("calculated threshold is correctly calculated to be 20% of total commits", () => {
-        expect(commitMessageResponse.calculatedThreshold).toBe(
-          DYNAMIC_CALCULATED_THRESHOLD,
-        );
+        expect(
+          commitMessageResponse.computedValues["calculatedThreshold"],
+        ).toBe(DYNAMIC_CALCULATED_THRESHOLD);
       });
 
       // because test fixture has all empty strings as commit messages
-      test("goodGitPractice is false", async () => {
-        expect(commitMessageResponse.goodGitPractice).toBe(false);
+      test("goodGitPractice is false", () => {
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
+        ).toBe(false);
       });
 
       // not checking full message here because of the complexity of this Bot Action's message
-      test("mrNote is bad with hashtag", async () => {
-        expect(commitMessageResponse.mrNote).toContain(
-          `${CommitMessagesNote.bad}`,
-        );
+      test("mrNote is bad with hashtag", () => {
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.badNote} ${CommitMessages.hashtag}`);
       });
     });
 
-    describe("when the API request fails", (constructiveFeedbackOnlyToggle = false) => {
-      let commitMessageResponse: CommitMessages;
+    describe("when the API request fails due to network failure", () => {
+      let commitMessageResponse: BotActionResponse;
+
       beforeAll(async () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValueOnce(internal_error_500);
-        commitMessageResponse = await CommitMessages.from(
-          state,
-          api,
-          constructiveFeedbackOnlyToggle,
-        );
+        commitMessageResponse = await CommitMessages.analyze(state, api);
       });
 
-      test("should return apiResponse state of FailedResponse", () => {
-        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
-          FailedResponse,
-        );
-      });
-
-      test("calculated threshold is correctly left to be the default threshold", () => {
-        expect(commitMessageResponse.calculatedThreshold).toBe(
-          DEFAULT_THRESHOLD,
-        );
-      });
-
-      test("goodGitPractice is false", () => {
-        expect(commitMessageResponse.goodGitPractice).toBe(undefined);
-      });
-
-      // not checking full message here because of the complexity of this Bot Action's message
-      test("mrNote is the check permissions message", async () => {
-        expect(commitMessageResponse.mrNote).toEqual(
-          CommitMessagesNote.checkPermissionsMessage,
+      test("should return instance of NetworkFailureBotAction", () => {
+        expect(commitMessageResponse.action).toBeInstanceOf(
+          NetworkFailureBotAction,
         );
       });
     });
 
-    describe("when there are no commits", (constructiveFeedbackOnlyToggle = false) => {
-      let commitMessageResponse: CommitMessages;
+    describe("when the API request fails due to authorization failure", () => {
+      let commitMessageResponse: BotActionResponse;
+
+      beforeAll(async () => {
+        jest.clearAllMocks();
+        // @ts-ignore
+        api.getSingleMRCommits.mockResolvedValueOnce(unauthorized_401);
+        commitMessageResponse = await CommitMessages.analyze(state, api);
+      });
+
+      test("should return instance of AuthorizationFailureBotAction", () => {
+        expect(commitMessageResponse.action).toBeInstanceOf(
+          AuthorizationFailureBotAction,
+        );
+      });
+    });
+
+    describe("when there are no commits", () => {
+      let commitMessageResponse: BotActionResponse;
+
       beforeAll(async () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValueOnce(zero_commits);
-        commitMessageResponse = await CommitMessages.from(
-          state,
-          api,
-          constructiveFeedbackOnlyToggle,
+        commitMessageResponse = await CommitMessages.analyze(state, api);
+      });
+
+      test("should return instance of SuccessfulBotActionWithMessage", () => {
+        expect(commitMessageResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
         );
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
-        );
+      test("calculated threshold is correctly calculated to be default threshold", () => {
+        expect(
+          commitMessageResponse.computedValues["calculatedThreshold"],
+        ).toBe(DEFAULT_THRESHOLD);
       });
 
-      test("calculated threshold is correctly left to be the default threshold", () => {
-        expect(commitMessageResponse.calculatedThreshold).toBe(
-          DEFAULT_THRESHOLD,
-        );
-      });
-
-      test("goodGitPractice is undefined", () => {
-        expect(commitMessageResponse.goodGitPractice).toBe(undefined);
+      test("goodGitPractice is true", () => {
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
+        ).toBe(true);
       });
 
       // not checking full message here because of the complexity of this Bot Action's message
-      test("mrNote is good message", async () => {
-        expect(commitMessageResponse.mrNote).toEqual(
-          CommitMessagesNote.noActionMessage,
-        );
+      test("mrNote is good with hashtag", () => {
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.goodNote} ${CommitMessages.hashtag}`);
       });
     });
 
-    describe("when there are too many one word commits", (constructiveFeedbackOnlyToggle = false) => {
-      let commitMessageResponse: CommitMessages;
+    describe("when there are too many one word commits", () => {
+      let commitMessageResponse: BotActionResponse;
+
       beforeAll(async () => {
         jest.clearAllMocks();
         // @ts-ignore
         api.getSingleMRCommits.mockResolvedValueOnce(too_many_one_word_commits);
-        commitMessageResponse = await CommitMessages.from(
-          state,
-          api,
-          constructiveFeedbackOnlyToggle,
+        commitMessageResponse = await CommitMessages.analyze(state, api);
+      });
+
+      test("should return an instance of SuccessfulBotActionWithMessage", () => {
+        expect(commitMessageResponse.action).toBeInstanceOf(
+          SuccessfulBotActionWithMessage,
         );
       });
 
-      test("should return apiResponse state of SuccessfulGetResponse", () => {
-        expect(commitMessageResponse.apiResponse).toBeInstanceOf(
-          SuccessfulGetResponse,
-        );
+      test("goodGitPractice is false", () => {
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action)
+            .goodGitPractice,
+        ).toBe(false);
       });
 
-      test("Should return goodGitPractice === false", () => {
-        expect(commitMessageResponse.goodGitPractice).toBe(false);
-      });
-
-      test("Should return mrNote === bad", () => {
-        expect(commitMessageResponse.mrNote).toBe(
-          `${CommitMessagesNote.bad} ${CommitMessagesNote.hashtag}`,
-        );
+      test("mrNote is bad with hashtag", () => {
+        expect(
+          (<SuccessfulBotActionWithMessage>commitMessageResponse.action).mrNote,
+        ).toBe(`${CommitMessages.badNote} ${CommitMessages.hashtag}`);
       });
     });
   });

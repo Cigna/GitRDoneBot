@@ -1,6 +1,6 @@
 import {
-  FailedResponse,
-  MergeRequestApi,
+  GitLabApi,
+  NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
 } from "../../src/gitlab";
 import { not_found_404 } from "../helpers";
@@ -49,10 +49,10 @@ const validKeysInvalidValues = new SuccessfulGetResponse(200, {
 
 // TESTS
 
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Test: CustomConfig Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   describe("when a retrieved custom config has valid keys with valid values", () => {
     let customConfigResponse: CustomConfig;
@@ -228,8 +228,14 @@ describe("Mock API Test: CustomConfig Class", () => {
       done();
     });
 
-    test("should return apiResponse state of FailedResponse", () => {
-      expect(customConfigResponse.apiResponse).toBeInstanceOf(FailedResponse);
+    test("should return apiResponse state of NotFoundORNotFoundORNetworkFailureResponse", () => {
+      expect(customConfigResponse.apiResponse).toBeInstanceOf(
+        NotFoundORNetworkFailureResponse,
+      );
+      expect(
+        (<NotFoundORNetworkFailureResponse>customConfigResponse.apiResponse)
+          .isNotFound,
+      ).toBe(true);
     });
 
     test("branchAge uses default values when custom values do not exist", () => {

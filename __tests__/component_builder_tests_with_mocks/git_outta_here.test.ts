@@ -1,12 +1,13 @@
 import * as HttpStatus from "http-status-codes";
+import { GitLabApi, SuccessfulGetResponse } from "../../src/gitlab";
 import {
-  FailedResponse,
-  MergeRequestApi,
-  SuccessfulGetResponse,
-} from "../../src/gitlab";
-import { GitOuttaHere, BotActionNote } from "../../src/bot_actions";
-import { not_found_404, fetch_network_error } from "../helpers";
-import { GitOuttaHereNote } from "../../src/bot_actions/git_outta_here/git_outta_here_note";
+  AuthorizationFailureBotAction,
+  GitOuttaHere,
+  NetworkFailureBotAction,
+  SuccessfulBotActionWithMessage,
+  SuccessfulBotActionWithNothingToSay,
+} from "../../src/bot_actions";
+import { unauthorized_401, fetch_network_error } from "../helpers";
 
 // TEST FIXTURES
 const log_files_exist = new SuccessfulGetResponse(HttpStatus.OK, {
@@ -58,133 +59,125 @@ const changes_equal_zero = new SuccessfulGetResponse(200, {
 
 // TESTS
 
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Tests: GitOuttaHere Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
-  describe("(Any state) when 3XX-5XX response from GitLab", () => {
-    let gitOuttaHereResponse: GitOuttaHere;
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
+
+  describe("When the API request fails due to authorization failure", () => {
+    let gitOuttaHereResponse;
 
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(not_found_404);
-      gitOuttaHereResponse = await GitOuttaHere.from(api);
+      api.getSingleMRChanges.mockResolvedValue(unauthorized_401);
+      gitOuttaHereResponse = await GitOuttaHere.analyze(api);
       done();
     });
 
-    test("should return apiResponse state of FailedResponse", () => {
-      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(FailedResponse);
-    });
-
-    test("goodGitPractice is undefined", () => {
-      expect(gitOuttaHereResponse.goodGitPractice).toBe(undefined);
-    });
-
-    test("mrNote is checkPermissions", () => {
-      expect(gitOuttaHereResponse.mrNote).toBe(
-        BotActionNote.checkPermissionsMessage,
+    test("should return instance of AuthorizationFailureBotAction", () => {
+      expect(gitOuttaHereResponse.action).toBeInstanceOf(
+        AuthorizationFailureBotAction,
       );
     });
   });
 
-  describe("(Any state) when log files exist in MR", () => {
-    let gitOuttaHereResponse: GitOuttaHere;
-
-    beforeAll(async (done) => {
-      jest.clearAllMocks();
-      // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(log_files_exist);
-      gitOuttaHereResponse = await GitOuttaHere.from(api);
-      done();
-    });
-
-    test("should return apiResponse state of SuccessfulGetResponse", () => {
-      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
-        SuccessfulGetResponse,
-      );
-    });
-
-    test("goodGitPractice is false", () => {
-      expect(gitOuttaHereResponse.goodGitPractice).toBe(false);
-    });
-
-    test("mrNote is bad with hashtag", () => {
-      expect(gitOuttaHereResponse.mrNote).toBe(
-        `${GitOuttaHereNote.bad} ${GitOuttaHereNote.hashtag}`,
-      );
-    });
-  });
-
-  describe("(Any state) when log files DO NOT exist in MR", () => {
-    let gitOuttaHereResponse: GitOuttaHere;
-
-    beforeAll(async (done) => {
-      jest.clearAllMocks();
-      // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(no_log_files);
-      gitOuttaHereResponse = await GitOuttaHere.from(api);
-      done();
-    });
-
-    test("should return apiResponse state of SuccessfulGetResponse", () => {
-      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
-        SuccessfulGetResponse,
-      );
-    });
-
-    test("goodGitPractice is true", () => {
-      expect(gitOuttaHereResponse.goodGitPractice).toBe(true);
-    });
-
-    test("mrNote is noAction", () => {
-      expect(gitOuttaHereResponse.mrNote).toBe(
-        `${BotActionNote.noActionMessage}`,
-      );
-    });
-  });
-
-  describe("Git Outta Here Action: Zero changes in MR", () => {
-    let gitOuttaHereResponse: GitOuttaHere;
-
-    beforeAll(async (done) => {
-      jest.clearAllMocks();
-      // @ts-ignore
-      api.getSingleMRChanges.mockResolvedValue(changes_equal_zero);
-      gitOuttaHereResponse = await GitOuttaHere.from(api);
-      done();
-    });
-
-    test("should return apiResponse state of SuccessfulGetResponse", () => {
-      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(
-        SuccessfulGetResponse,
-      );
-    });
-
-    test("goodGitPractice is true", () => {
-      expect(gitOuttaHereResponse.goodGitPractice).toBe(true);
-    });
-
-    test("mrNote is noAction", () => {
-      expect(gitOuttaHereResponse.mrNote).toBe(
-        `${BotActionNote.noActionMessage}`,
-      );
-    });
-  });
-
-  describe("when there is a fetch network error", () => {
-    let gitOuttaHereResponse: GitOuttaHere;
+  describe("When the API request fails due to network failure", () => {
+    let gitOuttaHereResponse;
 
     beforeAll(async (done) => {
       jest.clearAllMocks();
       // @ts-ignore
       api.getSingleMRChanges.mockResolvedValue(fetch_network_error);
-      gitOuttaHereResponse = await GitOuttaHere.from(api);
+      gitOuttaHereResponse = await GitOuttaHere.analyze(api);
       done();
     });
 
-    test("should return apiResponse state of FailedResponse", () => {
-      expect(gitOuttaHereResponse.apiResponse).toBeInstanceOf(FailedResponse);
+    test("should return instance of should return instance of NetworkFailureBotAction", () => {
+      expect(gitOuttaHereResponse.action).toBeInstanceOf(
+        NetworkFailureBotAction,
+      );
+    });
+  });
+
+  describe("When log files exist in MR", () => {
+    let gitOuttaHereResponse;
+
+    beforeAll(async (done) => {
+      jest.clearAllMocks();
+      // @ts-ignore
+      api.getSingleMRChanges.mockResolvedValue(log_files_exist);
+      gitOuttaHereResponse = await GitOuttaHere.analyze(api);
+      done();
+    });
+
+    test("should return instance of SuccessfulBotActionWithMessage", () => {
+      expect(gitOuttaHereResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithMessage,
+      );
+    });
+
+    test("goodGitPractice is false", () => {
+      expect(
+        (<SuccessfulBotActionWithMessage>gitOuttaHereResponse.action)
+          .goodGitPractice,
+      ).toBe(false);
+    });
+
+    test("mrNote is bad with hashtag", () => {
+      expect(
+        (<SuccessfulBotActionWithMessage>gitOuttaHereResponse.action).mrNote,
+      ).toBe(`${GitOuttaHere.badNote} ${GitOuttaHere.hashtag}`);
+    });
+  });
+
+  describe("When log files DO NOT exist in MR", () => {
+    let gitOuttaHereResponse;
+
+    beforeAll(async (done) => {
+      jest.clearAllMocks();
+      // @ts-ignore
+      api.getSingleMRChanges.mockResolvedValue(no_log_files);
+      gitOuttaHereResponse = await GitOuttaHere.analyze(api);
+      done();
+    });
+
+    test("should return instance of SuccessfulBotActionWithNothingToSay", () => {
+      expect(gitOuttaHereResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithNothingToSay,
+      );
+    });
+
+    test("goodGitPractice is true", () => {
+      expect(
+        (<SuccessfulBotActionWithMessage>gitOuttaHereResponse.action)
+          .goodGitPractice,
+      ).toBe(true);
+    });
+  });
+
+  describe("Git Outta Here Action: Zero changes in MR", () => {
+    let gitOuttaHereResponse;
+
+    beforeAll(async (done) => {
+      jest.clearAllMocks();
+      // @ts-ignore
+      api.getSingleMRChanges.mockResolvedValue(changes_equal_zero);
+      gitOuttaHereResponse = await GitOuttaHere.analyze(api);
+      done();
+    });
+
+    test("should return instance of SuccessfulBotActionWithNothingToSay", () => {
+      expect(gitOuttaHereResponse.action).toBeInstanceOf(
+        SuccessfulBotActionWithNothingToSay,
+      );
+    });
+
+    test("goodGitPractice is true", () => {
+      expect(
+        (<SuccessfulBotActionWithMessage>gitOuttaHereResponse.action)
+          .goodGitPractice,
+      ).toBe(true);
     });
   });
 });

@@ -1,7 +1,7 @@
 import * as HttpStatus from "http-status-codes";
 import {
-  MergeRequestApi,
-  NoRequestNeeded,
+  GitLabApi,
+  NotFoundORNetworkFailureResponse,
   SuccessfulGetResponse,
   SuccessfulPostORPutResponse,
 } from "../../src/gitlab";
@@ -15,15 +15,7 @@ import { getBotUsername } from "../../src/util";
 import { BotComment } from "../../src/merge_request";
 
 // TEST FIXTURES
-const sampleFullMessageArray = [
-  "Branch Age Analysis Message",
-  "Diff Analysis Message",
-  "Self Merge Analysis Message",
-  "Too Many Assigned Analysis Message",
-];
-
-const sampleNoActionMessageArray = ["NA", "NA", "NA", "NA"];
-
+const sampleMessage = "Hello from your friendly neighborhood GitRDoneBot!";
 const GRDB_NOTE_NUMBER = 42;
 const botName = getBotUsername(process.env.GITLAB_BOT_ACCOUNT_NAME);
 
@@ -64,124 +56,51 @@ const singleGRDBNotePut = new SuccessfulPostORPutResponse(
 );
 
 // TESTS
-jest.mock("../../src/gitlab/merge_request_api");
+jest.mock("../../src/gitlab/gitlab_api");
 
 describe("Mock API Test: Comment Class", () => {
-  const api = new MergeRequestApi("fake-token", 0, 1, "fake-uri");
+  const api = new GitLabApi("fake-token", 0, 1, "fake-uri");
 
   beforeEach((done) => {
     jest.clearAllMocks();
     done();
   });
 
-  describe("post function", () => {
-    describe("open state", (state = "open", updateToggle = true) => {
-      test("NEW note is POSTED when content exists", async () => {
+  describe("BotComment.post(api, state, updateToggle, comment) function", () => {
+    describe("In OPEN state", (state = "open", updateToggle = true) => {
+      test("NEW note is successfully POSTED and correct api endpoints are called", async () => {
         // @ts-ignore
         api.newMRNote.mockResolvedValueOnce(singleGRDBNotePost);
 
-        const postResponse = await BotComment.post(
+        const commentResponse = await BotComment.post(
           api,
           state,
           updateToggle,
-          sampleFullMessageArray,
+          sampleMessage,
         );
 
-        expect(postResponse.apiResponse).toBeInstanceOf(
-          SuccessfulPostORPutResponse,
-        );
+        expect(commentResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
         expect(api.newMRNote).toHaveBeenCalledTimes(1);
-        expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
-        expect(api.editMRNote).toHaveBeenCalledTimes(0);
-      });
-
-      test("NO note is POSTED when content is empty", async () => {
-        const postResponse = await BotComment.post(
-          api,
-          state,
-          updateToggle,
-          sampleNoActionMessageArray,
-        );
-
-        expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
-        expect(api.newMRNote).toHaveBeenCalledTimes(0);
         expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
         expect(api.editMRNote).toHaveBeenCalledTimes(0);
       });
     });
 
-    describe("update state", (state = "update", updateToggle = true) => {
-      test("NEW note is POSTED when no previous note exists", async () => {
-        // @ts-ignore
-        api.newMRNote.mockResolvedValueOnce(singleGRDBNotePost);
-        // @ts-ignore
-        api.getAllMRNotes.mockResolvedValueOnce(emptyNote);
-        const postResponse = await BotComment.post(
-          api,
-          state,
-          updateToggle,
-          sampleFullMessageArray,
-        );
-
-        expect(postResponse.apiResponse).toBeInstanceOf(
-          SuccessfulPostORPutResponse,
-        );
-        expect(api.newMRNote).toHaveBeenCalledTimes(1);
-        expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
-        expect(api.editMRNote).toHaveBeenCalledTimes(0);
-      });
-
-      test("EXISTING note is UPDATED when previous note exists", async () => {
-        // @ts-ignore
-        api.editMRNote.mockResolvedValueOnce(singleGRDBNotePut);
-        // @ts-ignore
-        api.getAllMRNotes.mockResolvedValueOnce(
-          lessThanOneHundredNotesWithGRDB,
-        );
-        const postResponse = await BotComment.post(
-          api,
-          state,
-          updateToggle,
-          sampleFullMessageArray,
-        );
-        expect(postResponse.apiResponse).toBeInstanceOf(
-          SuccessfulPostORPutResponse,
-        );
-        expect(api.newMRNote).toHaveBeenCalledTimes(0);
-        expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
-        expect(api.editMRNote).toHaveBeenCalledTimes(1);
-      });
-
-      test("NO note is POSTED when content is empty", async () => {
-        const postResponse = await BotComment.post(
-          api,
-          state,
-          updateToggle,
-          sampleNoActionMessageArray,
-        );
-        expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
-        expect(api.newMRNote).toHaveBeenCalledTimes(0);
-        expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
-        expect(api.editMRNote).toHaveBeenCalledTimes(0);
-      });
-    });
-
-    describe("merge state", (state = "merge") => {
-      describe("when updateToggle === true", (updateToggle = true) => {
-        test("NEW note is posted when no previous note exists", async () => {
+    describe("In UPDATE state", (state = "update") => {
+      describe("When updateToggle === true", (updateToggle = true) => {
+        test("NEW note is POSTED when no previous note exists", async () => {
           // @ts-ignore
           api.newMRNote.mockResolvedValueOnce(singleGRDBNotePost);
           // @ts-ignore
           api.getAllMRNotes.mockResolvedValueOnce(emptyNote);
-          const postResponse = await BotComment.post(
+          const commentResponse = await BotComment.post(
             api,
             state,
             updateToggle,
-            sampleFullMessageArray,
+            sampleMessage,
           );
-          expect(postResponse.apiResponse).toBeInstanceOf(
-            SuccessfulPostORPutResponse,
-          );
+
+          expect(commentResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
           expect(api.newMRNote).toHaveBeenCalledTimes(1);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -194,35 +113,79 @@ describe("Mock API Test: Comment Class", () => {
           api.getAllMRNotes.mockResolvedValueOnce(
             lessThanOneHundredNotesWithGRDB,
           );
-          const postResponse = await BotComment.post(
+          const commentResponse = await BotComment.post(
             api,
             state,
             updateToggle,
-            sampleFullMessageArray,
+            sampleMessage,
           );
-          expect(postResponse.apiResponse).toBeInstanceOf(
-            SuccessfulPostORPutResponse,
-          );
+          expect(commentResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
           expect(api.newMRNote).toHaveBeenCalledTimes(0);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
           expect(api.editMRNote).toHaveBeenCalledTimes(1);
         });
+      });
 
-        test("NO note is POSTED when note content is empty", async () => {
-          const postResponse = await BotComment.post(
+      // NOTE: This function should never be invoked when state === update && updateToggle === false
+      describe("When updateToggle === false", (updateToggle = false) => {
+        test("Unknown State will be encountered and NotFoundORNetworkFailureResponse will be returned", async () => {
+          const commentResponse = await BotComment.post(
             api,
             state,
             updateToggle,
-            sampleNoActionMessageArray,
+            sampleMessage,
           );
-          expect(postResponse.apiResponse).toBeInstanceOf(NoRequestNeeded);
+
+          expect(commentResponse).toBeInstanceOf(
+            NotFoundORNetworkFailureResponse,
+          );
           expect(api.newMRNote).toHaveBeenCalledTimes(0);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);
         });
       });
+    });
 
-      describe("when updateToggle === false", (updateToggle = false) => {
+    describe("In MERGE state", (state = "merge") => {
+      describe("When updateToggle === true", (updateToggle = true) => {
+        test("NEW note is posted when no previous note exists", async () => {
+          // @ts-ignore
+          api.newMRNote.mockResolvedValueOnce(singleGRDBNotePost);
+          // @ts-ignore
+          api.getAllMRNotes.mockResolvedValueOnce(emptyNote);
+          const commentResponse = await BotComment.post(
+            api,
+            state,
+            updateToggle,
+            sampleMessage,
+          );
+          expect(commentResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
+          expect(api.newMRNote).toHaveBeenCalledTimes(1);
+          expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
+          expect(api.editMRNote).toHaveBeenCalledTimes(0);
+        });
+
+        test("EXISTING note is UPDATED when previous note exists", async () => {
+          // @ts-ignore
+          api.editMRNote.mockResolvedValueOnce(singleGRDBNotePut);
+          // @ts-ignore
+          api.getAllMRNotes.mockResolvedValueOnce(
+            lessThanOneHundredNotesWithGRDB,
+          );
+          const commentResponse = await BotComment.post(
+            api,
+            state,
+            updateToggle,
+            sampleMessage,
+          );
+          expect(commentResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
+          expect(api.newMRNote).toHaveBeenCalledTimes(0);
+          expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
+          expect(api.editMRNote).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      describe("When updateToggle === false", (updateToggle = false) => {
         test("NEW note is POSTED when content exists", async () => {
           // @ts-ignore
           api.newMRNote.mockResolvedValueOnce(singleGRDBNotePost);
@@ -230,11 +193,9 @@ describe("Mock API Test: Comment Class", () => {
             api,
             state,
             updateToggle,
-            sampleFullMessageArray,
+            sampleMessage,
           );
-          expect(postResponse.apiResponse).toBeInstanceOf(
-            SuccessfulPostORPutResponse,
-          );
+          expect(postResponse).toBeInstanceOf(SuccessfulPostORPutResponse);
           expect(api.newMRNote).toHaveBeenCalledTimes(1);
           expect(api.getAllMRNotes).toHaveBeenCalledTimes(0);
           expect(api.editMRNote).toHaveBeenCalledTimes(0);
@@ -243,7 +204,7 @@ describe("Mock API Test: Comment Class", () => {
     });
   });
 
-  describe("getMRNoteId function", () => {
+  describe("BotComment.getMRNoteId(api) function", () => {
     test("correct value returned when there is a single note", async () => {
       // @ts-ignore
       api.getAllMRNotes.mockResolvedValueOnce(singleGRDBNoteGet);
@@ -288,7 +249,7 @@ describe("Mock API Test: Comment Class", () => {
       expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
     });
 
-    test("returns -1 when 3XX-5XX response from GitLab", async () => {
+    test("returns -1 when API request fails due to being unauthorized", async () => {
       // @ts-ignore
       api.getAllMRNotes.mockResolvedValueOnce(unauthorized_401);
       const noteIdResponse = await BotComment.getMRNoteId(api);
@@ -296,7 +257,7 @@ describe("Mock API Test: Comment Class", () => {
       expect(api.getAllMRNotes).toHaveBeenCalledTimes(1);
     });
 
-    test("returns -1 when error returned from fetch", async () => {
+    test("returns -1 when API request fails due to network error", async () => {
       // @ts-ignore
       api.getAllMRNotes.mockResolvedValueOnce(fetch_network_error);
       const noteIdResponse = await BotComment.getMRNoteId(api);
