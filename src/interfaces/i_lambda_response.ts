@@ -17,9 +17,17 @@ export class HealthCheckResponse implements LambdaResponse {
   readonly body: string;
   readonly statusCode: number;
 
-  constructor(containerId: string, readonly event: any) {
+  constructor(event: any, containerId?: string) {
     this.statusCode = HttpStatus.IM_A_TEAPOT;
-    this.body = `CloudWatch timer healthcheck. Container ID: ${containerId}`;
+
+    if (event.source === "aws.events") {
+      // lambda warmer ping
+      this.body = `CloudWatch timer healthcheck. Container ID: ${containerId}`;
+    } else {
+      // external infra ping
+      this.body = `External ${event.headers["Healthcheck"]} infra healthcheck.`;
+    }
+
     logger.info(this);
   }
 }

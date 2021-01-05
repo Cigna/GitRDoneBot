@@ -362,6 +362,9 @@ describe("Live lambda handler response with mocked Infra (Error Cases)", () => {
   test("Bad GitLab API token: returns IncorrectPermissionsResponse", () => {
     // test fixture needs to be created within test scope to make sure it has access to dynamic values
     openEvent = {
+      headers: {
+        "X-Gitlab-Event": "Merge Request Hook",
+      },
       body: JSON.stringify(
         mockGitLabWebhookEvent(
           USER_ID,

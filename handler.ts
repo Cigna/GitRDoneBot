@@ -13,12 +13,11 @@ import {
   getProjectId,
   getState,
 } from "./src/merge_request";
-import { getToken, getBaseURI, LoggerFactory } from "./src/util";
+import { getToken, getBaseURI } from "./src/util";
 import { CustomConfig } from "./src/custom_config/custom_config";
 import { runBotActions } from "./src/bot_actions";
 
 let containerId: string;
-const logger = LoggerFactory.getInstance();
 
 /**
  * Processes incoming GitLab webhook events that have come through API Gateway.
@@ -121,13 +120,13 @@ const webhook: Handler = async (
     containerId = context.awsRequestId;
   }
 
-  logger.info(event);
+  let response;
 
-  // TODO: sophisticate this once we have better visibility on what GitLab events vs CloudWatch events specifically look like
-  // and filter out whatever the empty event.body event is
-  const response = event.hasOwnProperty("body")
-    ? await handleGitLabWebhook(event)
-    : new HealthCheckResponse(containerId, event);
+  if (event.hasOwnProperty("headers") && event.headers["X-Gitlab-Event"]) {
+    response = await handleGitLabWebhook(event);
+  } else {
+    response = new HealthCheckResponse(event, containerId);
+  }
 
   return response;
 };
