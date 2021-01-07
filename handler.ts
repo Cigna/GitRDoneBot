@@ -28,7 +28,7 @@ let containerId: string;
  */
 const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   let gitLabEvent: any;
-  let token, baseURI, objectKind: string | undefined;
+  let token, baseURI;
   let response!: LambdaResponse;
 
   try {
