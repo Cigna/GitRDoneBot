@@ -41,10 +41,10 @@ const context: Context = {
   },
 };
 
-const cloudWatchRuleEvent: any = {
+const cloudWatchRuleEvent = {
   account: "123456789012",
   detail: {},
-  // detail-type: "Scheduled Event",
+  "detail-type": "Scheduled Event",
   id: "abcdefghi-1234-jklm-5678-nopqrstuvxyz90",
   region: "us-east-1",
   resources: ["arn:aws:events:us-east-1:123456789012:rule/my-scheduled-rule"],
@@ -53,7 +53,17 @@ const cloudWatchRuleEvent: any = {
   version: "0",
 };
 
+const externalInfraTestEvent = {
+  headers: {
+    Healthcheck: "Inspec-BotBridge",
+  },
+  body: {},
+};
+
 const nonMREvent = {
+  headers: {
+    "X-Gitlab-Event": "Merge Request Hook",
+  },
   body: '{"object_kind":"push"}',
 };
 
@@ -83,6 +93,9 @@ const MR_ID = 1;
 const USER_ID = 0;
 
 const reopenedEvent = {
+  headers: {
+    "X-Gitlab-Event": "Merge Request Hook",
+  },
   body: JSON.stringify(
     mockGitLabWebhookEvent(
       USER_ID,
@@ -96,6 +109,9 @@ const reopenedEvent = {
 };
 
 const closedEvent = {
+  headers: {
+    "X-Gitlab-Event": "Merge Request Hook",
+  },
   body: JSON.stringify(
     mockGitLabWebhookEvent(
       USER_ID,
@@ -109,6 +125,9 @@ const closedEvent = {
 };
 
 const openEvent = {
+  headers: {
+    "X-Gitlab-Event": "Merge Request Hook",
+  },
   body: JSON.stringify(
     mockGitLabWebhookEvent(
       USER_ID,
@@ -122,6 +141,9 @@ const openEvent = {
 };
 
 const updateEvent = {
+  headers: {
+    "X-Gitlab-Event": "Merge Request Hook",
+  },
   body: JSON.stringify(
     mockGitLabWebhookEvent(
       USER_ID,
@@ -154,6 +176,17 @@ describe("Mock API Integration Tests: Lambda Handler webhook function", () => {
       .then((response) => {
         expect(response).toBeDefined();
         expect(response).toBeInstanceOf(HealthCheckResponse);
+        expect(response.body).toEqual(expect.stringMatching(/^CloudWatch/));
+      });
+  });
+
+  test("webhook returns a HealthCheckResponse when external infra test event received", () => {
+    return wrapped
+      .runHandler(externalInfraTestEvent, context, null)
+      .then((response) => {
+        expect(response).toBeDefined();
+        expect(response).toBeInstanceOf(HealthCheckResponse);
+        expect(response.body).toEqual(expect.stringMatching(/^External/));
       });
   });
 });
@@ -202,10 +235,21 @@ describe("Mock API Integration Tests: Lamda Handler handleGitLabWebhook function
 
 describe("Mock API Integration Tests: lambda handler response (Error Cases)", () => {
   test("Unable to parse event.body: returns ErrorResponse", () => {
-    return wrapped.runHandler({ body: {} }, context, null).then((response) => {
-      expect(response).toBeDefined();
-      expect(response).toBeInstanceOf(ErrorResponse);
-    });
+    return wrapped
+      .runHandler(
+        {
+          headers: {
+            "X-Gitlab-Event": "Merge Request Hook",
+          },
+          body: {},
+        },
+        context,
+        null,
+      )
+      .then((response) => {
+        expect(response).toBeDefined();
+        expect(response).toBeInstanceOf(ErrorResponse);
+      });
   });
 });
 
