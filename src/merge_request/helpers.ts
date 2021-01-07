@@ -12,9 +12,6 @@ export const getProjectId = (event: any): number => {
   return event.project.id;
 };
 
-export const getObjectKind = (event: any): string => {
-  return event.object_kind;
-};
 export const getState = (event: any): string => {
   return event.object_attributes.action;
 };
