@@ -62,7 +62,7 @@ const externalInfraTestEvent = {
 
 const nonMREvent = {
   headers: {
-    "X-Gitlab-Event": "Merge Request Hook",
+    "X-Gitlab-Event": "Push Hook",
   },
   body: '{"object_kind":"push"}',
 };

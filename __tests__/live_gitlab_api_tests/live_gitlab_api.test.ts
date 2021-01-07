@@ -332,6 +332,9 @@ describe("Live Integration Tests: mergeRequestApi.getSingleMR", () => {
 describe("Live Integration API Tests: handler.handleGitLabWebhook responses", () => {
   test("Open State: returns CommentSuccessResponse", async () => {
     const openEvent = {
+      headers: {
+        "X-Gitlab-Event": "Merge Request Hook",
+      },
       body: JSON.stringify(
         mockGitLabWebhookEvent(
           USER_ID,
