@@ -7,12 +7,7 @@ import {
   NotSupportedResponse,
 } from "./src/interfaces";
 import { GitLabApi } from "./src/gitlab";
-import {
-  getMrId,
-  getObjectKind,
-  getProjectId,
-  getState,
-} from "./src/merge_request";
+import { getMrId, getProjectId, getState } from "./src/merge_request";
 import { getToken, getBaseURI } from "./src/util";
 import { CustomConfig } from "./src/custom_config/custom_config";
 import { runBotActions } from "./src/bot_actions";
@@ -33,14 +28,12 @@ let containerId: string;
  */
 const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   let gitLabEvent: any;
-  let token, baseURI, objectKind: string | undefined;
+  let token, baseURI;
   let response!: LambdaResponse;
 
   try {
     gitLabEvent = JSON.parse(event.body);
-    objectKind = getObjectKind(gitLabEvent);
   } catch (err) {
-    objectKind = undefined;
     response = new ErrorResponse(`Error parsing event.body: ${err.message}`);
   }
 
@@ -52,8 +45,8 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
   }
 
   if (!(response instanceof ErrorResponse)) {
-    switch (objectKind) {
-      case "merge_request":
+    switch (event.headers["X-Gitlab-Event"]) {
+      case "Merge Request Hook":
         const state = getState(gitLabEvent);
         /**
          * We only perform analysis on Merge Request events in the following states
@@ -94,7 +87,7 @@ const handleGitLabWebhook = async (event: any): Promise<LambdaResponse> => {
         break;
       default:
         /** No action required for any incoming GitLab event that is not a merge request */
-        response = new NotSupportedResponse(objectKind);
+        response = new NotSupportedResponse(event.headers["X-Gitlab-Event"]);
     }
   }
 
