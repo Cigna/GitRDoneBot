@@ -18,7 +18,7 @@ export class HealthCheckResponse implements LambdaResponse {
   readonly statusCode: number;
 
   constructor(event: any, containerId?: string) {
-    this.statusCode = HttpStatus.IM_A_TEAPOT;
+    this.statusCode = HttpStatus.OK;
 
     if (event.source === "aws.events") {
       // lambda warmer ping
@@ -74,7 +74,7 @@ export class NotSupportedResponse implements LambdaResponse {
  */
 export class IncorrectPermissionsResponse implements LambdaResponse {
   readonly body: string;
-  readonly statusCode = 401;
+  readonly statusCode = HttpStatus.UNAUTHORIZED;
 
   constructor(event: MergeRequestEvent) {
     this.body = JSON.stringify(event);
@@ -90,7 +90,7 @@ export class IncorrectPermissionsResponse implements LambdaResponse {
  */
 export class CommentFailedResponse implements LambdaResponse {
   readonly body: string;
-  readonly statusCode = 500;
+  readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
   constructor(
     mrEvent: MergeRequestEvent,
@@ -122,7 +122,7 @@ export class CommentFailedResponse implements LambdaResponse {
  */
 export class CommentSuccessResponse implements LambdaResponse {
   readonly body: string;
-  readonly statusCode = 201;
+  readonly statusCode = HttpStatus.CREATED;
 
   constructor(
     mrEvent: MergeRequestEvent,
@@ -154,7 +154,7 @@ export class CommentSuccessResponse implements LambdaResponse {
  */
 export class NoCommentNeededResponse implements LambdaResponse {
   readonly body: string;
-  readonly statusCode = 200;
+  readonly statusCode = HttpStatus.OK;
 
   constructor(
     mrEvent: MergeRequestEvent,
