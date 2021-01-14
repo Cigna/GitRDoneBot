@@ -1,0 +1,574 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>GitRDoneBot</title>
+	<meta name="description" content="Documentation for GitRDoneBot">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">GitRDoneBot</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>GitRDoneBot</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#gitrdonebot-for-gitlab" id="gitrdonebot-for-gitlab" style="color: inherit; text-decoration: none;">
+					<h1>GitRDoneBot for GitLab</h1>
+				</a>
+				<p><img src="media/logo.png" alt="GitRDoneBot Comment"></p>
+				<p>As an engineer learns by trial and error, does feedback always cement good habits? Can we guarantee feedback at key moments and ensure it is actionable, timely, and beneficial? It turns out, reinforcement learning is not just for machines. GitRDoneBot helps proliferate good git practice by providing real-time feedback via automated merge request comments using principles derived from publications.</p>
+				<a href="#why-gitrdonebot" id="why-gitrdonebot" style="color: inherit; text-decoration: none;">
+					<h1>Why GitRDoneBot?</h1>
+				</a>
+				<p>Our story started with the question: What has been proven to improve code quality? Although many of us can draw from our own experiences, we turned to academia and the open-source community for tried and tested answers.</p>
+				<p>We were surprised to find that in the realm of Empirical Software Engineering there are not many knowns. <a href="https://www.hillelwayne.com/talks/what-we-know-we-dont-know/">Hillel Wayne</a> puts it best when he says,</p>
+				<blockquote>
+					<p>“Almost everything in software is a belief. It is something we have experience on. But is it not something where we have hard data. In most cases we just don’t know.”</p>
+				</blockquote>
+				<p>While arguments for smaller functions and unit test coverage leave us with <a href="https://www.duo.uio.no/bitstream/handle/10852/51127/master.pdf">mixed results</a>, one thing that we know improves code is <strong>code review</strong>.
+					In <a href="https://static1.smartbear.co/smartbear/media/pdfs/best-kept-secrets-of-peer-code-review_redirected.pdf">Best Kept Secrets of Peer Code Review</a>, one study determined that code review would have saved half the cost of fixing the bugs - $152K - for a project, plus they would have found 162 additional bugs!
+				Improvements in code quality can also include:</p>
+				<ol>
+					<li>Clearer communication about code content</li>
+					<li>Education of junior programmers</li>
+					<li>Shorter development cycles</li>
+					<li>Reduced impact on technical support</li>
+					<li>More maintainable code</li>
+				</ol>
+				<p>Increased <strong>coverage, participation, and expertise</strong> shared during a review are <a href="https://link.springer.com/article/10.1007/s10664-015-9381-9#:~:text=Prior%20work%20has%20shown%20that,the%20quality%20of%20delivered%20software.&amp;text=Hence%2C%20our%20results%20empirically%20confirm,systems%20using%20modern%20reviewing%20tools.">significantly linked with improved software quality</a>. GitRDoneBot influences these 3 human factors of meaningful code review via real-time relevant comments like the one below. In doing so, GitRDoneBot helps software engineers of all experience levels understand, develop, and hone habits that will lead them to success.</p>
+				<p><img src="media/new_grdbot_comment.png" alt="GitRDoneBot Comment" title="GitRDoneBot Automated Comment Example"></p>
+				<a href="#which-code-review-habits-does-gitrdonebot-include-in-its-analysis" id="which-code-review-habits-does-gitrdonebot-include-in-its-analysis" style="color: inherit; text-decoration: none;">
+					<h1>Which code review habits does GitRDoneBot include in its analysis?</h1>
+				</a>
+				<a href="#1-diff-size" id="1-diff-size" style="color: inherit; text-decoration: none;">
+					<h2>1. Diff Size</h2>
+				</a>
+				<a href="#merge-requests-contain-a-manageable-number-of-changes-1---500-lines-of-diff" id="merge-requests-contain-a-manageable-number-of-changes-1---500-lines-of-diff" style="color: inherit; text-decoration: none;">
+					<h3>Merge Requests contain a manageable number of changes: <em>1 - 500 lines of diff</em></h3>
+				</a>
+				<p>This not only aids in keeping coverage high, but also the human brain can only process <a href="https://static1.smartbear.co/smartbear/media/pdfs/best-kept-secrets-of-peer-code-review_redirected.pdf">500 lines of code (LOC) at one time</a> and most MRs for open source projects are <a href="www.gousios.gr/pub/exploration-pullreqs.pdf">less than 20 lines long</a>.</p>
+				<a href="#2-branch-age" id="2-branch-age" style="color: inherit; text-decoration: none;">
+					<h2>2. Branch Age</h2>
+				</a>
+				<a href="#merge-requests-contain-short-lived-branches-1---14-days" id="merge-requests-contain-short-lived-branches-1---14-days" style="color: inherit; text-decoration: none;">
+					<h3>Merge Requests contain short-lived branches: <em>1 - 14 days</em></h3>
+				</a>
+				<p>The combination of trunk-based development with short-lived feature branches <a href="trunkbaseddevelopment.com/short-lived-feature-branches">accelerates code development, especially for asynchronous and large teams</a>.</p>
+				<a href="#3-self-merge" id="3-self-merge" style="color: inherit; text-decoration: none;">
+					<h2>3. Self Merge</h2>
+				</a>
+				<a href="#merge-requests-are-reviewed-by-another-person-not-self-assigned-or-self-merged" id="merge-requests-are-reviewed-by-another-person-not-self-assigned-or-self-merged" style="color: inherit; text-decoration: none;">
+					<h3>Merge Requests are reviewed by another person: <em>Not self-assigned or self-merged</em></h3>
+				</a>
+				<p>Not only would this negate code review in general, but the open-source community benefits from many eyes on code. Code should not be introduced to the main working branch without being <a href="https://www.pitt.edu/~ckemerer/PSP_Data.pdf">vetted by at least one other person</a>.</p>
+				<a href="#4-too-many-assigned" id="4-too-many-assigned" style="color: inherit; text-decoration: none;">
+					<h2>4. Too Many Assigned</h2>
+				</a>
+				<a href="#merge-requests-are-distributed-across-the-team-2---10-requests-assigned-to-a-single-person" id="merge-requests-are-distributed-across-the-team-2---10-requests-assigned-to-a-single-person" style="color: inherit; text-decoration: none;">
+					<h3>Merge Requests are distributed across the team: <em>2 - 10 requests assigned to a single person</em></h3>
+				</a>
+				<p>To remove bottlenecks, low quality reviews, increased context switching, and single-person dependencies, check to make sure that MR assignees don’t have too many other MRs on their plate.</p>
+				<a href="#5-commit-messages" id="5-commit-messages" style="color: inherit; text-decoration: none;">
+					<h2>5. Commit Messages</h2>
+				</a>
+				<a href="#commit-messages-are-more-than-one-word-and-adequate-length-4---50-characters-in-length" id="commit-messages-are-more-than-one-word-and-adequate-length-4---50-characters-in-length" style="color: inherit; text-decoration: none;">
+					<h3>Commit messages are more than one word and adequate length: <em>4 - 50 characters in length</em></h3>
+				</a>
+				<p>Too many one word commits degrades the quality of your git history because they are not informative.</p>
+				<a href="#6-new-git-who-dis" id="6-new-git-who-dis" style="color: inherit; text-decoration: none;">
+					<h2>6. New Git Who Dis</h2>
+				</a>
+				<a href="#merge-request-author-has-a-human-readable-name" id="merge-request-author-has-a-human-readable-name" style="color: inherit; text-decoration: none;">
+					<h3>Merge Request author has a human readable name.</h3>
+				</a>
+				<p>It’s really hard to reach out to someone who pushed commits if you don’t know who that person is!</p>
+				<a href="#7-git-outta-here" id="7-git-outta-here" style="color: inherit; text-decoration: none;">
+					<h2>7. Git Outta Here</h2>
+				</a>
+				<a href="#no-log-files-are-included-in-the-changes-of-the-merge-request" id="no-log-files-are-included-in-the-changes-of-the-merge-request" style="color: inherit; text-decoration: none;">
+					<h3>No log files are included in the changes of the Merge Request</h3>
+				</a>
+				<p>Adding logs to a repo adds unnecessary content to the GitLab ecosystem and bloats commit changes.</p>
+				<a href="#hosting-your-own-bot-how-do-i-use-gitrdonebot-for-my-teamorganization" id="hosting-your-own-bot-how-do-i-use-gitrdonebot-for-my-teamorganization" style="color: inherit; text-decoration: none;">
+					<h1>Hosting Your Own Bot: How do I use GitRDoneBot for my team/organization?</h1>
+				</a>
+				<a href="#local-setup" id="local-setup" style="color: inherit; text-decoration: none;">
+					<h2>Local Setup</h2>
+				</a>
+				<ul>
+					<li>npm install</li>
+					<li>add a <code>.env</code> file</li>
+					<li>If using VSCode<ul>
+							<li>the <code>.vscode/extensions.json</code> file will load suggested extensions on first opening this project</li>
+							<li>the <code>.vscode/launch.json</code> file will provide test scripts that can be run using the built-in debugger tool</li>
+						</ul>
+					</li>
+				</ul>
+				<p><code>.env</code></p>
+				<pre><code><span class="hljs-attr">AWS_ENV</span>=<span class="hljs-string">&quot;dev&quot;</span>
+<span class="hljs-attr">GITLAB_BOT_ACCOUNT_NAME</span>=<span class="hljs-string">&quot;${gitrdonebot-account-name}&quot;</span>
+<span class="hljs-attr">GITLAB_BOT_ACCOUNT_API_TOKEN</span>=<span class="hljs-string">&quot;${service-account-api-token}&quot;</span>
+<span class="hljs-attr">GITLAB_TESTING_GROUP_NAME</span>=<span class="hljs-string">&quot;grdbot-functional-tests&quot;</span>
+<span class="hljs-attr">GITLAB_BASE_URI</span>=<span class="hljs-string">&quot;${gitlab-api-uri}&quot;</span></code></pre><blockquote>
+					<p>Note:
+					We recommend calling the bot service account &quot;GitRDoneBot&quot;, but feel free to name it anything you&#39;d like!</p>
+				</blockquote>
+				<a href="#hosting-requirements" id="hosting-requirements" style="color: inherit; text-decoration: none;">
+					<h2>Hosting Requirements</h2>
+				</a>
+				<p>As a serverless function written in TypeScript all GitRDoneBot needs to run is a serverless environment and a bot access token for the GitLab environment. To keep infrastructure options flexible, GitRDoneBot leverages the <a href="https://www.npmjs.com/package/serverless">Serverless Framework</a> and provides a very basic <code>serverless.yml</code> file to get you started in AWS.</p>
+				<p>That means you need:</p>
+				<ol>
+					<li>A Serverless, or FaaS (Function-as-a-Service), provider (e.g. AWS Lambda).</li>
+					<li>Ability to create a service account for GitLab and make an API access token.</li>
+					<li>Make the environment variables shown in the <code>.env</code> file below available to the serverless function at runtime.</li>
+					<li>A desire to improve code review practices!</li>
+				</ol>
+				<blockquote>
+					<p>Note:
+					The code base was designed to be modular enough that the <code>handler.ts</code> file could be swapped out for a simple REST framework if you choose to run GitRDoneBot in a container exposing a webhook endpoint instead of as a serverless function.</p>
+				</blockquote>
+				<a href="#aws-quotquick-startquot-using-serverless" id="aws-quotquick-startquot-using-serverless" style="color: inherit; text-decoration: none;">
+					<h3>AWS &quot;Quick Start&quot; Using Serverless</h3>
+				</a>
+				<p>The parameterized <code>serverless.yml</code> file included in this repo is provided to help you get started with an AWS deployment. </p>
+				<p>If you would like to deploy to a different cloud provider, please see the <a href="https://www.serverless.com/framework/docs/providers/">serverless documentation</a> for available providers.</p>
+				<p>You can create as many AWS environments as you want for testing purposes, by simply creating additional files in the <code>/env/</code> folder with the specific AWS account information for your target account(s). We suggest two environments: <code>dev</code> and <code>prod</code>.</p>
+				<p>You can toggle between different deployment environments using the <code>AWS_ENV</code> environment variable.</p>
+				<p>The <code>package.json</code> contains a script, <code>lambda</code>, to run serverless offline in your local environment for testing purposes.</p>
+				<p>You will need to create the VPC, security groups, and VPCE <strong>before deploying with serverless</strong>, and use those IDs to populate your serverless files. </p>
+				<p>Serverless will handle the creation of:</p>
+				<ul>
+					<li>Private API Gateway</li>
+					<li>Lambda function</li>
+					<li>IAM role required to invoke the Lambda</li>
+					<li>the log group to capture Lambda events</li>
+				</ul>
+				<a href="#supported-gitlab-version" id="supported-gitlab-version" style="color: inherit; text-decoration: none;">
+					<h3>Supported GitLab Version</h3>
+				</a>
+				<p>GitRDoneBot currently supports GitLab API Version 4. The latest GitLab version it is confirmed to work with is 11.9.12-EE. There may be some differences between the Community &amp; Enterprise Editions that could impact certain Bot Actions.</p>
+				<p>To test if GitRDoneBot will work with your GitLab instance:</p>
+				<ol>
+					<li>Create a <strong>public</strong> namespace called <code>grdbot-functional-tests</code>.</li>
+					<li>Create a GitLab API access token.<ol>
+							<li>For testing purposes this can belong to your personal account, but should belong to service account defined in the environment variables for production hosting.</li>
+						</ol>
+					</li>
+					<li>Update the <code>.env</code> file with the URI for your GitLab API instance and the token you just created.</li>
+					<li>Using VSCode, select <code>Component Builders: Live API</code> from the debugger dropdown menu and run it.</li>
+					<li>Any tests that fail should highlight specific API calls that are incompatible with your GitLab API instance.</li>
+				</ol>
+				<a href="#gitrdonebot-flow-amp-architecture-diagram" id="gitrdonebot-flow-amp-architecture-diagram" style="color: inherit; text-decoration: none;">
+					<h2>GitRDoneBot Flow &amp; Architecture Diagram</h2>
+				</a>
+				<p>GitRDoneBot is stateless. Instead of keeping a copy of data owned by GitLab it leverages the GitLab API when needed. For example, to determine if we need to leave a new comment or update one.</p>
+				<p><img src="media/posterified-diagram.png" alt="GitRDoneBot Comment" title="GitRDoneBot Flow and Architecture Diagram"></p>
+				<a href="#end-user-setup" id="end-user-setup" style="color: inherit; text-decoration: none;">
+					<h2>End User Setup</h2>
+				</a>
+				<p>Once you have the serverless function deployed, individual project teams can opt into using the bot by following these 3 steps in the GitLab GUI:</p>
+				<ol>
+					<li>Add the GitRDoneBot GitLab user to the repo or group with Reporter access. <strong>If your repo is public, you do not need to do this step</strong>.</li>
+					<li>Under Settings -&gt; Integrations, add a new &quot;Merge request events&quot; webhook which points to the serverless function HTTP endpoint.</li>
+					<li>If desired, users can customize some bot behaviors by dropping a <code>.grdb.json</code> file in the root of the repository.</li>
+				</ol>
+				<a href="#want-to-customize-gitrdonebot39s-thresholds-for-your-repo" id="want-to-customize-gitrdonebot39s-thresholds-for-your-repo" style="color: inherit; text-decoration: none;">
+					<h3>Want to customize GitRDoneBot&#39;s thresholds for your repo?</h3>
+				</a>
+				<p>Simply follow these steps:</p>
+				<ol>
+					<li>Add a new file to the root of your repository on the master branch named <code>.grdb.json</code></li>
+					<li>Copy and paste the following JSON object into the <code>.grdb.json</code> file:</li>
+				</ol>
+				<pre><code>{
+    <span class="hljs-attr">&quot;diffAnalysis&quot;</span>: {
+        <span class="hljs-attr">&quot;thresholdInLinesOfDiff&quot;</span>: number,
+        <span class="hljs-attr">&quot;constructiveFeedbackOnlyToggle&quot;</span>: boolean
+    },
+    <span class="hljs-attr">&quot;branchAgeAnalysis&quot;</span>: {
+        <span class="hljs-attr">&quot;thresholdInDays&quot;</span>: number,
+        <span class="hljs-attr">&quot;constructiveFeedbackOnlyToggle&quot;</span>: boolean
+    },
+    <span class="hljs-attr">&quot;tooManyMergeRequestsAnalysis&quot;</span>: {
+        <span class="hljs-attr">&quot;thresholdNumberOfMergeRequests&quot;</span>: number,
+        <span class="hljs-attr">&quot;constructiveFeedbackOnlyToggle&quot;</span>: boolean
+    },
+    <span class="hljs-attr">&quot;updateMergeRequestComment&quot;</span>: boolean
+}</code></pre><ol start="3">
+					<li>Edit the thresholds that you want GitRDoneBot to compare against. Minimums and maximums are inclusive.<ul>
+							<li>Diff Analysis threshold value must be between 1 and 500. <strong>Default</strong>: <code>500</code></li>
+							<li>Branch Age Analysis value must be between 1 and 14. <strong>Default</strong>: <code>7</code></li>
+							<li>Too Many Merge Requests Analysis value must be between 2 and 10. <strong>Default</strong>: <code>3</code></li>
+						</ul>
+					</li>
+					<li><code>updateMergeRequestComment</code> <strong>Default</strong>: <code>true</code><ul>
+							<li><code>true</code> allows GitRDoneBot to update comments while a Merge Request is actively being worked on</li>
+							<li><code>false</code> means GitRDoneBot will only leave immutable comments when Merge Requests are first opened and finally merged.</li>
+						</ul>
+					</li>
+					<li><code>constructiveFeedbackOnlyToggle</code> <strong>Default</strong>: <code>false</code><ul>
+							<li><code>true</code> will only leave constructive comments when values fall outside thresholds</li>
+							<li><code>false</code> will also leave congratulatory comments when criteria fall within threshold range.</li>
+							<li>TL;DR: <code>true</code> reduces chattiness and the number of notifications developers will receive.</li>
+						</ul>
+					</li>
+				</ol>
+				<blockquote>
+					<p>Note:</p>
+					<ul>
+						<li>Non-existent or misspelled property names will be ignored and defaults will be used instead.</li>
+						<li>Custom thresholds outside of accepted ranges will be ignored and defaults will be used instead.</li>
+						<li>Once you have a valid <code>.grdb.json</code> file added to the master branch of your repository, GitRDoneBot will start using the thresholds you have set.</li>
+					</ul>
+				</blockquote>
+				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+					<h1>Contributing</h1>
+				</a>
+				<p>The bot creators would love to encourage anyone interested to contribute to this product! Issues and feature requests are appreciated. If there is some feature you would like to add, or a bug you find that you&#39;d like to fix, please fork the project and open a Pull Request when your code is ready. If you have any questions about contributing, or any other aspect of GitRDoneBot, please reach out to the team!</p>
+				<a href="#code-overview" id="code-overview" style="color: inherit; text-decoration: none;">
+					<h2>Code Overview</h2>
+				</a>
+				<p><strong>Code documentation coming soon!</strong></p>
+				<p>The main components of the Bot are called <strong>Bot Actions</strong>. A Bot Action is a logical unit of service that analyzes one specific Merge Request behavior. Unique Bot Action functions are grouped together as modules in <code>src/bot_actions</code>. Each Bot Action returns a self-contained response that includes:</p>
+				<ol>
+					<li>Information about API calls made</li>
+					<li>If good git practice is followed according to the rules set in that Action</li>
+					<li>The comment that will be posted as a note on the Merge Request.</li>
+				</ol>
+				<p>The <strong>Bot Actions Response</strong> invokes all of the Bot Actions and composes them into a single response. This is what posts the comment and emoji on the Merge Request.</p>
+				<p>The Bot Actions Response is built in the main lambda handler (<code>handler.ts</code> in the root of the project) when the incoming event is a GitLab Merge Request event in <code>open</code>, <code>merge</code> or <code>update</code> states. This handler is very specific to AWS lambda and will need to be changed to accommodate other serverless providers.</p>
+				<p>This approach was adopted in an effort to keep the logic as loosely coupled as possible in order to make it easier to add new Bot Actions and improve testability of functional units.</p>
+				<a href="#tests" id="tests" style="color: inherit; text-decoration: none;">
+					<h2>Tests</h2>
+				</a>
+				<p>GitRDoneBot leverages the <a href="https://jestjs.io/">Jest Framework</a> for delightful TypeScript testing. It uses tests at multiple levels with different granularity and dependencies to ensure quality:</p>
+				<ol>
+					<li><code>__tests__/unit_tests</code> for every component</li>
+					<li><code>__tests__/component_builder_tests_with_mocks</code> to test at the bot action level, with no dependencies on GitLab&#39;s API</li>
+					<li><code>__tests__/live_gitlab_api_tests</code> to test integration with the GitLab API and environment. These tests require projects and merge requests to exist in the specific GitLab instance and automation is built in to import everything necessary.</li>
+				</ol>
+				<p>Run tests:</p>
+				<ul>
+					<li>Using the commands <code>npm run test:unit</code>, <code>npm run test:mock</code>, <code>npm run test:live</code>, or <code>npm run test:full</code> from the <code>package.json</code> file</li>
+					<li>Using VS Code Run and the <code>.vscode/launch.json</code> provided</li>
+					<li>In your CI/CD pipeline using the templatized <code>.gitlab-ci.yml</code> provided</li>
+				</ul>
+				<a href="#static-code-analysis" id="static-code-analysis" style="color: inherit; text-decoration: none;">
+					<h2>Static Code Analysis</h2>
+				</a>
+				<ul>
+					<li><a href="https://prettier.io/">Prettier</a> and a <code>.prettierrc</code> configuration file keep things...pretty! </li>
+					<li><a href="https://eslint.org/">ESLint</a> performs static security analysis, prevents risky coding practices, and checks cyclomatic complexity.</li>
+				</ul>
+				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+					<h2>Documentation</h2>
+				</a>
+				<ul>
+					<li><a href="https://github.com/microsoft/tsdoc">TSDoc</a> is the standard we use for doc comments in the TypeScript source files.</li>
+					<li><a href="https://typedoc.org/">TypeDoc</a> generates documentation from the comments in the source code.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/apiresponse.html" class="tsd-kind-icon">Api<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/authorizationfailurebotaction.html" class="tsd-kind-icon">Authorization<wbr>Failure<wbr>Bot<wbr>Action</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/authorizationfailureresponse.html" class="tsd-kind-icon">Authorization<wbr>Failure<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/botactionconfig.html" class="tsd-kind-icon">Bot<wbr>Action<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/botactionresponse.html" class="tsd-kind-icon">Bot<wbr>Action<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/botcomment.html" class="tsd-kind-icon">Bot<wbr>Comment</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/branchage.html" class="tsd-kind-icon">Branch<wbr>Age</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/commentfailedresponse.html" class="tsd-kind-icon">Comment<wbr>Failed<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/commentsuccessresponse.html" class="tsd-kind-icon">Comment<wbr>Success<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/commitmessages.html" class="tsd-kind-icon">Commit<wbr>Messages</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/customconfig.html" class="tsd-kind-icon">Custom<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/diffsize.html" class="tsd-kind-icon">Diff<wbr>Size</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/errorresponse.html" class="tsd-kind-icon">Error<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/fetchwrapper.html" class="tsd-kind-icon">Fetch<wbr>Wrapper</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/gitlabapi.html" class="tsd-kind-icon">Git<wbr>Lab<wbr>Api</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/gitouttahere.html" class="tsd-kind-icon">Git<wbr>Outta<wbr>Here</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/healthcheckresponse.html" class="tsd-kind-icon">Health<wbr>Check<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/incorrectpermissionsresponse.html" class="tsd-kind-icon">Incorrect<wbr>Permissions<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/loggerfactory.html" class="tsd-kind-icon">Logger<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/networkfailurebotaction.html" class="tsd-kind-icon">Network<wbr>Failure<wbr>Bot<wbr>Action</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/newgitwhodis.html" class="tsd-kind-icon">New<wbr>Git<wbr>Who<wbr>Dis</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/noactionresponse.html" class="tsd-kind-icon">No<wbr>Action<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/nocommentneededresponse.html" class="tsd-kind-icon">No<wbr>Comment<wbr>Needed<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/norequestneeded.html" class="tsd-kind-icon">No<wbr>Request<wbr>Needed</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/notfoundornetworkfailureresponse.html" class="tsd-kind-icon">Not<wbr>FoundORNetwork<wbr>Failure<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/notsupportedresponse.html" class="tsd-kind-icon">Not<wbr>Supported<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/selfmerge.html" class="tsd-kind-icon">Self<wbr>Merge</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/successfulbotactionwithmessage.html" class="tsd-kind-icon">Successful<wbr>Bot<wbr>Action<wbr>With<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/successfulbotactionwithnothingtosay.html" class="tsd-kind-icon">Successful<wbr>Bot<wbr>Action<wbr>With<wbr>Nothing<wbr>ToSay</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/successfulgetresponse.html" class="tsd-kind-icon">Successful<wbr>Get<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/successfulpostorputresponse.html" class="tsd-kind-icon">Successful<wbr>PostORPut<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/toomanyassigned.html" class="tsd-kind-icon">Too<wbr>Many<wbr>Assigned</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/uri.html" class="tsd-kind-icon">URI</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/approvalsresponse.html" class="tsd-kind-icon">Approvals<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/botactiondefaults.html" class="tsd-kind-icon">Bot<wbr>Action<wbr>Defaults</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/change.html" class="tsd-kind-icon">Change</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/commitmessageadditonalproperties.html" class="tsd-kind-icon">Commit<wbr>Message<wbr>Additonal<wbr>Properties</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/commitmessagenudges.html" class="tsd-kind-icon">Commit<wbr>Message<wbr>Nudges</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/gitlabcommit.html" class="tsd-kind-icon">Git<wbr>Lab<wbr>Commit</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/lambdaresponse.html" class="tsd-kind-icon">Lambda<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/mergerequest.html" class="tsd-kind-icon">Merge<wbr>Request</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/mergerequestevent.html" class="tsd-kind-icon">Merge<wbr>Request<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/note.html" class="tsd-kind-icon">Note</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/rawfetchresponse.html" class="tsd-kind-icon">Raw<wbr>Fetch<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/user.html" class="tsd-kind-icon">User</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#action" class="tsd-kind-icon">Action</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#commentresponse" class="tsd-kind-icon">Comment<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#getresponse" class="tsd-kind-icon">Get<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#postorputresponse" class="tsd-kind-icon">PostORPut<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#successfulbotaction" class="tsd-kind-icon">Successful<wbr>Bot<wbr>Action</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#logger" class="tsd-kind-icon">logger</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#buildgetresponse" class="tsd-kind-icon">Build<wbr>Get<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#buildpostorputresponse" class="tsd-kind-icon">Build<wbr>PostORPut<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#allgoodgitpractice" class="tsd-kind-icon">all<wbr>Good<wbr>Git<wbr>Practice</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#composenote" class="tsd-kind-icon">compose<wbr>Note</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getbaseuri" class="tsd-kind-icon">get<wbr>BaseURI</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getbotusername" class="tsd-kind-icon">get<wbr>Bot<wbr>Username</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getmergerequesteventdata" class="tsd-kind-icon">get<wbr>Merge<wbr>Request<wbr>Event<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getmrid" class="tsd-kind-icon">get<wbr>MrId</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getprojectid" class="tsd-kind-icon">get<wbr>Project<wbr>Id</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getstate" class="tsd-kind-icon">get<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#gettoken" class="tsd-kind-icon">get<wbr>Token</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#runbotactions" class="tsd-kind-icon">run<wbr>Bot<wbr>Actions</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#branchagedefaults" class="tsd-kind-icon">Branch<wbr>Age<wbr>Defaults</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#commitmessagedefaults" class="tsd-kind-icon">Commit<wbr>Message<wbr>Defaults</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#diffsizedefaults" class="tsd-kind-icon">Diff<wbr>Size<wbr>Defaults</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#toomanyassigneddefaults" class="tsd-kind-icon">Too<wbr>Many<wbr>Assigned<wbr>Defaults</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

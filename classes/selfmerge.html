@@ -1,0 +1,589 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>SelfMerge | GitRDoneBot</title>
+	<meta name="description" content="Documentation for GitRDoneBot">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">GitRDoneBot</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="selfmerge.html">SelfMerge</a>
+				</li>
+			</ul>
+			<h1>Class SelfMerge</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>This Bot Action class analyzes the assignee or the approvers and the user who merged the GitLab Merge Request
+						and determines what, if any, feedback to provide to user.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">SelfMerge</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#badapprovednote" class="tsd-kind-icon">bad<wbr>Approved<wbr>Note</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#badassignednote" class="tsd-kind-icon">bad<wbr>Assigned<wbr>Note</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#badmergednote" class="tsd-kind-icon">bad<wbr>Merged<wbr>Note</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#botactionname" class="tsd-kind-icon">bot<wbr>Action<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#goodnote" class="tsd-kind-icon">good<wbr>Note</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#hashtag" class="tsd-kind-icon">hashtag</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#noapprovalsnote" class="tsd-kind-icon">no<wbr>Approvals<wbr>Note</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#analyze" class="tsd-kind-icon">analyze</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#buildsuccessfulaction" class="tsd-kind-icon">build<wbr>Successful<wbr>Action</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#caseforbadselfapprovedmessage" class="tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Approved<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#caseforbadselfassignedmessage" class="tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Assigned<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#caseforbadselfmergedmessage" class="tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Merged<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#caseforgoodmessage" class="tsd-kind-icon">case<wbr>For<wbr>Good<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="selfmerge.html#casefornoapprovalsmessage" class="tsd-kind-icon">case<wbr>For<wbr>NoApprovals<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="selfmerge.html#mrisnotselfapproved" class="tsd-kind-icon">mr<wbr>IsNot<wbr>Self<wbr>Approved</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="selfmerge.html#mrisnotselfassignedormerged" class="tsd-kind-icon">mr<wbr>IsNot<wbr>Self<wbr>Assigned<wbr>OrMerged</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="badapprovednote" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> bad<wbr>Approved<wbr>Note</h3>
+					<div class="tsd-signature tsd-kind-icon">bad<wbr>Approved<wbr>Note<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#x60;:loudspeaker: You should re-open this merge request and have someone else review and approve it. &#x60; +&#x60;You can check your project settings to make sure self approval of merge requests is not enabled. &#x60; +&#x60;You can find this in Settings -&gt; General -&gt; Merge Request&#x60;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L24">src/bot_actions/self_merge.ts:24</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="badassignednote" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> bad<wbr>Assigned<wbr>Note</h3>
+					<div class="tsd-signature tsd-kind-icon">bad<wbr>Assigned<wbr>Note<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#x60;:loudspeaker: I noticed that you assigned your merge request to yourself. &#x60; +&#x60;This is an unsafe practice that circumvents quality code review. You can check your project&#x60; +&#x60; settings to make sure self approval of merge requests is not enabled. You can find this in&#x60; +&#x60; Settings -&gt; General -&gt; Merge Request&#x60;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L28">src/bot_actions/self_merge.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="badmergednote" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> bad<wbr>Merged<wbr>Note</h3>
+					<div class="tsd-signature tsd-kind-icon">bad<wbr>Merged<wbr>Note<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#x60;:loudspeaker: You should re-open this merge request and have someone else review and approve it. &#x60; +&#x60;You can check your project settings to make sure at least 1 approval is required to merge in new code. &#x60; +&#x60;Project settings can be updated to require approvals in Settings -&gt; General -&gt; Merge Request&#x60;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L33">src/bot_actions/self_merge.ts:33</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="botactionname" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> bot<wbr>Action<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">bot<wbr>Action<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"SelfMerge"</span><span class="tsd-signature-symbol"> = &quot;SelfMerge&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L22">src/bot_actions/self_merge.ts:22</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="goodnote" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> good<wbr>Note</h3>
+					<div class="tsd-signature tsd-kind-icon">good<wbr>Note<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">":star: Thanks for following good git practice and not assigning your merge request to yourself!"</span><span class="tsd-signature-symbol"> = &#x60;:star: Thanks for following good git practice and not assigning your merge request to yourself!&#x60;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L23">src/bot_actions/self_merge.ts:23</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="hashtag" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> hashtag</h3>
+					<div class="tsd-signature tsd-kind-icon">hashtag<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"[#SelfMergeAnalysis](https://github.com/Cigna/GitRDoneBot#3-self-merge)"</span><span class="tsd-signature-symbol"> = &#x60;[#SelfMergeAnalysis](https://github.com/Cigna/GitRDoneBot#3-self-merge)&#x60;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L41">src/bot_actions/self_merge.ts:41</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="noapprovalsnote" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> no<wbr>Approvals<wbr>Note</h3>
+					<div class="tsd-signature tsd-kind-icon">no<wbr>Approvals<wbr>Note<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#x60;:loudspeaker: I noticed that your project doesn&#x27;t require any approvals to merge in your code. &#x60; +&#x60;It is a good practice to require at least 1 approval to prevent accidentally merging code that hasn&#x27;t been reviewed by others.&#x60; +&#x60;Project settings can be updated to require approvals in Settings -&gt; General -&gt; Merge Request&#x60;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L37">src/bot_actions/self_merge.ts:37</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="analyze" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> analyze</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">analyze<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, api<span class="tsd-signature-symbol">: </span><a href="gitlabapi.html" class="tsd-signature-type">GitLabApi</a>, assigneeId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, authorId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="botactionresponse.html" class="tsd-signature-type">BotActionResponse</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L51">src/bot_actions/self_merge.ts:51</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the state of the Merge Request: <code>open</code>, <code>update</code>, or <code>merge</code></p>
+									</div>
+								</li>
+								<li>
+									<h5>api: <a href="gitlabapi.html" class="tsd-signature-type">GitLabApi</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an instance of <code>GitLabApi</code></p>
+									</div>
+								</li>
+								<li>
+									<h5>assigneeId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>GitLab user id of the Merge Request assignee</p>
+									</div>
+								</li>
+								<li>
+									<h5>authorId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>GitLab user id of the Merge Request author</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="botactionresponse.html" class="tsd-signature-type">BotActionResponse</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>data about the success or failure of the GitLab API request and resulting properties calculated by Self Merge analysis</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="buildsuccessfulaction" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> build<wbr>Successful<wbr>Action</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">build<wbr>Successful<wbr>Action<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, goodGitPractice<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, approversNeeded<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../globals.html#successfulbotaction" class="tsd-signature-type">SuccessfulBotAction</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L263">src/bot_actions/self_merge.ts:263</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Invoked when Bot Action analysis was successful.
+									Constructs a BotAction object containing goodGitPractice and conditional feedback message.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the state of the Merge Request: <code>open</code>, <code>update</code>, or <code>merge</code></p>
+									</div>
+								</li>
+								<li>
+									<h5>goodGitPractice: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>represents whether or not the Merge Request event meets the criteria for good Self Merge practice</p>
+									</div>
+								</li>
+								<li>
+									<h5>approversNeeded: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../globals.html#successfulbotaction" class="tsd-signature-type">SuccessfulBotAction</a></h4>
+							<p>SuccessfulBotActionWithMessage instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="caseforbadselfapprovedmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> case<wbr>For<wbr>Bad<wbr>Self<wbr>Approved<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Approved<wbr>Message<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, goodGitPractice<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, approversNeeded<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L216">src/bot_actions/self_merge.ts:216</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>goodGitPractice: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>approversNeeded: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="caseforbadselfassignedmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> case<wbr>For<wbr>Bad<wbr>Self<wbr>Assigned<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Assigned<wbr>Message<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, goodGitPractice<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L228">src/bot_actions/self_merge.ts:228</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>goodGitPractice: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="caseforbadselfmergedmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> case<wbr>For<wbr>Bad<wbr>Self<wbr>Merged<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Merged<wbr>Message<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, goodGitPractice<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, approversNeeded<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L235">src/bot_actions/self_merge.ts:235</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>goodGitPractice: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>approversNeeded: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="caseforgoodmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> case<wbr>For<wbr>Good<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">case<wbr>For<wbr>Good<wbr>Message<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, goodGitPractice<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L212">src/bot_actions/self_merge.ts:212</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>goodGitPractice: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="casefornoapprovalsmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> case<wbr>For<wbr>NoApprovals<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">case<wbr>For<wbr>NoApprovals<wbr>Message<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, goodGitPractice<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, approversNeeded<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L245">src/bot_actions/self_merge.ts:245</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>goodGitPractice: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>approversNeeded: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="mrisnotselfapproved" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> mr<wbr>IsNot<wbr>Self<wbr>Approved</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">mr<wbr>IsNot<wbr>Self<wbr>Approved<span class="tsd-signature-symbol">(</span>approvedByArray<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>user<span class="tsd-signature-symbol">: </span><a href="../interfaces/user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span>, authorId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L196">src/bot_actions/self_merge.ts:196</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>approvedByArray: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>user<span class="tsd-signature-symbol">: </span><a href="../interfaces/user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>array of GitLab users who approved the GitLab Merge Request</p>
+									</div>
+								</li>
+								<li>
+									<h5>authorId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the GitLab id of the user who authored the Merge Request</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<p>true if the author of the GitLab Merge Request is not the only user in the <code>approvedByArray</code></p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="mrisnotselfassignedormerged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> mr<wbr>IsNot<wbr>Self<wbr>Assigned<wbr>OrMerged</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">mr<wbr>IsNot<wbr>Self<wbr>Assigned<wbr>OrMerged<span class="tsd-signature-symbol">(</span>assigneeOrMergerId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, authorId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/self_merge.ts#L176">src/bot_actions/self_merge.ts:176</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>assigneeOrMergerId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>authorId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="selfmerge.html" class="tsd-kind-icon">Self<wbr>Merge</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#badapprovednote" class="tsd-kind-icon">bad<wbr>Approved<wbr>Note</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#badassignednote" class="tsd-kind-icon">bad<wbr>Assigned<wbr>Note</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#badmergednote" class="tsd-kind-icon">bad<wbr>Merged<wbr>Note</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#botactionname" class="tsd-kind-icon">bot<wbr>Action<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#goodnote" class="tsd-kind-icon">good<wbr>Note</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#hashtag" class="tsd-kind-icon">hashtag</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#noapprovalsnote" class="tsd-kind-icon">no<wbr>Approvals<wbr>Note</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#analyze" class="tsd-kind-icon">analyze</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#buildsuccessfulaction" class="tsd-kind-icon">build<wbr>Successful<wbr>Action</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#caseforbadselfapprovedmessage" class="tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Approved<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#caseforbadselfassignedmessage" class="tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Assigned<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#caseforbadselfmergedmessage" class="tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Self<wbr>Merged<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#caseforgoodmessage" class="tsd-kind-icon">case<wbr>For<wbr>Good<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="selfmerge.html#casefornoapprovalsmessage" class="tsd-kind-icon">case<wbr>For<wbr>NoApprovals<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="selfmerge.html#mrisnotselfapproved" class="tsd-kind-icon">mr<wbr>IsNot<wbr>Self<wbr>Approved</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="selfmerge.html#mrisnotselfassignedormerged" class="tsd-kind-icon">mr<wbr>IsNot<wbr>Self<wbr>Assigned<wbr>OrMerged</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

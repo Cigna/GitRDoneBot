@@ -1,0 +1,341 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>TooManyAssigned | GitRDoneBot</title>
+	<meta name="description" content="Documentation for GitRDoneBot">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">GitRDoneBot</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="toomanyassigned.html">TooManyAssigned</a>
+				</li>
+			</ul>
+			<h1>Class TooManyAssigned</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>This Bot Action class analyzes the number of Merge Requests assigned to the assignee of the GitLab Merge Request
+						and determines what, if any, feedback to provide to user.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">TooManyAssigned</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="toomanyassigned.html#badnote" class="tsd-kind-icon">bad<wbr>Note</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="toomanyassigned.html#botactionname" class="tsd-kind-icon">bot<wbr>Action<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="toomanyassigned.html#hashtag" class="tsd-kind-icon">hashtag</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="toomanyassigned.html#analyze" class="tsd-kind-icon">analyze</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="toomanyassigned.html#buildsuccessfulaction" class="tsd-kind-icon">build<wbr>Successful<wbr>Action</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="toomanyassigned.html#caseforbadmessage" class="tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Message</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="badnote" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> bad<wbr>Note</h3>
+					<div class="tsd-signature tsd-kind-icon">bad<wbr>Note<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">":loudspeaker: You&#x27;ve assigned this merge request to someone who already has a lot on their plate.Reassigning the merge request to someone else will help it get approved more quickly"</span><span class="tsd-signature-symbol"> = &#x60;:loudspeaker: You&#x27;ve assigned this merge request to someone who already has a lot on their plate.Reassigning the merge request to someone else will help it get approved more quickly&#x60;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/too_many_assigned.ts#L24">src/bot_actions/too_many_assigned.ts:24</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="botactionname" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> bot<wbr>Action<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">bot<wbr>Action<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"TooManyAssigned"</span><span class="tsd-signature-symbol"> = &quot;TooManyAssigned&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/too_many_assigned.ts#L23">src/bot_actions/too_many_assigned.ts:23</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="hashtag" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> hashtag</h3>
+					<div class="tsd-signature tsd-kind-icon">hashtag<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"[#TooManyAssignedAnalysis](https://github.com/Cigna/GitRDoneBot#4-too-many-assigned)"</span><span class="tsd-signature-symbol"> = &#x60;[#TooManyAssignedAnalysis](https://github.com/Cigna/GitRDoneBot#4-too-many-assigned)&#x60;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/too_many_assigned.ts#L26">src/bot_actions/too_many_assigned.ts:26</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="analyze" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> analyze</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">analyze<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, api<span class="tsd-signature-symbol">: </span><a href="gitlabapi.html" class="tsd-signature-type">GitLabApi</a>, customConfig<span class="tsd-signature-symbol">: </span><a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a>, assigneeId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="botactionresponse.html" class="tsd-signature-type">BotActionResponse</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/too_many_assigned.ts#L35">src/bot_actions/too_many_assigned.ts:35</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the state of the Merge Request: <code>open</code>, <code>update</code>, or <code>merge</code></p>
+									</div>
+								</li>
+								<li>
+									<h5>api: <a href="gitlabapi.html" class="tsd-signature-type">GitLabApi</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an instance of <code>GitLabApi</code></p>
+									</div>
+								</li>
+								<li>
+									<h5>customConfig: <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an instance of <code>BotActionConfig</code></p>
+									</div>
+								</li>
+								<li>
+									<h5>assigneeId: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>GitLab user id of Merge Request assignee</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="botactionresponse.html" class="tsd-signature-type">BotActionResponse</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>data about the success or failure of the GitLab API request and resulting properties calculated by Too Many Assigned analysis</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="buildsuccessfulaction" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> build<wbr>Successful<wbr>Action</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">build<wbr>Successful<wbr>Action<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, goodGitPractice<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, assigneeId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../globals.html#successfulbotaction" class="tsd-signature-type">SuccessfulBotAction</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/too_many_assigned.ts#L107">src/bot_actions/too_many_assigned.ts:107</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Invoked when Bot Action analysis was successful.
+									Constructs a BotAction object containing goodGitPractice and conditional feedback message.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the state of the Merge Request: <code>open</code>, <code>update</code>, or <code>merge</code></p>
+									</div>
+								</li>
+								<li>
+									<h5>goodGitPractice: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>represents whether or not the Merge Request event meets the criteria for good Too Many Assigned practice</p>
+									</div>
+								</li>
+								<li>
+									<h5>assigneeId: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the user ID of the person who is assigned to review this Merge Request</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../globals.html#successfulbotaction" class="tsd-signature-type">SuccessfulBotAction</a></h4>
+							<p>SuccessfulBotActionWithMessage instance containing feedback for user. If no feedback is warranted, an instance of SuccessfulBotActionWithNothingToSay is returned.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="caseforbadmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> case<wbr>For<wbr>Bad<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Message<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, goodGitPractice<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, assigneeId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/bot_actions/too_many_assigned.ts#L89">src/bot_actions/too_many_assigned.ts:89</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>goodGitPractice: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>assigneeId: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="toomanyassigned.html" class="tsd-kind-icon">Too<wbr>Many<wbr>Assigned</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="toomanyassigned.html#badnote" class="tsd-kind-icon">bad<wbr>Note</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="toomanyassigned.html#botactionname" class="tsd-kind-icon">bot<wbr>Action<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="toomanyassigned.html#hashtag" class="tsd-kind-icon">hashtag</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="toomanyassigned.html#analyze" class="tsd-kind-icon">analyze</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="toomanyassigned.html#buildsuccessfulaction" class="tsd-kind-icon">build<wbr>Successful<wbr>Action</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="toomanyassigned.html#caseforbadmessage" class="tsd-kind-icon">case<wbr>For<wbr>Bad<wbr>Message</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

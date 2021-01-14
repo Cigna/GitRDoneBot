@@ -1,0 +1,374 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>CustomConfig | GitRDoneBot</title>
+	<meta name="description" content="Documentation for GitRDoneBot">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">GitRDoneBot</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="customconfig.html">CustomConfig</a>
+				</li>
+			</ul>
+			<h1>Class CustomConfig</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>This class contains the logic for retrieving the user-defined <code>.grdb.json</code> Custom Config file and using those values if valid, or default values if user-defined values are invalid or missing.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">CustomConfig</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="customconfig.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="customconfig.html#apiresponse" class="tsd-kind-icon">api<wbr>Response</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="customconfig.html#branchage" class="tsd-kind-icon">branch<wbr>Age</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="customconfig.html#commitmessage" class="tsd-kind-icon">commit<wbr>Message</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="customconfig.html#diffsize" class="tsd-kind-icon">diff<wbr>Size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="customconfig.html#toomanymergerequests" class="tsd-kind-icon">too<wbr>Many<wbr>Merge<wbr>Requests</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="customconfig.html#updatemergerequestcomment" class="tsd-kind-icon">update<wbr>Merge<wbr>Request<wbr>Comment</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="customconfig.html#from" class="tsd-kind-icon">from</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="customconfig.html#getupdateconfig" class="tsd-kind-icon">get<wbr>Update<wbr>Config</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Custom<wbr>Config<span class="tsd-signature-symbol">(</span>branchAge<span class="tsd-signature-symbol">: </span><a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a>, commitMessage<span class="tsd-signature-symbol">: </span><a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a>, diffSize<span class="tsd-signature-symbol">: </span><a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a>, tooManyMergeRequests<span class="tsd-signature-symbol">: </span><a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a>, updateMergeRequestComment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, apiResponse<span class="tsd-signature-symbol">: </span><a href="../globals.html#getresponse" class="tsd-signature-type">GetResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="customconfig.html" class="tsd-signature-type">CustomConfig</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L13">src/custom_config/custom_config.ts:13</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>branchAge: <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></h5>
+								</li>
+								<li>
+									<h5>commitMessage: <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></h5>
+								</li>
+								<li>
+									<h5>diffSize: <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></h5>
+								</li>
+								<li>
+									<h5>tooManyMergeRequests: <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></h5>
+								</li>
+								<li>
+									<h5>updateMergeRequestComment: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>apiResponse: <a href="../globals.html#getresponse" class="tsd-signature-type">GetResponse</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="customconfig.html" class="tsd-signature-type">CustomConfig</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="apiresponse" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> api<wbr>Response</h3>
+					<div class="tsd-signature tsd-kind-icon">api<wbr>Response<span class="tsd-signature-symbol">:</span> <a href="../globals.html#getresponse" class="tsd-signature-type">GetResponse</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L20">src/custom_config/custom_config.ts:20</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="branchage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> branch<wbr>Age</h3>
+					<div class="tsd-signature tsd-kind-icon">branch<wbr>Age<span class="tsd-signature-symbol">:</span> <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L15">src/custom_config/custom_config.ts:15</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="commitmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> commit<wbr>Message</h3>
+					<div class="tsd-signature tsd-kind-icon">commit<wbr>Message<span class="tsd-signature-symbol">:</span> <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L16">src/custom_config/custom_config.ts:16</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="diffsize" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> diff<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">diff<wbr>Size<span class="tsd-signature-symbol">:</span> <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L17">src/custom_config/custom_config.ts:17</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="toomanymergerequests" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> too<wbr>Many<wbr>Merge<wbr>Requests</h3>
+					<div class="tsd-signature tsd-kind-icon">too<wbr>Many<wbr>Merge<wbr>Requests<span class="tsd-signature-symbol">:</span> <a href="botactionconfig.html" class="tsd-signature-type">BotActionConfig</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L18">src/custom_config/custom_config.ts:18</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="updatemergerequestcomment" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> update<wbr>Merge<wbr>Request<wbr>Comment</h3>
+					<div class="tsd-signature tsd-kind-icon">update<wbr>Merge<wbr>Request<wbr>Comment<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L19">src/custom_config/custom_config.ts:19</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="from" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> from</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">from<span class="tsd-signature-symbol">(</span>api<span class="tsd-signature-symbol">: </span><a href="gitlabapi.html" class="tsd-signature-type">GitLabApi</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="customconfig.html" class="tsd-signature-type">CustomConfig</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L29">src/custom_config/custom_config.ts:29</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Loads in user-configured values for all valid config properties &amp; property thresholds if api call is successful. If api call fails,
+									or for any invalid user-configured values, uses default values.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>api: <a href="gitlabapi.html" class="tsd-signature-type">GitLabApi</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an instance of the GitLabApi class that wraps HTTP requests to and responses from the GitLab API</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="customconfig.html" class="tsd-signature-type">CustomConfig</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>CustomConfig with loaded values</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getupdateconfig" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Update<wbr>Config</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Update<wbr>Config<span class="tsd-signature-symbol">(</span>retrievedConfig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cigna/GitRDoneBot/blob/2829b6b/src/custom_config/custom_config.ts#L78">src/custom_config/custom_config.ts:78</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Determine if user-configured value for updateMergeRequestComment is set and valid, or if default value should be used</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>retrievedConfig: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>user-configured bot action values</p>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<p>boolean for updateMergeRequestComment in CustomConfig</p>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="customconfig.html" class="tsd-kind-icon">Custom<wbr>Config</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="customconfig.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="customconfig.html#apiresponse" class="tsd-kind-icon">api<wbr>Response</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="customconfig.html#branchage" class="tsd-kind-icon">branch<wbr>Age</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="customconfig.html#commitmessage" class="tsd-kind-icon">commit<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="customconfig.html#diffsize" class="tsd-kind-icon">diff<wbr>Size</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="customconfig.html#toomanymergerequests" class="tsd-kind-icon">too<wbr>Many<wbr>Merge<wbr>Requests</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="customconfig.html#updatemergerequestcomment" class="tsd-kind-icon">update<wbr>Merge<wbr>Request<wbr>Comment</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="customconfig.html#from" class="tsd-kind-icon">from</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="customconfig.html#getupdateconfig" class="tsd-kind-icon">get<wbr>Update<wbr>Config</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
